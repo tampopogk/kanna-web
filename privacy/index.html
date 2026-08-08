@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Kanna Mobile Privacy Policy — Kanna</title>
+<meta name="description" content="How Kanna Mobile handles information when used with the Kanna desktop app for macOS."/>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
+  :root {
+    --bg: #fbfaf8;
+    --surface: #ffffff;
+    --surface-soft: #f4f5f7;
+    --ink: #191923;
+    --muted: #676978;
+    --line: #dedfe5;
+    --hot-pink: #f72b89;
+    --violet: #9630dc;
+    --indigo: #1957c3;
+    --shadow: 0 24px 70px rgba(25, 25, 35, 0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+  body {
+    min-height: 100vh;
+    background: linear-gradient(180deg, #ffffff 0%, var(--bg) 48%, #f1f3f8 100%);
+    color: var(--ink);
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 400;
+    line-height: 1.65;
+    overflow-x: hidden;
+  }
+
+  .masthead {
+    border-bottom: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(8px);
+  }
+  .masthead-inner {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 20px 24px;
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .wordmark {
+    font-weight: 700;
+    font-size: 19px;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    color: var(--ink);
+  }
+  .wordmark span {
+    background: linear-gradient(92deg, var(--hot-pink), var(--violet));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .masthead nav { margin-left: auto; display: flex; gap: 18px; }
+  .masthead nav a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .masthead nav a:hover { color: var(--ink); }
+
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 56px 24px 96px;
+  }
+
+  h1 {
+    font-size: clamp(30px, 5vw, 40px);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+    margin-bottom: 28px;
+  }
+  h2 {
+    font-size: 22px;
+    letter-spacing: -0.01em;
+    font-weight: 600;
+    margin: 44px 0 14px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+  }
+  h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 28px 0 10px;
+    color: var(--ink);
+  }
+
+  p, li { color: #2c2c3a; }
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 8px; }
+  li::marker { color: var(--muted); }
+
+  strong { font-weight: 600; color: var(--ink); }
+
+  a { color: var(--indigo); text-decoration: underline; text-underline-offset: 2px; }
+  a:hover { color: var(--hot-pink); }
+
+  code {
+    font-family: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.9em;
+    background: var(--surface-soft);
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    padding: 1px 5px;
+    word-break: break-word;
+  }
+
+  /* The lede paragraphs before the first h2 carry the effective date and operator. */
+  main > p:first-of-type { color: var(--muted); font-size: 15px; margin-bottom: 6px; }
+
+  footer {
+    border-top: 1px solid var(--line);
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 28px 24px 56px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  footer a { color: var(--muted); }
+
+  @media (max-width: 560px) {
+    main { padding: 36px 20px 72px; }
+    h2 { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+<header class="masthead">
+  <div class="masthead-inner">
+    <a class="wordmark" href="https://kanna.build">Kanna<span>.</span></a>
+    <nav>
+      <a href="https://kanna.build">Home</a>
+      <a href="/support">Support</a>
+      <a href="/privacy">Privacy</a>
+    </nav>
+  </div>
+</header>
+<main>
+<h1>Kanna Mobile Privacy Policy</h1>
+<p>Effective date: August 9, 2026</p>
+<p>Technical implementation reviewed: August 9, 2026</p>
+<p>Kanna Mobile is operated by Tampopo LLC (&quot;Kanna,&quot; &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;). This policy explains how Kanna Mobile handles information when you use the mobile app with the Kanna desktop app for macOS.</p>
+<h2>The most important point for developers</h2>
+<p>Kanna controls coding-agent tasks. When you use cloud access, <strong>task prompts, commands and terminal or agent output travel through Kanna's relay infrastructure between your mobile device and your Mac. This content may contain source code, file contents, diffs, credentials, secrets, personal information, or other confidential material.</strong> A task created remotely sends its full prompt through the relay. Terminal input and output and other content you choose to open remotely also pass through the relay.</p>
+<p>Kanna also stores a cloud task index in Google Firestore. That index includes the task title, the first 500 characters of the task prompt, and up to 240 characters of a waiting/output preview, together with the task and repository metadata described below. Do not put information in a prompt, terminal session, repository name, branch name, remote URL, or other task field unless you are comfortable with it being handled in this way.</p>
+<p>When Kanna Mobile connects directly to your Mac over your local network, the mobile requests and live task traffic on that direct connection stay on that network and do not pass through Kanna's Firebase or relay services. If cloud features are separately enabled on the desktop, the desktop may still publish its cloud task index independently of the mobile app's direct LAN connection.</p>
+<h2>Information Kanna handles</h2>
+<h3>Account and authentication information</h3>
+<p>Kanna Mobile supports email-and-password sign-in through Google Firebase Authentication. Firebase receives the email address and password used to sign in. The app receives and uses the resulting Firebase user ID, email address, optional display name, and Firebase ID tokens. It stores Firebase authentication session data in the device's AsyncStorage with keys beginning <code>firebaseAuth:</code> so that a session can persist between launches.</p>
+<h3>Desktop, repository, and task information stored in the cloud</h3>
+<p>An authenticated Kanna desktop publishes an account-scoped index under <code>users/{uid}/desktops/{desktopDocId}/tasks</code> in Firestore. Depending on what is present in a task, this can include:</p>
+<ul>
+<li>desktop ID and display name;</li>
+<li>task IDs, title or display name, the first 500 characters of the prompt, and up to 240 characters of a waiting/output preview;</li>
+<li>stage, status, activity, task relationships and blockers, and creation and update timestamps;</li>
+<li>repository ID, repository name, remote URL and its hash, and default branch;</li>
+<li>task branch, base reference, pull request number and URL;</li>
+<li>agent provider and execution type; and</li>
+<li>task-transfer state and identifiers, and desktop transfer identity information such as a peer ID and public key.</li>
+</ul>
+<p>The mobile app reads this index only within the signed-in user's account. Firestore client rules deny mobile clients access to another user's task index and deny client-side writes to the index; the authenticated relay service performs publication.</p>
+<h3>Content sent through cloud access</h3>
+<p>Firebase ID tokens authenticate Kanna Mobile's encrypted WebSocket connection to <code>relay.kanna.build</code>. The relay routes requests and live streams to and from the selected desktop. The routed content can include full task prompts, text sent to an agent, terminal keystrokes and output, agent events and permission decisions, task details, repository commands, task file and diff content requested in the app, and visual-companion content and interactions.</p>
+<p>The relay implementation routes live connection data in memory and the source does not implement a database for storing full relay message bodies or terminal streams. This does not change the separate Firestore task-index storage described above, and operational infrastructure may generate logs as described below.</p>
+<h3>Local pairing and device information</h3>
+<p>For direct LAN use, Kanna Mobile discovers Kanna desktops on the local network and sends a one-time pairing code, a generated mobile device ID, and a device name to the selected Mac. The Mac returns a device secret. The app stores the desktop ID and name, local endpoint, last-seen time, mobile device ID, and device secret locally and presents the device ID and secret with later LAN requests. Firebase identity is not used to authenticate this direct LAN path.</p>
+<p>Direct LAN requests currently use local HTTP and WebSocket connections. They are authenticated with the paired device credentials but are not represented by the source as end-to-end encrypted application traffic. Use LAN pairing only on a network you trust.</p>
+<h3>Information stored only on the mobile device</h3>
+<p>Kanna Mobile uses AsyncStorage for local settings and continuity. The local session context under <code>kanna.mobile.context.v1</code> can contain the selected desktop, repository, task and screen, basic signed-in user details, trusted desktop endpoints and pairing secrets, agent preferences, and an unfinished task-creation attempt including its prompt. Custom quick replies are stored under <code>kanna.mobile.quick-replies.v1</code>.</p>
+<p>Crash diagnostics are stored only on the device under <code>kanna.mobile.crash-diagnostics.v1</code>. Kanna keeps at most five of these records. They can contain an error message and stack, build information, selected task ID, connection and terminal state, and recent diagnostic breadcrumbs; fields whose names look like tokens, passwords, secrets, credentials, cookies, or session values are redacted. <strong>Kanna does not automatically transmit these crash diagnostics.</strong> They leave the app only if you deliberately copy and share them. The app provides controls to copy or clear them.</p>
+<h3>Push notifications</h3>
+<p>If you allow notifications, the app obtains a Firebase Cloud Messaging (FCM) device token and sends it to the Kanna relay with the mobile device ID and a Firebase ID token. Kanna stores the device ID and FCM token under the signed-in user's Firestore record. A notification can include a title and body plus a desktop ID and task ID. Google Firebase Cloud Messaging and Apple's push-notification service process this information to deliver the notification.</p>
+<h3>Camera</h3>
+<p>Camera permission is optional and is used only to scan a machine-pairing QR code. The app processes the scanned QR value as a pairing payload. The source does not save or upload camera photos or video. You can enter the six-character pairing code instead of granting camera access.</p>
+<h3>Connection and operational logs</h3>
+<p>The relay logs connection and service events. These logs can include an IP address, Firebase user ID, connection role (mobile or desktop), desktop ID, connection and close status, error messages, and push-registration device IDs. OTA update requests and other infrastructure requests can also expose an IP address and request metadata to the serving infrastructure. The OTA manifest request includes items such as the platform, runtime version, release channel, and current update ID when present.</p>
+<h2>Why Kanna handles this information</h2>
+<p>Kanna uses the information above to:</p>
+<ul>
+<li>authenticate you and maintain your signed-in session;</li>
+<li>pair the mobile app with a trusted Mac;</li>
+<li>show desktops, repositories, and task status;</li>
+<li>create and control tasks and carry live terminal, agent, file, diff, and companion traffic;</li>
+<li>deliver notifications you enable;</li>
+<li>protect account-scoped connections and diagnose service failures; and</li>
+<li>check for and deliver signed mobile JavaScript and asset updates from <code>https://relay.kanna.build/ota/manifest</code>.</li>
+</ul>
+<h2>Service providers and disclosures</h2>
+<p>Kanna's implementation uses the following service providers and platforms:</p>
+<ul>
+<li><strong>Google Firebase Authentication</strong> for account sign-in and identity tokens;</li>
+<li><strong>Google Cloud Firestore</strong> for account, desktop, cloud task-index, credential, and push-registration records;</li>
+<li><strong>Google Firebase Cloud Messaging</strong> and <strong>Apple Push Notification service</strong> for optional push delivery; and</li>
+<li><strong>Google Cloud infrastructure</strong>, including a Google Cloud-hosted relay and Cloud Storage for over-the-air app updates.</li>
+</ul>
+<p>These providers process information to provide their services to Kanna. Kanna may also disclose information where required by applicable law, regulation, legal process, or an enforceable governmental request, or where we reasonably believe disclosure is necessary to investigate or prevent fraud, to enforce our terms, or to protect the rights, safety, or property of Kanna, our users, or the public. If Kanna is involved in a merger, acquisition, or sale of assets, information may transfer as part of that transaction, and we will make reasonable efforts to notify affected users.</p>
+<p>The mobile source contains no advertising SDK, imports no Firebase Analytics module, and the production Firebase configuration sets <code>IS_ANALYTICS_ENABLED</code> to false. The source contains no mechanism for cross-app advertising tracking.</p>
+<p>We do not sell personal information, and we do not share it with third parties for cross-context behavioral advertising. We disclose information only to the service providers that operate Kanna and in the circumstances described in this policy.</p>
+<h2>Retention</h2>
+<p>The code establishes the following product behavior but does not establish organization-wide retention periods:</p>
+<ul>
+<li>local crash diagnostics are capped at five records and can be cleared in the app;</li>
+<li>local session, pairing, and preference records remain on the device until replaced, removed through an available app control, or removed with the app's local data;</li>
+<li>push registration is deleted from Firestore when the app successfully unregisters the device, and invalid FCM tokens are removed after delivery failures;</li>
+<li>the desktop's Firestore task collection is reconciled to its current published open-task snapshot, and task documents absent from a later snapshot are deleted; and</li>
+<li>relay connection routing state is held in memory for active connections, while operational logs are handled separately.</li>
+</ul>
+<p>Beyond that product behavior, we retain information as follows:</p>
+<ul>
+<li><strong>Firebase Authentication accounts and Firestore records</strong> (account documents, desktop and cloud task index, desktop credential hashes, push registrations) are kept while your account is active, and are deleted within 30 days of a verified deletion request.</li>
+<li><strong>Relay and infrastructure logs</strong>, which can include IP addresses, are kept for a short operational period for security and troubleshooting and are then discarded on the provider's normal cycle.</li>
+<li><strong>Support and deletion-request correspondence</strong> is kept only as long as needed to handle the request and to keep a record that we handled it.</li>
+<li><strong>Backups</strong> are rotated on their own schedule. Deleted records may persist in a backup until that backup ages out, after which they are not restored.</li>
+</ul>
+<p>Where a longer period is required to meet a legal obligation, resolve a dispute, or enforce our agreements, we retain the minimum necessary for that purpose.</p>
+<h2>Deletion requests and choices</h2>
+<p>Kanna Mobile currently provides sign-out, removal of a manual LAN pairing, and clearing of local crash diagnostics. It does not currently provide an in-app workflow that deletes the Firebase Authentication account and all associated cloud records.</p>
+<p>To request deletion of your Kanna account or Kanna-hosted data, email <strong><a href="mailto:support@tampopomyoko.com">support@tampopomyoko.com</a></strong> with the subject &quot;Delete my account&quot;. Include the email address associated with the account and identify any desktops whose data you want deleted. Do not send your password, Firebase token, pairing secret, source code, or other credentials.</p>
+<p>We verify a request by confirming it comes from the account's own email address; if it arrives from another address, we will write to the account address before acting. A verified deletion covers your Firebase Authentication account, your Firestore account document, your desktop and cloud task index, stored desktop credential hashes, and push-notification registrations. We acknowledge requests promptly, complete verified deletions within 30 days, and email you confirmation when the deletion is done. The backup and legal-retention exceptions described under Retention apply.</p>
+<p>Deleting Kanna-hosted data does not by itself delete data stored on your Mac, in local mobile AsyncStorage, in your source-control provider, or by an agent provider you use with Kanna. Remove local pairings and app data on the relevant devices, and contact those other providers as needed.</p>
+<h2>Security</h2>
+<p>Cloud relay and OTA endpoints use <code>wss://</code> and <code>https://</code>, and Firebase ID tokens authenticate mobile relay sessions. Desktop cloud publication uses desktop credentials. Direct LAN access uses a per-device ID and secret issued during pairing. No system can guarantee absolute security, and Kanna's direct LAN transport is not represented by the source as end-to-end encrypted; use trusted networks and protect your Kanna account, devices, repositories, and agent-provider credentials.</p>
+<h2>Children</h2>
+<p>Kanna Mobile is a developer tool intended for adults. It is not directed to children, and we do not knowingly collect personal information from children. If you believe a child has provided us with personal information, contact us and we will delete it.</p>
+<h2>Policy changes</h2>
+<p>When this policy changes, we post the updated version at <code>https://kanna.build/privacy</code> with a new effective date. For changes that materially affect how we handle your information, we will give notice before the change takes effect, through the app or to the email address associated with your account. Continuing to use Kanna Mobile after a change takes effect means the updated policy applies to you.</p>
+<h2>Governing law and privacy rights</h2>
+<p>Tampopo LLC operates Kanna from Japan, and this policy is governed by the laws of Japan.</p>
+<p>Under Japan's Act on the Protection of Personal Information (APPI), you may ask us to disclose the personal information we hold about you, to correct or add to it if it is inaccurate, or to stop using or delete it where the Act provides that right. Email <strong><a href="mailto:support@tampopomyoko.com">support@tampopomyoko.com</a></strong> to make a request. We verify requests as described under Deletion requests and choices, and we respond without undue delay. If you are not satisfied with our response, you may raise the matter with Japan's Personal Information Protection Commission.</p>
+<p>Kanna is available to users outside Japan. If the law where you live gives you additional privacy rights, contact us and we will consider your request under that law. Information you send through Kanna is processed on Google Cloud and Firebase infrastructure, which may be located outside your country.</p>
+<h2>Contact</h2>
+<p>Privacy contact: <strong><a href="mailto:support@tampopomyoko.com">support@tampopomyoko.com</a></strong></p>
+<p>Support: <code>https://kanna.build/support</code></p>
+</main>
+<footer>
+  <p>Kanna Mobile is operated by Tampopo LLC. Questions: <a href="mailto:support@tampopomyoko.com">support@tampopomyoko.com</a></p>
+</footer>
+</body>
+</html>
