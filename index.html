@@ -1,1229 +1,1014 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Kanna - Structured Autonomy for Coding Agents</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Kanna gives coding-agent CLIs composed workflows, isolated worktrees, coordinator agents, mobile control, and cross-machine task transfer.">
+<meta name="theme-color" content="#fbfaf8">
+<title>Kanna — Structured autonomy for coding agents</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap');
 
   :root {
     --bg: #fbfaf8;
     --surface: #ffffff;
-    --surface-soft: #f4f5f7;
+    --surface-soft: #f3f4f7;
     --ink: #191923;
-    --muted: #676978;
+    --muted: #656777;
     --line: #dedfe5;
     --hot-pink: #f72b89;
     --orange: #ff8a12;
     --magenta: #df1fb7;
     --violet: #9630dc;
-    --indigo: #1957c3;
-    --blue: #1458c5;
-    --slate: #736b91;
-    --green: #17d34c;
-    --shadow: 0 24px 70px rgba(25, 25, 35, 0.12);
+    --blue: #1957c3;
+    --green: #17b947;
+    --night: #07111f;
+    --shadow: 0 26px 80px rgba(25, 25, 35, 0.13);
+    --radius: 18px;
+    --page: min(1200px, calc(100% - 48px));
   }
 
   * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    letter-spacing: 0;
   }
 
-  html { scroll-behavior: smooth; }
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
 
   body {
-    min-height: 100vh;
-    background:
-      linear-gradient(180deg, #ffffff 0%, var(--bg) 48%, #f1f3f8 100%);
+    min-width: 320px;
     color: var(--ink);
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 400;
+    background:
+      radial-gradient(circle at 82% 8%, rgba(25, 87, 195, 0.08), transparent 24rem),
+      radial-gradient(circle at 4% 27%, rgba(247, 43, 137, 0.06), transparent 22rem),
+      var(--bg);
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1.5;
     overflow-x: hidden;
   }
 
-  a { color: inherit; }
-
-  .hero {
-    padding: 56px 24px 40px;
-    border-bottom: 1px solid rgba(222, 223, 229, 0.72);
+  img,
+  svg {
+    display: block;
+    max-width: 100%;
   }
 
-  .hero-inner {
-    width: min(1180px, 100%);
+  a {
+    color: inherit;
+  }
+
+  .mono,
+  .eyebrow,
+  .section-label,
+  .capture-label,
+  .version,
+  .diagram-kicker,
+  .feature-index {
+    font-family: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .site-header {
+    width: var(--page);
     margin: 0 auto;
-    display: grid;
-    grid-template-columns: minmax(0, 1.02fr) minmax(360px, 0.78fr);
-    gap: 56px;
+    padding: 24px 0;
+    display: flex;
     align-items: center;
+    justify-content: space-between;
+    gap: 24px;
   }
 
-  .brand-mark {
+  .wordmark {
     display: inline-flex;
     align-items: center;
-    gap: 14px;
-    margin-bottom: 32px;
+    gap: 11px;
+    font-size: 18px;
+    font-weight: 700;
+    text-decoration: none;
   }
 
-  .icon-wrap {
-    width: 68px;
-    height: 68px;
-    border-radius: 18px;
-    box-shadow: 0 14px 30px rgba(25, 25, 35, 0.14);
+  .brand-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    box-shadow: 0 7px 18px rgba(25, 25, 35, 0.14);
   }
 
-  .app-icon {
-    display: block;
-    width: 100%;
-    height: 100%;
+  .site-nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
   }
 
-  .brand-word {
-    font-family: 'DM Mono', monospace;
-    font-size: 15px;
-    font-weight: 500;
+  .site-nav a {
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 160ms ease;
+  }
+
+  .site-nav a:hover,
+  .site-nav a:focus-visible {
     color: var(--ink);
   }
 
-  .eyebrow,
-  .section-label,
-  .version,
-  .workflow-step,
-  .stage,
-  .agent-pill,
-  .status-chip {
-    font-family: 'DM Mono', monospace;
+  .hero {
+    width: var(--page);
+    margin: 0 auto;
+    padding: 72px 0 104px;
+    display: grid;
+    grid-template-columns: minmax(360px, 0.78fr) minmax(0, 1.22fr);
+    gap: clamp(44px, 6vw, 86px);
+    align-items: center;
+  }
+
+  .hero-copy,
+  .hero-visual {
+    min-width: 0;
   }
 
   .eyebrow {
-    font-size: 13px;
-    color: var(--slate);
-    margin-bottom: 16px;
+    margin-bottom: 18px;
+    color: var(--violet);
+    font-size: 12px;
     font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
   h1 {
-    font-size: 84px;
-    line-height: 0.94;
+    max-width: 650px;
+    font-size: clamp(54px, 6.4vw, 92px);
     font-weight: 700;
-    margin-bottom: 20px;
+    letter-spacing: -0.055em;
+    line-height: 0.96;
   }
 
   .slogan {
-    font-size: 32px;
-    line-height: 1.16;
+    max-width: 560px;
+    margin-top: 24px;
+    font-size: clamp(24px, 3vw, 34px);
     font-weight: 600;
-    max-width: 620px;
-    margin-bottom: 18px;
-    background: linear-gradient(90deg, var(--hot-pink), var(--orange) 45%, var(--blue));
+    letter-spacing: -0.025em;
+    line-height: 1.15;
+    background: linear-gradient(92deg, var(--hot-pink), var(--orange) 48%, var(--blue));
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
   }
 
-  .hero-copy {
-    max-width: 690px;
+  .hero-description {
+    max-width: 610px;
+    margin-top: 22px;
     color: var(--muted);
     font-size: 18px;
-    line-height: 1.62;
-    margin-bottom: 30px;
+    line-height: 1.7;
   }
 
   .download-row {
+    margin-top: 30px;
     display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 11px;
   }
 
   .download-btn {
     min-height: 48px;
+    padding: 0 18px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    padding: 0 20px;
-    border-radius: 8px;
-    font-family: 'DM Mono', monospace;
-    font-size: 14px;
+    gap: 9px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.82);
+    font-family: 'DM Mono', ui-monospace, monospace;
+    font-size: 13px;
     font-weight: 500;
     text-decoration: none;
-    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
   }
 
   .download-btn.primary {
-    color: #ffffff;
+    border-color: transparent;
+    color: #fff;
     background: linear-gradient(135deg, var(--hot-pink), var(--orange));
-    box-shadow: 0 14px 30px rgba(247, 43, 137, 0.25);
+    box-shadow: 0 13px 28px rgba(247, 43, 137, 0.24);
   }
 
-  .download-btn.secondary {
-    color: var(--ink);
-    background: rgba(255, 255, 255, 0.72);
-    border: 1px solid var(--line);
-  }
-
-  .download-btn:hover {
+  .download-btn:hover,
+  .download-btn:focus-visible {
+    border-color: rgba(25, 25, 35, 0.32);
+    box-shadow: 0 13px 30px rgba(25, 25, 35, 0.11);
+    outline: none;
     transform: translateY(-2px);
   }
 
-  .download-btn.primary:hover {
-    box-shadow: 0 18px 36px rgba(247, 43, 137, 0.30);
-  }
-
-  .download-btn.secondary:hover {
-    border-color: rgba(25, 25, 35, 0.24);
+  .download-btn.primary:hover,
+  .download-btn.primary:focus-visible {
+    border-color: transparent;
+    box-shadow: 0 17px 34px rgba(247, 43, 137, 0.3);
   }
 
   .download-btn svg {
     width: 17px;
     height: 17px;
-    flex: 0 0 auto;
+    flex: none;
   }
 
   .version {
     margin-top: 14px;
     color: var(--muted);
-    font-size: 12px;
+    font-size: 11px;
   }
 
-  .hero-workflow {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 8px;
+  .capture {
+    position: relative;
+    margin: 0;
+  }
+
+  .capture-label {
+    position: absolute;
+    z-index: 1;
+    top: 14px;
+    left: 14px;
+    padding: 7px 10px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 999px;
+    color: rgba(255, 255, 255, 0.92);
+    background: rgba(7, 17, 31, 0.72);
+    backdrop-filter: blur(10px);
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .desktop-capture {
+    border: 1px solid rgba(25, 25, 35, 0.16);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: #000;
     box-shadow: var(--shadow);
-    padding: 18px;
+    transform: perspective(1100px) rotateY(-2.5deg) rotateX(1deg);
+    transform-origin: left center;
   }
 
-  .workflow-mini-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 14px;
-    margin-bottom: 18px;
+  .desktop-capture img {
+    width: 100%;
+    height: auto;
+  }
+
+  .capture figcaption {
+    margin-top: 13px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .capture figcaption strong {
     color: var(--ink);
     font-weight: 600;
   }
 
-  .workflow-mini-header span {
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    font-weight: 400;
+  .trust-strip {
+    border-block: 1px solid var(--line);
+    background: rgba(255, 255, 255, 0.66);
   }
 
-  .mini-stage {
-    display: grid;
-    grid-template-columns: 28px 1fr auto;
-    gap: 12px;
-    align-items: center;
-    padding: 12px;
-    border-radius: 8px;
-    background: var(--surface-soft);
-    margin-bottom: 10px;
-    border: 1px solid transparent;
-  }
-
-  .mini-stage.active {
-    background: #fff7f2;
-    border-color: rgba(255, 138, 18, 0.38);
-  }
-
-  .stage-dot {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--hot-pink), var(--orange));
-  }
-
-  .stage-dot.blue {
-    background: linear-gradient(135deg, var(--indigo), var(--blue));
-  }
-
-  .stage-dot.green {
-    background: var(--green);
-  }
-
-  .mini-stage strong {
-    display: block;
-    font-size: 14px;
-  }
-
-  .mini-stage small {
-    display: block;
-    color: var(--muted);
-    font-size: 12px;
-    margin-top: 2px;
-  }
-
-  .status-chip {
-    color: var(--slate);
-    background: #ffffff;
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 5px 8px;
-    font-size: 11px;
-    white-space: nowrap;
-  }
-
-  .handoff-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 14px;
-  }
-
-  .handoff-row span {
-    display: block;
-    border-radius: 8px;
-    padding: 10px;
-    background: #f7f7fb;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    text-align: center;
-  }
-
-  .handoff-row span:first-child {
-    color: #0f7a33;
-    background: #effbf3;
-  }
-
-  .product-section,
-  .features,
-  .workflow-section {
-    width: min(1180px, calc(100% - 48px));
+  .trust-strip-inner {
+    width: var(--page);
     margin: 0 auto;
+    padding: 20px 0;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
   }
 
-  .product-section {
-    padding: 44px 0 88px;
+  .trust-item {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #4f5260;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .trust-dot {
+    width: 8px;
+    height: 8px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--hot-pink);
+    box-shadow: 0 0 0 5px rgba(247, 43, 137, 0.09);
+  }
+
+  .trust-item:nth-child(2) .trust-dot { background: var(--orange); box-shadow: 0 0 0 5px rgba(255, 138, 18, 0.1); }
+  .trust-item:nth-child(3) .trust-dot { background: var(--violet); box-shadow: 0 0 0 5px rgba(150, 48, 220, 0.1); }
+  .trust-item:nth-child(4) .trust-dot { background: var(--blue); box-shadow: 0 0 0 5px rgba(25, 87, 195, 0.1); }
+
+  .section {
+    width: var(--page);
+    margin: 0 auto;
+    padding: 112px 0;
   }
 
   .section-heading {
-    display: grid;
-    grid-template-columns: minmax(0, 0.7fr) minmax(260px, 0.3fr);
-    gap: 28px;
-    align-items: end;
-    margin-bottom: 24px;
+    max-width: 790px;
+    margin-bottom: 48px;
   }
 
   .section-label {
-    color: var(--slate);
-    font-size: 13px;
+    margin-bottom: 13px;
+    color: var(--violet);
+    font-size: 11px;
     font-weight: 500;
-    margin-bottom: 10px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
   }
 
   h2 {
-    font-size: 38px;
-    line-height: 1.12;
-    font-weight: 650;
+    font-size: clamp(36px, 5vw, 58px);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    line-height: 1.04;
   }
 
-  .section-note {
+  .section-intro {
+    max-width: 690px;
+    margin-top: 20px;
     color: var(--muted);
-    font-size: 16px;
-    line-height: 1.55;
-  }
-
-  .product-shot {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    box-shadow: var(--shadow);
-    overflow: hidden;
-  }
-
-  .shot-chrome {
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 18px;
-    border-bottom: 1px solid var(--line);
-    background: #fafbfc;
-  }
-
-  .shot-title {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: var(--muted);
-  }
-
-  .shot-controls {
-    display: flex;
-    gap: 7px;
-  }
-
-  .shot-controls span {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: var(--line);
-  }
-
-  .shot-grid {
-    display: grid;
-    grid-template-columns: 210px minmax(0, 1fr) 240px;
-    min-height: 460px;
-  }
-
-  .shot-sidebar,
-  .shot-main,
-  .shot-inspector {
-    padding: 20px;
-  }
-
-  .shot-sidebar {
-    background: #f7f8fb;
-    border-right: 1px solid var(--line);
-  }
-
-  .repo-name {
-    font-size: 13px;
-    color: var(--muted);
-    margin-bottom: 16px;
-    font-family: 'DM Mono', monospace;
-  }
-
-  .task {
-    width: 100%;
-    appearance: none;
-    border: 1px solid transparent;
-    background: transparent;
-    padding: 12px;
-    border-radius: 8px;
-    color: var(--muted);
-    font: inherit;
-    font-size: 14px;
-    margin-bottom: 8px;
-    text-align: left;
-    cursor: pointer;
-    transition: background 0.16s ease, border-color 0.16s ease, color 0.16s ease;
-  }
-
-  .task.active {
-    color: var(--ink);
-    background: #ffffff;
-    border: 1px solid var(--line);
-    box-shadow: 0 8px 20px rgba(25, 25, 35, 0.05);
-  }
-
-  .task:hover,
-  .task:focus-visible {
-    color: var(--ink);
-    background: #ffffff;
-    border-color: var(--line);
-    outline: none;
-  }
-
-  .shot-main {
-    min-width: 0;
-  }
-
-  .shot-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 18px;
-    font-weight: 650;
-  }
-
-  .agent-pill {
-    color: #ffffff;
-    background: linear-gradient(135deg, var(--violet), var(--blue));
-    border-radius: 999px;
-    padding: 6px 10px;
-    font-size: 12px;
-    white-space: nowrap;
-  }
-
-  .stage-strip {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 18px;
-  }
-
-  .stage {
-    appearance: none;
-    border: 0;
-    padding: 8px 10px;
-    border-radius: 999px;
-    background: var(--surface-soft);
-    color: var(--muted);
-    font: inherit;
-    font-size: 12px;
-    cursor: pointer;
-    transition: background 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
-  }
-
-  .stage.done {
-    color: #0f7a33;
-    background: #effbf3;
-  }
-
-  .stage.active {
-    color: #9b4600;
-    background: #fff3e6;
-  }
-
-  .stage:hover,
-  .stage:focus-visible {
-    color: var(--ink);
-    box-shadow: inset 0 0 0 1px rgba(25, 25, 35, 0.18);
-    outline: none;
-  }
-
-  .terminal-preview {
-    background: #171822;
-    border-radius: 8px;
-    padding: 18px;
-    color: #edf0f6;
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    line-height: 1.75;
-    min-height: 154px;
-  }
-
-  .terminal-preview p {
-    overflow-wrap: anywhere;
-  }
-
-  .terminal-preview span {
-    color: var(--green);
-  }
-
-  .terminal-preview [data-terminal-line] {
-    color: inherit;
-  }
-
-  .terminal-preview .success {
-    color: #95f3b5;
-  }
-
-  .activity-list {
-    display: grid;
-    gap: 10px;
-    margin-top: 18px;
-  }
-
-  .activity-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 12px;
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    color: var(--muted);
-    font-size: 14px;
-  }
-
-  .activity-item strong {
-    color: var(--ink);
-    font-weight: 600;
-  }
-
-  .shot-inspector {
-    background: #fbfbfd;
-    border-left: 1px solid var(--line);
-  }
-
-  .inspector-card {
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 14px;
-    background: #ffffff;
-    margin-bottom: 12px;
-  }
-
-  .inspector-card strong {
-    display: block;
-    font-size: 14px;
-    margin-bottom: 6px;
-  }
-
-  .inspector-card span {
-    display: block;
-    color: var(--muted);
-    font-size: 13px;
-    line-height: 1.45;
-  }
-
-  .features {
-    padding: 0 0 96px;
+    font-size: 18px;
+    line-height: 1.65;
   }
 
   .feature-grid {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
   }
 
   .feature {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 24px;
-    min-height: 230px;
-    box-shadow: 0 12px 36px rgba(25, 25, 35, 0.06);
+    min-width: 0;
+    padding: 34px 38px 38px 0;
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
+    gap: 18px;
+    border-bottom: 1px solid var(--line);
   }
 
-  .feature-mark {
-    width: 44px;
-    height: 10px;
-    border-radius: 999px;
-    margin-bottom: 26px;
+  .feature:nth-child(odd) {
+    padding-right: 46px;
+    border-right: 1px solid var(--line);
   }
 
-  .feature-mark.hot {
-    background: linear-gradient(90deg, var(--hot-pink), var(--orange));
+  .feature:nth-child(even) {
+    padding-left: 46px;
   }
 
-  .feature-mark.violet {
-    background: linear-gradient(90deg, var(--magenta), var(--violet));
+  .feature-index {
+    color: var(--hot-pink);
+    font-size: 12px;
   }
 
-  .feature-mark.blue {
-    background: linear-gradient(90deg, var(--indigo), var(--slate));
-  }
+  .feature:nth-child(2) .feature-index { color: var(--orange); }
+  .feature:nth-child(3) .feature-index { color: var(--violet); }
+  .feature:nth-child(4) .feature-index { color: var(--blue); }
 
-  .feature h3,
-  .workflow-card h3 {
-    font-size: 19px;
-    line-height: 1.24;
-    font-weight: 650;
+  .feature h3 {
     margin-bottom: 10px;
+    font-size: 20px;
+    font-weight: 650;
+    letter-spacing: -0.015em;
   }
 
-  .feature p,
-  .workflow-card p {
+  .feature p {
     color: var(--muted);
     font-size: 15px;
-    line-height: 1.58;
+    line-height: 1.65;
   }
 
-  .workflow-section {
-    padding: 0 0 96px;
+  .workflow-wrap {
+    padding-block: 0 112px;
   }
 
-  .workflow-board {
+  .workflow-illustration {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(30px, 5vw, 58px);
+    border: 1px solid #263549;
+    border-radius: 24px;
+    color: #fff;
+    background:
+      radial-gradient(circle at 10% 0%, rgba(247, 43, 137, 0.19), transparent 19rem),
+      radial-gradient(circle at 100% 100%, rgba(25, 87, 195, 0.22), transparent 24rem),
+      var(--night);
+    box-shadow: 0 30px 80px rgba(7, 17, 31, 0.2);
+  }
+
+  .diagram-kicker {
+    margin-bottom: 36px;
+    color: #aebbd0;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .diagram-track {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 12px;
+    gap: 38px;
   }
 
-  .workflow-card {
-    appearance: none;
-    color: inherit;
-    font: inherit;
-    text-align: left;
+  .diagram-node {
     position: relative;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-    padding: 20px;
-    min-height: 214px;
-    cursor: pointer;
-    transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+    min-width: 0;
   }
 
-  .workflow-card.current {
-    border-color: rgba(247, 43, 137, 0.38);
-    background: linear-gradient(180deg, #fff7fb, #ffffff);
+  .diagram-node:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 17px;
+    left: calc(100% + 9px);
+    width: 20px;
+    border-top: 1px dashed #6f8099;
   }
 
-  .workflow-card:hover,
-  .workflow-card:focus-visible {
-    border-color: rgba(247, 43, 137, 0.42);
-    box-shadow: 0 14px 34px rgba(25, 25, 35, 0.08);
-    outline: none;
-    transform: translateY(-2px);
-  }
-
-  .workflow-step {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+  .node-number {
     width: 34px;
     height: 34px;
+    margin-bottom: 26px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.34);
     border-radius: 50%;
-    color: #ffffff;
-    background: var(--ink);
-    font-size: 12px;
-    margin-bottom: 28px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
   }
 
-  .workflow-card.current .workflow-step {
-    background: linear-gradient(135deg, var(--hot-pink), var(--orange));
+  .diagram-node:nth-child(1) .node-number { color: #ff77b4; border-color: rgba(247, 43, 137, 0.55); }
+  .diagram-node:nth-child(2) .node-number { color: #ffbb6d; border-color: rgba(255, 138, 18, 0.55); }
+  .diagram-node:nth-child(3) .node-number { color: #c485ee; border-color: rgba(150, 48, 220, 0.58); }
+  .diagram-node:nth-child(4) .node-number { color: #76a9ff; border-color: rgba(25, 87, 195, 0.75); }
+
+  .diagram-node h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: 600;
   }
 
-  footer {
-    border-top: 1px solid var(--line);
-    padding: 34px 24px;
-    text-align: center;
+  .diagram-node p {
+    color: #aeb8c8;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .mobile-section {
+    width: auto;
+    padding-inline: max(24px, calc((100vw - 1200px) / 2));
+    background: #eef1f6;
+    border-block: 1px solid var(--line);
+  }
+
+  .mobile-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+    align-items: start;
+  }
+
+  .mobile-story {
+    min-width: 0;
+  }
+
+  .phone-frame {
+    position: relative;
+    overflow: hidden;
+    max-width: 374px;
+    margin: 0 auto;
+    border: 7px solid var(--night);
+    border-radius: 42px;
+    background: var(--night);
+    box-shadow: 0 24px 64px rgba(7, 17, 31, 0.2);
+  }
+
+  .phone-frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 34px;
+  }
+
+  .phone-frame img {
+    width: 100%;
+    height: auto;
+    border-radius: 34px;
+  }
+
+  .mobile-story figcaption {
+    max-width: 374px;
+    margin: 22px auto 0;
     color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .mobile-story figcaption strong {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--ink);
+    font-size: 18px;
+    font-weight: 650;
+  }
+
+  .pricing-note {
+    margin-top: 46px;
+    padding: 24px 26px;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 15px;
+    align-items: start;
+    border: 1px solid #d3d7e0;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.66);
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  .pricing-note strong {
+    color: var(--ink);
+  }
+
+  .price-icon {
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: #fff;
+    background: linear-gradient(135deg, var(--hot-pink), var(--orange));
     font-family: 'DM Mono', monospace;
     font-size: 12px;
   }
 
-  @media (max-width: 1060px) {
-    .hero-inner,
-    .section-heading {
+  .final-cta {
+    text-align: center;
+  }
+
+  .final-cta h2,
+  .final-cta .section-intro {
+    margin-inline: auto;
+  }
+
+  .final-cta .download-row {
+    justify-content: center;
+  }
+
+  footer {
+    border-top: 1px solid var(--line);
+  }
+
+  .footer-inner {
+    width: var(--page);
+    margin: 0 auto;
+    padding: 32px 0 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 20px;
+  }
+
+  .footer-links a {
+    text-underline-offset: 3px;
+  }
+
+  @media (max-width: 1020px) {
+    .hero {
       grid-template-columns: 1fr;
+      padding-top: 48px;
     }
 
-    .hero-workflow {
-      max-width: 620px;
+    .hero-copy {
+      max-width: 760px;
     }
 
-    .shot-grid {
-      grid-template-columns: 180px minmax(0, 1fr);
+    .desktop-capture {
+      transform: none;
     }
 
-    .shot-inspector {
-      grid-column: 1 / -1;
-      border-left: 0;
-      border-top: 1px solid var(--line);
-      display: grid;
+    .mobile-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
+      row-gap: 58px;
     }
 
-    .inspector-card {
-      margin-bottom: 0;
-    }
-
-    .workflow-board {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+    .mobile-story:last-child {
+      grid-column: 1 / -1;
+      width: min(100%, 480px);
+      justify-self: center;
     }
   }
 
   @media (max-width: 760px) {
+    :root {
+      --page: min(100% - 34px, 1200px);
+    }
+
+    .site-header {
+      padding-block: 17px;
+    }
+
+    .site-nav a:not(.source-link) {
+      display: none;
+    }
+
     .hero {
-      padding: 34px 18px 32px;
+      padding: 44px 0 78px;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 44px;
     }
 
-    .hero-inner {
-      gap: 34px;
-    }
-
-    h1 {
-      font-size: 56px;
-    }
-
-    .slogan {
-      font-size: 25px;
-    }
-
-    .hero-copy {
+    .hero-description,
+    .section-intro {
       font-size: 16px;
     }
 
     .download-row {
-      flex-direction: column;
       align-items: stretch;
     }
 
     .download-btn {
-      width: 100%;
+      flex: 1 1 150px;
     }
 
-    .product-section,
-    .features,
-    .workflow-section {
-      width: min(100% - 32px, 1180px);
+    .trust-strip-inner {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      row-gap: 15px;
     }
 
-    .product-section {
-      padding: 28px 0 68px;
+    .section {
+      padding-block: 80px;
     }
 
-    h2 {
-      font-size: 28px;
+    .section-heading {
+      margin-bottom: 36px;
     }
 
-    .shot-grid {
-      grid-template-columns: 1fr;
-      min-height: 0;
-    }
-
-    .shot-sidebar,
-    .shot-inspector {
-      border: 0;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .shot-inspector {
-      grid-template-columns: 1fr;
-      border-top: 1px solid var(--line);
-      border-bottom: 0;
-    }
-
-    .feature-grid,
-    .workflow-board {
+    .feature-grid {
       grid-template-columns: 1fr;
     }
 
     .feature,
-    .workflow-card {
-      min-height: 0;
+    .feature:nth-child(odd),
+    .feature:nth-child(even) {
+      padding: 28px 0;
+      border-right: 0;
     }
 
-    .handoff-row {
+    .workflow-wrap {
+      padding-bottom: 80px;
+    }
+
+    .diagram-track {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+
+    .diagram-node {
+      padding-left: 52px;
+    }
+
+    .node-number {
+      position: absolute;
+      left: 0;
+      top: 0;
+      margin: 0;
+    }
+
+    .diagram-node:not(:last-child)::after {
+      top: 39px;
+      left: 17px;
+      width: 1px;
+      height: 24px;
+      border-top: 0;
+      border-left: 1px dashed #6f8099;
+    }
+
+    .mobile-section {
+      padding-inline: 17px;
+    }
+
+    .mobile-grid {
+      grid-template-columns: 1fr;
+      gap: 58px;
+    }
+
+    .mobile-story:last-child {
+      grid-column: auto;
+      width: 100%;
+    }
+
+    .phone-frame,
+    .mobile-story figcaption {
+      max-width: 360px;
+    }
+
+    .footer-inner {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .trust-strip-inner {
       grid-template-columns: 1fr;
     }
 
-    .mini-stage {
-      grid-template-columns: 28px 1fr;
+    .download-btn {
+      flex-basis: 100%;
     }
 
-    .mini-stage .status-chip {
-      grid-column: 2;
-      justify-self: start;
+    .workflow-illustration {
+      border-radius: 18px;
     }
+
+    .pricing-note {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { transition-duration: 0.01ms !important; }
   }
 </style>
 </head>
 <body>
 
-<header class="hero">
-  <div class="hero-inner">
-    <div>
-      <div class="brand-mark">
-        <div class="icon-wrap">
-          <svg class="app-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Kanna app icon">
-            <defs>
-              <linearGradient id="icon-background-shadow" x1="256" y1="47" x2="256" y2="466" gradientUnits="userSpaceOnUse">
-                <stop offset="0.62" stop-color="#ffffff"/>
-                <stop offset="1" stop-color="#f3f4f6"/>
-              </linearGradient>
-              <linearGradient id="icon-hot-gradient" x1="113" y1="99" x2="354" y2="99" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#f72b89"/>
-                <stop offset="1" stop-color="#ff8a12"/>
-              </linearGradient>
-              <linearGradient id="icon-pink-gradient" x1="113" y1="178" x2="293" y2="178" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#df1fb7"/>
-                <stop offset="1" stop-color="#ef2d9b"/>
-              </linearGradient>
-              <linearGradient id="icon-purple-gradient" x1="113" y1="256" x2="226" y2="256" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#9630dc"/>
-                <stop offset="1" stop-color="#9e23dd"/>
-              </linearGradient>
-              <linearGradient id="icon-indigo-gradient" x1="113" y1="335" x2="293" y2="335" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#1957c3"/>
-                <stop offset="1" stop-color="#6940a4"/>
-              </linearGradient>
-              <linearGradient id="icon-blue-violet-gradient" x1="113" y1="414" x2="360" y2="414" gradientUnits="userSpaceOnUse">
-                <stop stop-color="#1458c5"/>
-                <stop offset="1" stop-color="#736b91"/>
-              </linearGradient>
-            </defs>
-            <rect width="512" height="512" fill="none"/>
-            <rect x="46" y="46" width="420" height="420" rx="105" fill="#ffffff"/>
-            <rect x="46" y="46" width="420" height="420" rx="105" fill="url(#icon-background-shadow)"/>
-            <rect x="46.5" y="46.5" width="419" height="419" rx="104.5" fill="none" stroke="#d6d6d6"/>
-            <rect x="113" y="82" width="45" height="34" rx="17" fill="url(#icon-hot-gradient)"/>
-            <rect x="180" y="82" width="174" height="34" rx="17" fill="url(#icon-hot-gradient)"/>
-            <rect x="377" y="82" width="24" height="34" rx="12" fill="#17d34c"/>
-            <rect x="113" y="161" width="45" height="34" rx="17" fill="url(#icon-pink-gradient)"/>
-            <rect x="180" y="161" width="113" height="34" rx="17" fill="url(#icon-pink-gradient)"/>
-            <rect x="113" y="240" width="45" height="33" rx="16.5" fill="url(#icon-purple-gradient)"/>
-            <rect x="180" y="240" width="46" height="33" rx="16.5" fill="url(#icon-purple-gradient)"/>
-            <rect x="113" y="318" width="45" height="33" rx="16.5" fill="url(#icon-indigo-gradient)"/>
-            <rect x="180" y="318" width="47" height="33" rx="16.5" fill="url(#icon-indigo-gradient)"/>
-            <rect x="245" y="318" width="48" height="33" rx="16.5" fill="url(#icon-indigo-gradient)"/>
-            <rect x="113" y="397" width="45" height="33" rx="16.5" fill="url(#icon-blue-violet-gradient)"/>
-            <rect x="180" y="397" width="47" height="33" rx="16.5" fill="url(#icon-blue-violet-gradient)"/>
-            <rect x="245" y="397" width="48" height="33" rx="16.5" fill="url(#icon-blue-violet-gradient)"/>
-            <rect x="313" y="397" width="47" height="33" rx="16.5" fill="url(#icon-blue-violet-gradient)"/>
-          </svg>
-        </div>
-        <span class="brand-word">Kanna</span>
-      </div>
+<header class="site-header">
+  <a class="wordmark" href="#top" aria-label="Kanna home">
+    <svg class="brand-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
+      <defs>
+        <linearGradient id="icon-bg" x1="256" y1="47" x2="256" y2="466" gradientUnits="userSpaceOnUse">
+          <stop offset="0.62" stop-color="#fff"/>
+          <stop offset="1" stop-color="#f3f4f6"/>
+        </linearGradient>
+        <linearGradient id="icon-hot" x1="113" y1="99" x2="354" y2="99" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#f72b89"/><stop offset="1" stop-color="#ff8a12"/>
+        </linearGradient>
+        <linearGradient id="icon-pink" x1="113" y1="178" x2="293" y2="178" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#df1fb7"/><stop offset="1" stop-color="#ef2d9b"/>
+        </linearGradient>
+        <linearGradient id="icon-purple" x1="113" y1="256" x2="226" y2="256" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#9630dc"/><stop offset="1" stop-color="#9e23dd"/>
+        </linearGradient>
+        <linearGradient id="icon-blue" x1="113" y1="335" x2="360" y2="414" gradientUnits="userSpaceOnUse">
+          <stop stop-color="#1957c3"/><stop offset="1" stop-color="#736b91"/>
+        </linearGradient>
+      </defs>
+      <rect x="46" y="46" width="420" height="420" rx="105" fill="url(#icon-bg)" stroke="#d6d6d6"/>
+      <rect x="113" y="82" width="45" height="34" rx="17" fill="url(#icon-hot)"/>
+      <rect x="180" y="82" width="174" height="34" rx="17" fill="url(#icon-hot)"/>
+      <rect x="377" y="82" width="24" height="34" rx="12" fill="#17d34c"/>
+      <rect x="113" y="161" width="45" height="34" rx="17" fill="url(#icon-pink)"/>
+      <rect x="180" y="161" width="113" height="34" rx="17" fill="url(#icon-pink)"/>
+      <rect x="113" y="240" width="45" height="33" rx="16.5" fill="url(#icon-purple)"/>
+      <rect x="180" y="240" width="46" height="33" rx="16.5" fill="url(#icon-purple)"/>
+      <rect x="113" y="318" width="45" height="33" rx="16.5" fill="url(#icon-blue)"/>
+      <rect x="180" y="318" width="47" height="33" rx="16.5" fill="url(#icon-blue)"/>
+      <rect x="245" y="318" width="48" height="33" rx="16.5" fill="url(#icon-blue)"/>
+      <rect x="113" y="397" width="45" height="33" rx="16.5" fill="url(#icon-blue)"/>
+      <rect x="180" y="397" width="47" height="33" rx="16.5" fill="url(#icon-blue)"/>
+      <rect x="245" y="397" width="48" height="33" rx="16.5" fill="url(#icon-blue)"/>
+      <rect x="313" y="397" width="47" height="33" rx="16.5" fill="url(#icon-blue)"/>
+    </svg>
+    <span>Kanna</span>
+  </a>
+  <nav class="site-nav" aria-label="Primary navigation">
+    <a href="#workflows">Workflows</a>
+    <a href="#mobile">Mobile</a>
+    <a class="source-link" href="https://github.com/jemdiggity/kanna">Source ↗</a>
+  </nav>
+</header>
 
-      <p class="eyebrow">OPEN SOURCE MACOS DESKTOP APP FOR CODING-AGENT WORKFLOWS</p>
-      <h1>Kanna</h1>
+<main id="top">
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-copy">
+      <p class="eyebrow">Open-source macOS command center for coding agents</p>
+      <h1 id="hero-title">More agents. One clear path forward.</h1>
       <p class="slogan">Structured autonomy for coding agents.</p>
-      <p class="hero-copy">
-        Kanna lets Claude, Codex, and Copilot work through user-defined workflows:
-        advancing stages, requesting revisions, spawning follow-up tasks, and
-        using the built-in MCP to spawn follow-up tasks and progress through the workflow while each task stays isolated in its own worktree.
+      <p class="hero-description">
+        Kanna runs the agent CLIs you already have installed, giving every task an isolated worktree and a repo-defined route from idea to done.
       </p>
-
       <div class="download-row">
         <a href="#" class="download-btn primary" id="btn-arm">
-          <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M8 2v8M5 7l3 3 3-3M3 12h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           Apple Silicon
         </a>
-        <a href="#" class="download-btn secondary" id="btn-intel">
-          <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <a href="#" class="download-btn" id="btn-intel">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M8 2v8M5 7l3 3 3-3M3 12h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
           Intel
-        </a>
-        <a href="https://github.com/jemdiggity/kanna" class="download-btn secondary">
-          <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M6.5 3H3.75A1.75 1.75 0 0 0 2 4.75v7.5C2 13.22 2.78 14 3.75 14h7.5c.97 0 1.75-.78 1.75-1.75V9.5M8.5 2H14v5.5M7.5 8.5 14 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          Source
         </a>
       </div>
       <p class="version" id="version-label">macOS 14+</p>
     </div>
 
-    <aside class="hero-workflow" aria-label="Kanna pipeline status preview">
-      <div class="workflow-mini-header">
-        <strong>default pipeline</strong>
-        <span>.kanna/pipelines/default.json</span>
-      </div>
-      <div class="mini-stage active">
-        <span class="stage-dot"></span>
+    <div class="hero-visual">
+      <figure class="capture">
+        <div class="desktop-capture">
+          <span class="capture-label">Genuine product capture</span>
+          <img src="assets/kanna-desktop.avif" width="2786" height="1424" alt="Kanna for macOS showing repository tasks, an active agent terminal, and a command palette with task transfer and coordinator-agent actions" decoding="async" fetchpriority="high">
+        </div>
+        <figcaption><strong>Kanna for macOS.</strong> Command palette, live agent terminal, and task view. Genuine, unaltered capture.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="trust-strip" aria-label="Kanna product capabilities">
+    <div class="trust-strip-inner">
+      <div class="trust-item"><span class="trust-dot"></span>Use installed agent CLIs</div>
+      <div class="trust-item"><span class="trust-dot"></span>Repo-defined stages</div>
+      <div class="trust-item"><span class="trust-dot"></span>Worktree-isolated tasks</div>
+      <div class="trust-item"><span class="trust-dot"></span>Cross-machine transfer</div>
+    </div>
+  </section>
+
+  <section class="section" id="workflows" aria-labelledby="workflows-title">
+    <div class="section-heading">
+      <p class="section-label">Composed workflows</p>
+      <h2 id="workflows-title">Give autonomy a shape.</h2>
+      <p class="section-intro">
+        Compose stages around the way your repository actually ships. Kanna keeps agents moving when the next step is known—and brings you in when judgment matters.
+      </p>
+    </div>
+
+    <div class="feature-grid">
+      <article class="feature">
+        <span class="feature-index">01</span>
         <div>
-          <strong>In progress</strong>
-          <small>Codex is updating the website worktree</small>
+          <h3>Repo-defined, staged work</h3>
+          <p>Define the stages, automated transitions, and human checkpoints each task follows. The workflow stays with the repository, not in someone’s memory.</p>
         </div>
-        <span class="status-chip">active</span>
-      </div>
-      <div class="mini-stage">
-        <span class="stage-dot blue"></span>
+      </article>
+      <article class="feature">
+        <span class="feature-index">02</span>
         <div>
-          <strong>Commit post-action</strong>
-          <small>Runs in-place before the task advances</small>
+          <h3>Isolated by design</h3>
+          <p>Every task runs in its own git worktree, so multiple agents can work at once without sharing an accidental working state.</p>
         </div>
-        <span class="status-chip">next</span>
-      </div>
-      <div class="mini-stage">
-        <span class="stage-dot green"></span>
+      </article>
+      <article class="feature">
+        <span class="feature-index">03</span>
         <div>
-          <strong>Review to PR</strong>
-          <small>Human checkpoint, then PR agent handoff</small>
+          <h3>Bring the agents you use</h3>
+          <p>Kanna orchestrates installed agent CLIs instead of replacing them. Keep your chosen tools, models, and repository context.</p>
         </div>
-        <span class="status-chip">ready</span>
-      </div>
-      <div class="handoff-row">
-        <span>stage-complete</span>
-        <span>post-action commit</span>
-      </div>
-    </aside>
-  </div>
-</header>
-
-<section class="product-section" aria-label="Kanna workflow workspace preview">
-  <div class="section-heading">
-    <div>
-      <p class="section-label">// WORKSPACE</p>
-      <h2>A desktop control surface for agent workflows.</h2>
+      </article>
+      <article class="feature">
+        <span class="feature-index">04</span>
+        <div>
+          <h3>Coordinate the coordinators</h3>
+          <p>Repo-specific coordinator agents can break down work, create follow-up tasks, call specialized reviews, and shepherd work toward completion.</p>
+        </div>
+      </article>
     </div>
-    <p class="section-note">
-      Tasks, terminals, diffs, files, and pipeline state stay in one place while agents move through the workflow.
-    </p>
-  </div>
+  </section>
 
-  <div class="product-shot">
-    <div class="shot-chrome">
-      <span class="shot-title">Kanna - kanna-web-3</span>
-      <div class="shot-controls" aria-hidden="true">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-    </div>
-    <div class="shot-grid">
-      <div class="shot-sidebar">
-        <div class="repo-name">kanna-web-3</div>
-        <button type="button" class="task active" data-task-control="website" aria-pressed="true">Website refresh</button>
-        <button type="button" class="task" data-task-control="mcp" aria-pressed="false">Agent stage controls</button>
-        <button type="button" class="task" data-task-control="mobile" aria-pressed="false">Mobile handoff</button>
-        <button type="button" class="task" data-task-control="pipeline" aria-pressed="false">Pipeline docs</button>
-      </div>
-      <div class="shot-main">
-        <div class="shot-toolbar">
-          <span data-preview-title>Website refresh</span>
-          <span class="agent-pill" data-agent-pill>Codex</span>
-        </div>
-        <div class="stage-strip">
-          <button type="button" class="stage done" data-stage-control="in-progress" aria-pressed="false">in progress</button>
-          <button type="button" class="stage done" data-stage-control="commit-post-action" aria-pressed="false">commit post-action</button>
-          <button type="button" class="stage active" data-stage-control="review" aria-pressed="true">review</button>
-          <button type="button" class="stage" data-stage-control="pr" aria-pressed="false">pr</button>
-        </div>
-        <div class="terminal-preview">
-          <p><span>$</span> <span data-terminal-line="primary">kanna-cli stage-complete --task website-refresh --status success</span></p>
-          <p><span>$</span> <span data-terminal-line="secondary">kanna mcp create-task "Follow-up copy pass"</span></p>
-          <p class="success" data-terminal-status>review checkpoint selected - approve, revise, or knock back before PR</p>
-        </div>
-        <div class="activity-list">
-          <div class="activity-item">
-            <strong>Diff</strong>
-            <span data-activity-diff>index.html changed</span>
-          </div>
-          <div class="activity-item">
-            <strong>Files</strong>
-            <span data-activity-files>tree explorer ready</span>
-          </div>
-        </div>
-      </div>
-      <div class="shot-inspector">
-        <div class="inspector-card">
-          <strong>Pipeline</strong>
-          <span data-inspector-pipeline>In progress stage, commit post-action, review checkpoint, and PR handoff.</span>
-        </div>
-        <div class="inspector-card">
-          <strong>Worktree</strong>
-          <span data-inspector-worktree>Each task gets an isolated branch workspace and terminal context.</span>
-        </div>
-        <div class="inspector-card">
-          <strong>Access</strong>
-          <span data-inspector-access>Desktop and mobile views keep operators in the loop; the built-in MCP gives agents workflow and task controls.</span>
-        </div>
+  <section class="section workflow-wrap" aria-label="Illustration of a composed workflow">
+    <div class="workflow-illustration">
+      <p class="diagram-kicker">Workflow illustration — not product UI</p>
+      <div class="diagram-track">
+        <article class="diagram-node">
+          <span class="node-number">01</span>
+          <h3>Define</h3>
+          <p>The repository describes its stages, transitions, and checkpoints.</p>
+        </article>
+        <article class="diagram-node">
+          <span class="node-number">02</span>
+          <h3>Run</h3>
+          <p>An installed agent CLI works inside a task-specific worktree.</p>
+        </article>
+        <article class="diagram-node">
+          <span class="node-number">03</span>
+          <h3>Review</h3>
+          <p>Specialized agents or a human assess the work where the workflow asks.</p>
+        </article>
+        <article class="diagram-node">
+          <span class="node-number">04</span>
+          <h3>Handoff</h3>
+          <p>The task advances, transfers machines, or waits for your decision.</p>
+        </article>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<section class="features">
-  <div class="section-heading">
-    <div>
-      <p class="section-label">// WHAT IT DOES</p>
-      <h2>Agent autonomy inside explicit workflow boundaries.</h2>
+  <section class="section mobile-section" id="mobile" aria-labelledby="mobile-title">
+    <div class="section-heading">
+      <p class="section-label">Kanna Mobile</p>
+      <h2 id="mobile-title">Stay in the loop. Leave the desk.</h2>
+      <p class="section-intro">
+        Notifications, task control, and a live remote terminal put the important parts of Kanna on your iPhone while the agents keep running on your Mac.
+      </p>
     </div>
-    <p class="section-note">
-      Kanna is the coordination layer between coding agents, git worktrees, and the stages your team wants every task to follow.
-    </p>
-  </div>
 
-  <div class="feature-grid">
-    <article class="feature">
-      <div class="feature-mark hot"></div>
-      <h3>User-defined pipelines</h3>
-      <p>Define your own agent pipelines. Agents can use the built-in MCP to spawn new tasks or autonomously progress through the workflow, while user-defined human-in-the-loop checkpoints decide where review, approval, or revision is required.</p>
-    </article>
+    <div class="mobile-grid">
+      <figure class="mobile-story">
+        <div class="phone-frame">
+          <img src="assets/kanna-ios-notifications.png" width="1179" height="2556" alt="iPhone lock screen showing Kanna notifications for merge-ready pull requests and a task needing attention" loading="lazy" decoding="async">
+        </div>
+        <figcaption><strong>Know when you’re needed.</strong> Get iOS notifications for completed work and genuine decision points. Notifications remain free, whether you are on your LAN or away from it.</figcaption>
+      </figure>
 
-    <article class="feature">
-      <div class="feature-mark violet"></div>
-      <h3>Agent workspaces</h3>
-      <p>Run Claude, Codex, and Copilot inside isolated git worktrees. Kanna automatically provisions per-workspace ports from user config for dev servers and related services, so local apps can launch without colliding.</p>
-    </article>
+      <figure class="mobile-story">
+        <div class="phone-frame">
+          <img src="assets/kanna-mobile-tasks.png" width="1179" height="2556" alt="Kanna Mobile task list showing repositories, task stages, status updates, activity, and task creation controls" loading="lazy" decoding="async">
+        </div>
+        <figcaption><strong>Manage work from your phone.</strong> Check task status, move between repositories, and control active work from Kanna Mobile.</figcaption>
+      </figure>
 
-    <article class="feature">
-      <div class="feature-mark blue"></div>
-      <h3>Definable agents</h3>
-      <p>Add repo-specific agents like merge queue or shipping agents. Desktop and mobile views keep operators in the loop; the built-in MCP gives agents the control surface for stage changes, task creation, and handoffs.</p>
-    </article>
-  </div>
-</section>
-
-<section class="workflow-section">
-  <div class="section-heading">
-    <div>
-      <p class="section-label">// WORKFLOW AUTONOMY</p>
-      <h2>Agents move through the workflow, not around it.</h2>
+      <figure class="mobile-story">
+        <div class="phone-frame">
+          <img src="assets/kanna-mobile-terminal.png" width="1179" height="2556" alt="Kanna Mobile displaying a live Task Manager agent terminal with a reply field and send control" loading="lazy" decoding="async">
+        </div>
+        <figcaption><strong>Take the terminal with you.</strong> Use a live agent terminal over your LAN or through Kanna’s cloud relay when you are away.</figcaption>
+      </figure>
     </div>
-    <p class="section-note">
-      Configurable stages let agents keep working autonomously through in-progress work, commit post-actions, reviews, and PRs, while named agents handle merge queues, shipping, or repo-specific handoffs.
-    </p>
-  </div>
 
-  <div class="workflow-board">
-    <button type="button" class="workflow-card current" data-stage-control="in-progress" aria-pressed="false">
-      <span class="workflow-step">01</span>
-      <h3>In progress</h3>
-      <p>Agent works inside a task worktree and reports progress through Kanna.</p>
-    </button>
-    <button type="button" class="workflow-card current" data-stage-control="commit-post-action" aria-pressed="false">
-      <span class="workflow-step">02</span>
-      <h3>Commit post-action</h3>
-      <p>The commit agent runs in-place while the task remains in progress.</p>
-    </button>
-    <button type="button" class="workflow-card current" data-stage-control="review" aria-pressed="true">
-      <span class="workflow-step">03</span>
-      <h3>Review</h3>
-      <p>Review can approve, request revision, or knock the task back before PR.</p>
-    </button>
-    <button type="button" class="workflow-card" data-stage-control="pr" aria-pressed="false">
-      <span class="workflow-step">04</span>
-      <h3>PR</h3>
-      <p>The PR agent packages the branch while other definable agents handle merge queues or shipping.</p>
-    </button>
-  </div>
-</section>
+    <div class="pricing-note">
+      <span class="price-icon" aria-hidden="true">$</span>
+      <p><strong>Simple mobile access.</strong> LAN mobile access and notifications are free. Only cloud-relay remote terminal access is $5/month—and it is free for beta testers.</p>
+    </div>
+  </section>
+
+  <section class="section final-cta" aria-labelledby="download-title">
+    <p class="section-label">Open source · bring your own model</p>
+    <h2 id="download-title">Compose the way your agents work.</h2>
+    <p class="section-intro">Download Kanna for macOS and turn parallel agent sessions into work you can see, steer, and finish.</p>
+    <div class="download-row">
+      <a href="#" class="download-btn primary" id="btn-arm-footer">Apple Silicon</a>
+      <a href="#" class="download-btn" id="btn-intel-footer">Intel</a>
+      <a href="https://github.com/jemdiggity/kanna" class="download-btn">View source ↗</a>
+    </div>
+  </section>
+</main>
 
 <footer>
-  KANNA - STRUCTURED AUTONOMY FOR CODING AGENTS - COPYRIGHT TAMPOPO LLC
+  <div class="footer-inner">
+    <span>KANNA — STRUCTURED AUTONOMY FOR CODING AGENTS · © TAMPOPO LLC</span>
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="/support/">Support</a>
+      <a href="/privacy/">Privacy</a>
+    </nav>
+  </div>
 </footer>
 
 <script>
-  const previewTasks = {
-    website: {
-      title: 'Website refresh',
-      slug: 'website-refresh',
-      agent: 'Codex',
-      agentCommand: 'codex',
-      followUp: 'Follow-up copy pass',
-      diff: 'index.html changed',
-      files: 'tree explorer ready',
-      worktree: 'task-05f06a3e keeps the website branch isolated.',
-      access: 'Desktop and mobile views keep operators in the loop; the built-in MCP lets agents move this task forward.',
-    },
-    mcp: {
-      title: 'Agent stage controls',
-      slug: 'agent-stage-controls',
-      agent: 'Claude',
-      agentCommand: 'claude',
-      followUp: 'Document agent MCP output',
-      diff: 'tools/kd changed',
-      files: 'agent control registry open',
-      worktree: 'task-agent-stage-controls keeps daemon tooling changes isolated.',
-      access: 'The built-in MCP lets agents advance, revise, or spawn related work.',
-    },
-    mobile: {
-      title: 'Mobile handoff',
-      slug: 'mobile-handoff',
-      agent: 'Copilot',
-      agentCommand: 'copilot',
-      followUp: 'Verify paired device flow',
-      diff: 'mobile routes changed',
-      files: 'paired device view',
-      worktree: 'task-mobile-handoff keeps remote handoff changes isolated.',
-      access: 'Mobile and desktop clients can inspect progress and send input.',
-    },
-    pipeline: {
-      title: 'Pipeline docs',
-      slug: 'pipeline-docs',
-      agent: 'Codex',
-      agentCommand: 'codex',
-      followUp: 'Add merge queue agent',
-      diff: '.kanna/pipelines changed',
-      files: 'pipeline JSON open',
-      worktree: 'task-pipeline-docs keeps workflow definitions isolated.',
-      access: 'Pipeline JSON defines the route; the built-in MCP lets merge queue and shipping agents act inside it.',
-    },
-  };
-
-  const stageOrder = ['in-progress', 'commit-post-action', 'review', 'pr'];
-  const stageCopy = {
-    'in-progress': (task) => ({
-      primary: `kanna task start --agent ${task.agentCommand} "${task.title}"`,
-      secondary: `kanna mcp stage-complete --task ${task.slug} --stage "in progress"`,
-      status: 'in progress selected - worktree and terminal context are attached',
-      pipeline: 'In progress stage: the agent works in the task branch, worktree, and terminal session.',
-    }),
-    'commit-post-action': (task) => ({
-      primary: `kanna mcp stage-complete --task ${task.slug} --stage "in progress"`,
-      secondary: `post-action commit runs in the existing ${task.agent} workspace`,
-      status: 'commit post-action selected - task stays in progress until commit succeeds',
-      pipeline: 'Commit post-action: Kanna commits without creating a separate commit stage or worktree.',
-    }),
-    review: (task) => ({
-      primary: `kanna-cli stage-complete --task ${task.slug} --status success`,
-      secondary: `kanna mcp create-task "${task.followUp}"`,
-      status: 'review checkpoint selected - approve, revise, or knock back before PR',
-      pipeline: 'Review stage: put human-in-the-loop before the PR agent when the pipeline calls for it.',
-    }),
-    pr: (task) => ({
-      primary: `kanna-cli advance-stage --task ${task.slug} --stage pr`,
-      secondary: `kanna-cli run-agent pr --task ${task.slug}`,
-      status: 'PR stage selected - PR agent prepares the GitHub pull request',
-      pipeline: 'PR stage: the PR agent packages the completed work while definable agents can handle merge queues or shipping.',
-    }),
-  };
-
-  let selectedTask = 'website';
-  let selectedStage = 'review';
-
-  function setText(selector, value) {
-    const element = document.querySelector(selector);
-    if (element) element.textContent = value;
-  }
-
-  function renderPreview() {
-    const task = previewTasks[selectedTask];
-    const stage = stageCopy[selectedStage](task);
-    const selectedIndex = stageOrder.indexOf(selectedStage);
-
-    setText('[data-preview-title]', task.title);
-    setText('[data-agent-pill]', task.agent);
-    setText('[data-terminal-line="primary"]', stage.primary);
-    setText('[data-terminal-line="secondary"]', stage.secondary);
-    setText('[data-terminal-status]', stage.status);
-    setText('[data-activity-diff]', task.diff);
-    setText('[data-activity-files]', task.files);
-    setText('[data-inspector-pipeline]', stage.pipeline);
-    setText('[data-inspector-worktree]', task.worktree);
-    setText('[data-inspector-access]', task.access);
-
-    document.querySelectorAll('[data-task-control]').forEach((control) => {
-      const active = control.dataset.taskControl === selectedTask;
-      control.classList.toggle('active', active);
-      control.setAttribute('aria-pressed', String(active));
-    });
-
-    document.querySelectorAll('[data-stage-control]').forEach((control) => {
-      const stageName = control.dataset.stageControl;
-      const stageIndex = stageOrder.indexOf(stageName);
-      const active = stageName === selectedStage;
-
-      control.classList.toggle('active', control.classList.contains('stage') && active);
-      control.classList.toggle('done', control.classList.contains('stage') && stageIndex < selectedIndex);
-      control.classList.toggle('current', control.classList.contains('workflow-card') && stageIndex <= selectedIndex);
-      control.setAttribute('aria-pressed', String(active));
-
-      if (active) {
-        control.setAttribute('aria-current', 'step');
-      } else {
-        control.removeAttribute('aria-current');
-      }
-    });
-  }
-
-  document.querySelectorAll('[data-task-control]').forEach((control) => {
-    control.addEventListener('click', () => {
-      selectedTask = control.dataset.taskControl;
-      renderPreview();
-    });
-  });
-
-  document.querySelectorAll('[data-stage-control]').forEach((control) => {
-    control.addEventListener('click', () => {
-      selectedStage = control.dataset.stageControl;
-      renderPreview();
-    });
-  });
-
-  renderPreview();
-
   const REPO = 'jemdiggity/kanna';
 
   fetch(`https://api.github.com/repos/${REPO}/releases/latest`)
-    .then(r => r.json())
+    .then(response => response.json())
     .then(release => {
       const assets = release.assets || [];
-
-      const arm = assets.find(a =>
-        a.name.match(/arm64|apple.?silicon/i) && a.name.endsWith('.dmg')
+      const arm = assets.find(asset =>
+        /arm64|apple.?silicon/i.test(asset.name) && asset.name.endsWith('.dmg')
       );
-      const intel = assets.find(a =>
-        a.name.match(/x86|intel/i) && a.name.endsWith('.dmg')
+      const intel = assets.find(asset =>
+        /x86|intel/i.test(asset.name) && asset.name.endsWith('.dmg')
       );
 
-      if (arm) document.getElementById('btn-arm').href = arm.browser_download_url;
-      if (intel) document.getElementById('btn-intel').href = intel.browser_download_url;
-
+      if (arm) {
+        document.getElementById('btn-arm').href = arm.browser_download_url;
+        document.getElementById('btn-arm-footer').href = arm.browser_download_url;
+      }
+      if (intel) {
+        document.getElementById('btn-intel').href = intel.browser_download_url;
+        document.getElementById('btn-intel-footer').href = intel.browser_download_url;
+      }
       if (release.tag_name) {
-        document.getElementById('version-label').textContent =
-          `${release.tag_name} · macOS 14+`;
+        document.getElementById('version-label').textContent = `${release.tag_name} · macOS 14+`;
       }
     })
     .catch(() => {
-      // Keep default links if the release API is unavailable.
+      // Keep the page usable when the GitHub Releases API is unavailable.
     });
 </script>
 
