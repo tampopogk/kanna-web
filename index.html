@@ -205,8 +205,12 @@
   .download-btn:focus-visible {
     border-color: rgba(25, 25, 35, 0.32);
     box-shadow: 0 13px 30px rgba(25, 25, 35, 0.11);
-    outline: none;
     transform: translateY(-2px);
+  }
+
+  .download-btn:focus-visible {
+    outline: 2px solid var(--ink);
+    outline-offset: 3px;
   }
 
   .download-btn.primary:hover,
@@ -933,7 +937,7 @@
     <div class="mobile-grid">
       <figure class="mobile-story">
         <div class="phone-frame">
-          <img src="assets/kanna-ios-notifications.png" width="1179" height="2556" alt="iPhone lock screen showing Kanna notifications for merge-ready pull requests and a task needing attention" loading="lazy" decoding="async">
+          <img src="assets/kanna-ios-notifications.avif" width="1179" height="2556" alt="iPhone lock screen showing Kanna notifications for merge-ready pull requests and a task needing attention" loading="lazy" decoding="async">
         </div>
         <figcaption><strong>Know when you’re needed.</strong> Get iOS notifications for completed work and genuine decision points. Notifications remain free, whether you are on your LAN or away from it.</figcaption>
       </figure>
