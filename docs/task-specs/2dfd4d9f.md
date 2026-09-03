@@ -16,6 +16,10 @@ Replace fabricated screenshot-like UI on the Kanna homepage with repository-owne
 
 Round 1 reviewer feedback (2026-09-03) requires a visible `:focus-visible` indicator on every download button and re-encoding the unchanged notification capture as AVIF or WebP. The reviewer explicitly left the other phone-image encodings, hero `srcset`/margin, font import, layout offset, mobile navigation, and feature-index contrast out of this revision.
 
+## Revision round 2 directive
+
+Round 2 reviewer feedback (2026-09-03) requires replacing the Chrome-incompatible tile-grid notification AVIF with a single-item encoding and verifying non-transparent painted pixels in Chromium. The unchanged 1179×2556 capture is padded by one edge-replicated column on the right to meet the even-dimension requirement for 4:2:0 AVIF; the added column does not alter product UI content.
+
 ## Done when
 
 All four genuine captures are stored as optimized local assets and used with useful alt text/captions; the page is polished without horizontal overflow at representative desktop and mobile widths; terminology, claims, HTML, and links are validated; browser visual verification is complete; and all task work is committed. No capture needs cropping or redaction for this implementation.
