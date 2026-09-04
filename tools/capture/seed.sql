@@ -9,7 +9,7 @@
 --   * plausible project and task names, of the shape real engineering work has
 --   * nothing that names or implies a real company, customer, or third party
 --   * no private repository names and no real in-flight work
---   * paths under ~/code, not /Users/test
+--   * repository paths point at throwaway fixtures, never a real checkout
 --
 -- INSERT-only on purpose: run it against a database the app has already
 -- created, so the schema always matches the shipped app rather than a copy
@@ -17,21 +17,22 @@
 
 PRAGMA foreign_keys = ON;
 
+DELETE FROM worktree;
 DELETE FROM pipeline_item;
 DELETE FROM repo;
 
 -- ── Repositories ────────────────────────────────────────────────────────────
 
 INSERT INTO repo (id, path, name, default_branch, hidden, sort_order, created_at, last_opened_at)
-VALUES ('cap-orchard-web', '/Users/you/code/orchard-web', 'orchard-web', 'main', 0, 0,
+VALUES ('cap-orchard-web', '__FIXTURE_ROOT__/orchard-web', 'orchard-web', 'main', 0, 0,
         datetime('now', '-42 days'), datetime('now', '-12 minutes'));
 
 INSERT INTO repo (id, path, name, default_branch, hidden, sort_order, created_at, last_opened_at)
-VALUES ('cap-orchard-api', '/Users/you/code/orchard-api', 'orchard-api', 'main', 0, 1,
+VALUES ('cap-orchard-api', '__FIXTURE_ROOT__/orchard-api', 'orchard-api', 'main', 0, 1,
         datetime('now', '-71 days'), datetime('now', '-2 hours'));
 
 INSERT INTO repo (id, path, name, default_branch, hidden, sort_order, created_at, last_opened_at)
-VALUES ('cap-fieldnotes', '/Users/you/code/fieldnotes', 'fieldnotes', 'main', 0, 2,
+VALUES ('cap-fieldnotes', '__FIXTURE_ROOT__/fieldnotes', 'fieldnotes', 'main', 0, 2,
         datetime('now', '-15 days'), datetime('now', '-1 days'));
 
 -- ── orchard-web ─────────────────────────────────────────────────────────────
@@ -142,3 +143,38 @@ VALUES
    'done', '["done"]', 'task-changelog',
    'opencode', 'idle', 'origin/main',
    datetime('now', '-14 days'), datetime('now', '-12 days'));
+
+-- ── Worktrees ───────────────────────────────────────────────────────────────
+--
+-- Kanna closes a task whose worktree is missing, so every task needs a real
+-- branch and worktree on disk. fixtures.sh creates them.
+
+INSERT INTO worktree (id, pipeline_item_id, path, branch)
+VALUES ('wt-cap-auth-middleware', 'cap-auth-middleware', '__FIXTURE_ROOT__/orchard-web/.kanna-worktrees/task-auth-middleware', 'task-auth-middleware');
+
+INSERT INTO worktree (id, pipeline_item_id, path, branch)
+VALUES ('wt-cap-empty-states', 'cap-empty-states', '__FIXTURE_ROOT__/orchard-web/.kanna-worktrees/task-empty-states', 'task-empty-states');
+
+INSERT INTO worktree (id, pipeline_item_id, path, branch)
+VALUES ('wt-cap-keyboard-nav', 'cap-keyboard-nav', '__FIXTURE_ROOT__/orchard-web/.kanna-worktrees/task-keyboard-nav', 'task-keyboard-nav');
+
+INSERT INTO worktree (id, pipeline_item_id, path, branch)
+VALUES ('wt-cap-image-pipeline', 'cap-image-pipeline', '__FIXTURE_ROOT__/orchard-web/.kanna-worktrees/task-image-pipeline', 'task-image-pipeline');
+
+INSERT INTO worktree (id, pipeline_item_id, path, branch)
+VALUES ('wt-cap-rate-limiting', 'cap-rate-limiting', '__FIXTURE_ROOT__/orchard-api/.kanna-worktrees/task-rate-limiting', 'task-rate-limiting');
+
+INSERT INTO worktree (id, pipeline_item_id, path, branch)
+VALUES ('wt-cap-webhook-retries', 'cap-webhook-retries', '__FIXTURE_ROOT__/orchard-api/.kanna-worktrees/task-webhook-retries', 'task-webhook-retries');
+
+INSERT INTO worktree (id, pipeline_item_id, path, branch)
+VALUES ('wt-cap-schema-migration', 'cap-schema-migration', '__FIXTURE_ROOT__/orchard-api/.kanna-worktrees/task-schema-migration', 'task-schema-migration');
+
+INSERT INTO worktree (id, pipeline_item_id, path, branch)
+VALUES ('wt-cap-flaky-upload', 'cap-flaky-upload', '__FIXTURE_ROOT__/orchard-api/.kanna-worktrees/task-flaky-upload', 'task-flaky-upload');
+
+INSERT INTO worktree (id, pipeline_item_id, path, branch)
+VALUES ('wt-cap-getting-started', 'cap-getting-started', '__FIXTURE_ROOT__/fieldnotes/.kanna-worktrees/task-getting-started', 'task-getting-started');
+
+INSERT INTO worktree (id, pipeline_item_id, path, branch)
+VALUES ('wt-cap-changelog', 'cap-changelog', '__FIXTURE_ROOT__/fieldnotes/.kanna-worktrees/task-changelog', 'task-changelog');

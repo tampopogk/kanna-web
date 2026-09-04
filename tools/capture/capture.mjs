@@ -47,6 +47,18 @@ async function wd(method, path, body) {
  * Each shot names the file it produces and the UI state to reach first.
  * `setup` runs in the page; keep it to things a user can actually do.
  */
+/**
+ * The app opens a keyboard-shortcuts overlay on a fresh profile. Dismiss it
+ * before capturing, the same way a person would.
+ */
+const DISMISS_OVERLAYS = `
+  for (let i = 0; i < 3; i += 1) {
+    document.dispatchEvent(new KeyboardEvent('keydown', {
+      key: 'Escape', code: 'Escape', bubbles: true, cancelable: true
+    }));
+  }
+`;
+
 const SHOTS = [
   {
     name: "tasks",
@@ -90,6 +102,8 @@ async function main() {
   if (!sid) throw new Error("no sessionId in /session response");
 
   try {
+    await wd("POST", `/session/${sid}/execute/sync`, { script: DISMISS_OVERLAYS, args: [] });
+    await sleep(600);
     for (const shot of SHOTS) {
       if (shot.setup) {
         await wd("POST", `/session/${sid}/execute/sync`, { script: shot.setup, args: [] });

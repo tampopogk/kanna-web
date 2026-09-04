@@ -571,8 +571,8 @@
         <p>Name the stages your work actually goes through, give each stage an agent, and decide where Kanna advances on its own and where it stops for you. The workflow is a file in the repository, so it is reviewed and versioned like the rest of the code.</p>
       </li>
       <li>
-        <span class="feature-key">Isolated worktrees</span>
-        <p>Every task runs on its own branch in its own git worktree, so several agents can work at once without standing on each other.</p>
+        <span class="feature-key">Isolated workspaces</span>
+        <p>Each task gets its own git worktree and its own ports. Kanna puts the port values in the environment and runs your startup and teardown scripts, so several workspaces can each run a web app, a mobile app, a Firebase emulator and whatever else the stack needs, side by side.</p>
       </li>
       <li>
         <span class="feature-key">Coordinators</span>
