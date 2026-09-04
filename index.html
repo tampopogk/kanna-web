@@ -3,29 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Kanna gives coding-agent CLIs composed workflows, isolated worktrees, coordinator agents, mobile control, and cross-machine task transfer.">
-<meta name="theme-color" content="#fbfaf8">
-<title>Kanna — Structured autonomy for coding agents</title>
+<meta name="description" content="Kanna is a macOS and iOS app that gives agent CLIs structured workflows. Build with one agent, review with another, and let a coordinator manage it and notify your phone when it needs you.">
+<meta name="theme-color" content="#0d0010">
+<title>Kanna — structured workflows for agent CLIs</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap');
 
   :root {
-    --bg: #fbfaf8;
-    --surface: #ffffff;
-    --surface-soft: #f3f4f7;
-    --ink: #191923;
-    --muted: #656777;
-    --line: #dedfe5;
-    --hot-pink: #f72b89;
-    --orange: #ff8a12;
-    --magenta: #df1fb7;
-    --violet: #9630dc;
-    --blue: #1957c3;
-    --green: #17b947;
-    --night: #07111f;
-    --shadow: 0 26px 80px rgba(25, 25, 35, 0.13);
-    --radius: 18px;
-    --page: min(1200px, calc(100% - 48px));
+    --bg: #0d0010;
+    --deep: #1a0533;
+    --pink: #ff2d78;
+    --orange: #ff8c00;
+    --green: #00ff41;
+    --text: #e8e0f0;
+    --muted: #8a7a9a;
+    --line: rgba(255, 255, 255, 0.08);
+    --page: min(1000px, calc(100% - 48px));
   }
 
   * {
@@ -41,14 +34,28 @@
 
   body {
     min-width: 320px;
-    color: var(--ink);
-    background:
-      radial-gradient(circle at 82% 8%, rgba(25, 87, 195, 0.08), transparent 24rem),
-      radial-gradient(circle at 4% 27%, rgba(247, 43, 137, 0.06), transparent 22rem),
-      var(--bg);
+    color: var(--text);
+    background: var(--bg);
     font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-weight: 300;
     line-height: 1.5;
     overflow-x: hidden;
+  }
+
+  /* Scanline overlay, lifted from the original site. */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(0, 0, 0, 0.08) 3px,
+      rgba(0, 0, 0, 0.08) 4px
+    );
   }
 
   img,
@@ -64,519 +71,509 @@
   .mono,
   .eyebrow,
   .section-label,
-  .capture-label,
   .version,
-  .diagram-kicker,
-  .feature-index {
+  .feature-key,
+  footer {
     font-family: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
   }
 
-  .site-header {
-    width: var(--page);
-    margin: 0 auto;
-    padding: 24px 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-  }
-
-  .wordmark {
-    display: inline-flex;
-    align-items: center;
-    gap: 11px;
-    font-size: 18px;
-    font-weight: 700;
-    text-decoration: none;
-  }
-
-  .brand-icon {
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
-    box-shadow: 0 7px 18px rgba(25, 25, 35, 0.14);
-  }
-
-  .site-nav {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-  }
-
-  .site-nav a {
-    color: var(--muted);
-    font-size: 14px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: color 160ms ease;
-  }
-
-  .site-nav a:hover,
-  .site-nav a:focus-visible {
-    color: var(--ink);
-  }
-
-  .hero {
-    width: var(--page);
-    margin: 0 auto;
-    padding: 72px 0 104px;
+  /* ---- GitHub mark, top right ---- */
+  .gh {
+    position: absolute;
+    z-index: 3;
+    top: 22px;
+    right: max(20px, calc((100% - 1000px) / 2));
+    width: 40px;
+    height: 40px;
     display: grid;
-    grid-template-columns: minmax(360px, 0.78fr) minmax(0, 1.22fr);
-    gap: clamp(44px, 6vw, 86px);
-    align-items: center;
+    place-items: center;
+    border-radius: 8px;
+    color: var(--text);
+    opacity: 0.62;
+    transition: opacity 160ms ease;
   }
 
-  .hero-copy,
-  .hero-visual {
-    min-width: 0;
+  .gh:hover,
+  .gh:focus-visible {
+    opacity: 1;
+  }
+
+  .gh:focus-visible {
+    outline: 2px solid var(--pink);
+    outline-offset: 2px;
+  }
+
+  .gh svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  /* ---- HERO ---- */
+  .hero {
+    position: relative;
+    overflow: hidden;
+    min-height: 86vh;
+    padding: 96px 24px 88px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    opacity: 0.25;
+    background: linear-gradient(180deg,
+      #1a0533 0%,
+      #3d0e62 35%,
+      #e8357a 70%,
+      #ff8c00 100%
+    );
+  }
+
+  /* Perspective grid rising from the bottom edge. */
+  .hero-grid {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 45%;
+    background-image:
+      linear-gradient(rgba(232, 53, 122, 0.35) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(232, 53, 122, 0.15) 1px, transparent 1px);
+    background-size: 60px 30px;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 40%);
+    mask-image: linear-gradient(180deg, transparent 0%, #000 40%);
+    transform: perspective(400px) rotateX(40deg);
+    transform-origin: bottom center;
+  }
+
+  .hero-inner {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 620px;
+    text-align: center;
+  }
+
+  .app-icon {
+    width: 132px;
+    height: 132px;
+    margin: 0 auto 32px;
   }
 
   .eyebrow {
     margin-bottom: 18px;
-    color: var(--violet);
-    font-size: 12px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
+    color: var(--green);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
+    opacity: 0.78;
   }
 
   h1 {
-    max-width: 650px;
-    font-size: clamp(54px, 6.4vw, 92px);
-    font-weight: 700;
-    letter-spacing: -0.055em;
-    line-height: 0.96;
-  }
-
-  .slogan {
-    max-width: 560px;
-    margin-top: 24px;
-    font-size: clamp(24px, 3vw, 34px);
-    font-weight: 600;
-    letter-spacing: -0.025em;
-    line-height: 1.15;
-    background: linear-gradient(92deg, var(--hot-pink), var(--orange) 48%, var(--blue));
+    font-family: 'DM Mono', ui-monospace, monospace;
+    font-size: clamp(46px, 10vw, 88px);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: clamp(7px, 1.7vw, 16px);
+    /* Trailing letter-space would push the wordmark off-centre. */
+    text-indent: clamp(7px, 1.7vw, 16px);
+    background: linear-gradient(135deg, var(--pink) 0%, var(--orange) 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 
-  .hero-description {
-    max-width: 610px;
-    margin-top: 22px;
-    color: var(--muted);
-    font-size: 18px;
-    line-height: 1.7;
+  .pitch {
+    max-width: 40ch;
+    margin: 26px auto 0;
+    color: #b9aac6;
+    font-size: 17px;
+    line-height: 1.6;
   }
 
   .download-row {
-    margin-top: 30px;
+    width: 100%;
+    margin-top: 38px;
     display: flex;
-    align-items: center;
+    justify-content: center;
     flex-wrap: wrap;
-    gap: 11px;
+    gap: 12px;
   }
 
   .download-btn {
-    min-height: 48px;
-    padding: 0 18px;
+    min-height: 50px;
+    padding: 0 32px;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 9px;
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.82);
+    gap: 11px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    color: var(--text);
+    background: transparent;
     font-family: 'DM Mono', ui-monospace, monospace;
     font-size: 13px;
     font-weight: 500;
+    letter-spacing: 0.15em;
     text-decoration: none;
-    transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+    text-transform: uppercase;
+    transition: opacity 200ms ease, transform 200ms ease, border-color 200ms ease;
   }
 
   .download-btn.primary {
     border-color: transparent;
-    color: #fff;
-    background: linear-gradient(135deg, var(--hot-pink), var(--orange));
-    box-shadow: 0 13px 28px rgba(247, 43, 137, 0.24);
+    color: #0d0010;
+    background: linear-gradient(135deg, var(--pink), var(--orange));
   }
 
-  .download-btn:hover,
-  .download-btn:focus-visible {
-    border-color: rgba(25, 25, 35, 0.32);
-    box-shadow: 0 13px 30px rgba(25, 25, 35, 0.11);
+  .download-btn:hover {
     transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.4);
+  }
+
+  .download-btn.primary:hover {
+    border-color: transparent;
+    opacity: 0.85;
   }
 
   .download-btn:focus-visible {
-    outline: 2px solid var(--ink);
+    outline: 2px solid var(--text);
     outline-offset: 3px;
   }
 
-  .download-btn.primary:hover,
-  .download-btn.primary:focus-visible {
-    border-color: transparent;
-    box-shadow: 0 17px 34px rgba(247, 43, 137, 0.3);
-  }
-
   .download-btn svg {
-    width: 17px;
-    height: 17px;
+    width: 16px;
+    height: 16px;
     flex: none;
   }
 
   .version {
-    margin-top: 14px;
+    margin-top: 18px;
     color: var(--muted);
-    font-size: 11px;
+    font-size: 10px;
+    letter-spacing: 0.2em;
   }
 
-  .capture {
-    position: relative;
-    margin: 0;
-  }
-
-  .capture-label {
-    position: absolute;
-    z-index: 1;
-    top: 14px;
-    left: 14px;
-    padding: 7px 10px;
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    border-radius: 999px;
-    color: rgba(255, 255, 255, 0.92);
-    background: rgba(7, 17, 31, 0.72);
-    backdrop-filter: blur(10px);
-    font-size: 9px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .desktop-capture {
-    border: 1px solid rgba(25, 25, 35, 0.16);
-    border-radius: var(--radius);
-    overflow: hidden;
-    background: #000;
-    box-shadow: var(--shadow);
-    transform: perspective(1100px) rotateY(-2.5deg) rotateX(1deg);
-    transform-origin: left center;
-  }
-
-  .desktop-capture img {
-    width: 100%;
-    height: auto;
-  }
-
-  .capture figcaption {
-    margin-top: 13px;
-    color: var(--muted);
-    font-size: 12px;
-    line-height: 1.5;
-  }
-
-  .capture figcaption strong {
-    color: var(--ink);
-    font-weight: 600;
-  }
-
-  .trust-strip {
-    border-block: 1px solid var(--line);
-    background: rgba(255, 255, 255, 0.66);
-  }
-
-  .trust-strip-inner {
-    width: var(--page);
-    margin: 0 auto;
-    padding: 20px 0;
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 18px;
-  }
-
-  .trust-item {
-    min-width: 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #4f5260;
-    font-size: 13px;
-    font-weight: 600;
-  }
-
-  .trust-dot {
-    width: 8px;
-    height: 8px;
-    flex: none;
-    border-radius: 50%;
-    background: var(--hot-pink);
-    box-shadow: 0 0 0 5px rgba(247, 43, 137, 0.09);
-  }
-
-  .trust-item:nth-child(2) .trust-dot { background: var(--orange); box-shadow: 0 0 0 5px rgba(255, 138, 18, 0.1); }
-  .trust-item:nth-child(3) .trust-dot { background: var(--violet); box-shadow: 0 0 0 5px rgba(150, 48, 220, 0.1); }
-  .trust-item:nth-child(4) .trust-dot { background: var(--blue); box-shadow: 0 0 0 5px rgba(25, 87, 195, 0.1); }
-
+  /* ---- SECTIONS ---- */
   .section {
     width: var(--page);
     margin: 0 auto;
-    padding: 112px 0;
-  }
-
-  .section-heading {
-    max-width: 790px;
-    margin-bottom: 48px;
+    padding: 104px 0;
   }
 
   .section-label {
-    margin-bottom: 13px;
-    color: var(--violet);
-    font-size: 11px;
-    font-weight: 500;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
+    margin-bottom: 44px;
+    color: var(--green);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.4em;
+    opacity: 0.7;
   }
 
-  h2 {
-    font-size: clamp(36px, 5vw, 58px);
-    font-weight: 700;
-    letter-spacing: -0.045em;
-    line-height: 1.04;
+  /* ---- SCREENSHOT CAROUSEL ---- */
+  .carousel {
+    padding-bottom: 0;
   }
 
-  .section-intro {
-    max-width: 690px;
-    margin-top: 20px;
+  /* Native scroll-snap: this works, and can be swiped, with no JavaScript. */
+  .track {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+  }
+
+  .track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .track:focus-visible {
+    outline: 2px solid var(--pink);
+    outline-offset: 6px;
+  }
+
+  .slide {
+    flex: 0 0 100%;
+    min-width: 0;
+    scroll-snap-align: center;
+  }
+
+  .slide img {
+    width: 100%;
+    height: auto;
+    /* Slides come from two capture sizes. A fixed box with `contain` keeps the
+       carousel from changing height between them, and shows every image whole
+       rather than cropping one set to match the other. */
+    aspect-ratio: 16 / 10;
+    object-fit: contain;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    background: var(--bg);
+  }
+
+  .slide figcaption {
+    margin-top: 14px;
     color: var(--muted);
-    font-size: 18px;
-    line-height: 1.65;
+    font-family: 'DM Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
   }
 
-  .feature-grid {
+  .zoom {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+  }
+
+  .zoom:focus-visible {
+    outline: 2px solid var(--pink);
+    outline-offset: 4px;
+  }
+
+  /* An author rule beats the UA [hidden] rule at equal specificity, so
+     .lightbox{display:grid} alone leaves the overlay covering the page. */
+  .lightbox[hidden] {
+    display: none;
+  }
+
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    place-items: center;
+    padding: clamp(12px, 4vw, 48px);
+    background: rgba(6, 0, 8, 0.94);
+    cursor: zoom-out;
+  }
+
+  .lightbox img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 8px;
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: var(--text);
+    background: rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+  }
+
+  .lightbox-close:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 3px;
+  }
+
+  .lightbox-close svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .carousel-nav {
+    margin-top: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+  }
+
+  .cbtn {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 50%;
+    color: var(--text);
+    background: transparent;
+    cursor: pointer;
+    transition: border-color 160ms ease, opacity 160ms ease;
+  }
+
+  .cbtn:hover {
+    border-color: rgba(255, 255, 255, 0.45);
+  }
+
+  .cbtn:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 3px;
+  }
+
+  .cbtn[disabled] {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  .cbtn svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .dots {
+    display: flex;
+    gap: 9px;
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.24);
+    cursor: pointer;
+    transition: background 160ms ease, transform 160ms ease;
+  }
+
+  .dot[aria-current="true"] {
+    background: linear-gradient(135deg, var(--pink), var(--orange));
+    transform: scale(1.3);
+  }
+
+  .dot:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 3px;
+  }
+
+  /* ---- FEATURE LIST ---- */
+  .features {
+    list-style: none;
     border-top: 1px solid var(--line);
   }
 
-  .feature {
-    min-width: 0;
-    padding: 34px 38px 38px 0;
+  .features li {
+    padding: 26px 0;
     display: grid;
-    grid-template-columns: 42px minmax(0, 1fr);
-    gap: 18px;
+    grid-template-columns: 190px minmax(0, 1fr);
+    gap: 24px;
     border-bottom: 1px solid var(--line);
   }
 
-  .feature:nth-child(odd) {
-    padding-right: 46px;
-    border-right: 1px solid var(--line);
-  }
-
-  .feature:nth-child(even) {
-    padding-left: 46px;
-  }
-
-  .feature-index {
-    color: var(--hot-pink);
+  .feature-key {
+    color: var(--text);
     font-size: 12px;
-  }
-
-  .feature:nth-child(2) .feature-index { color: var(--orange); }
-  .feature:nth-child(3) .feature-index { color: var(--violet); }
-  .feature:nth-child(4) .feature-index { color: var(--blue); }
-
-  .feature h3 {
-    margin-bottom: 10px;
-    font-size: 20px;
-    font-weight: 650;
-    letter-spacing: -0.015em;
-  }
-
-  .feature p {
-    color: var(--muted);
-    font-size: 15px;
-    line-height: 1.65;
-  }
-
-  .workflow-wrap {
-    padding-block: 0 112px;
-  }
-
-  .workflow-illustration {
-    position: relative;
-    overflow: hidden;
-    padding: clamp(30px, 5vw, 58px);
-    border: 1px solid #263549;
-    border-radius: 24px;
-    color: #fff;
-    background:
-      radial-gradient(circle at 10% 0%, rgba(247, 43, 137, 0.19), transparent 19rem),
-      radial-gradient(circle at 100% 100%, rgba(25, 87, 195, 0.22), transparent 24rem),
-      var(--night);
-    box-shadow: 0 30px 80px rgba(7, 17, 31, 0.2);
-  }
-
-  .diagram-kicker {
-    margin-bottom: 36px;
-    color: #aebbd0;
-    font-size: 10px;
-    letter-spacing: 0.1em;
+    font-weight: 400;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
   }
 
-  .diagram-track {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 38px;
+  .features p {
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.7;
   }
 
-  .diagram-node {
-    position: relative;
-    min-width: 0;
+  .features code {
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: #d8cbe4;
+    background: rgba(255, 255, 255, 0.07);
+    font-family: 'DM Mono', ui-monospace, monospace;
+    font-size: 13px;
   }
 
-  .diagram-node:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    top: 17px;
-    left: calc(100% + 9px);
-    width: 20px;
-    border-top: 1px dashed #6f8099;
-  }
-
-  .node-number {
-    width: 34px;
-    height: 34px;
-    margin-bottom: 26px;
-    display: grid;
-    place-items: center;
-    border: 1px solid rgba(255, 255, 255, 0.34);
-    border-radius: 50%;
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-  }
-
-  .diagram-node:nth-child(1) .node-number { color: #ff77b4; border-color: rgba(247, 43, 137, 0.55); }
-  .diagram-node:nth-child(2) .node-number { color: #ffbb6d; border-color: rgba(255, 138, 18, 0.55); }
-  .diagram-node:nth-child(3) .node-number { color: #c485ee; border-color: rgba(150, 48, 220, 0.58); }
-  .diagram-node:nth-child(4) .node-number { color: #76a9ff; border-color: rgba(25, 87, 195, 0.75); }
-
-  .diagram-node h3 {
-    margin-bottom: 10px;
-    font-size: 18px;
-    font-weight: 600;
-  }
-
-  .diagram-node p {
-    color: #aeb8c8;
-    font-size: 14px;
-    line-height: 1.6;
-  }
-
-  .mobile-section {
-    width: auto;
-    padding-inline: max(24px, calc((100vw - 1200px) / 2));
-    background: #eef1f6;
-    border-block: 1px solid var(--line);
-  }
-
-  .mobile-grid {
+  /* ---- MOBILE ---- */
+  .phones {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 22px;
+    gap: 28px;
     align-items: start;
   }
 
-  .mobile-story {
+  .phone {
     min-width: 0;
   }
 
   .phone-frame {
-    position: relative;
     overflow: hidden;
-    max-width: 374px;
+    max-width: 320px;
     margin: 0 auto;
-    border: 7px solid var(--night);
-    border-radius: 42px;
-    background: var(--night);
-    box-shadow: 0 24px 64px rgba(7, 17, 31, 0.2);
-  }
-
-  .phone-frame::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: 34px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 26px;
+    background: var(--deep);
   }
 
   .phone-frame img {
     width: 100%;
     height: auto;
-    border-radius: 34px;
   }
 
-  .mobile-story figcaption {
-    max-width: 374px;
-    margin: 22px auto 0;
+  .phone figcaption {
+    max-width: 320px;
+    margin: 16px auto 0;
     color: var(--muted);
     font-size: 14px;
     line-height: 1.6;
   }
 
-  .mobile-story figcaption strong {
-    display: block;
-    margin-bottom: 6px;
-    color: var(--ink);
-    font-size: 18px;
-    font-weight: 650;
+  .store {
+    margin-top: 64px;
+    padding-top: 40px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 28px;
+    border-top: 1px solid var(--line);
   }
 
-  .pricing-note {
-    margin-top: 46px;
-    padding: 24px 26px;
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: 15px;
-    align-items: start;
-    border: 1px solid #d3d7e0;
-    border-radius: 14px;
-    background: rgba(255, 255, 255, 0.66);
+  .store-qr {
+    flex: none;
+    padding: 12px;
+    border-radius: 10px;
+    background: #fff;
+  }
+
+  .store-qr img {
+    width: 132px;
+    height: 132px;
+  }
+
+  .store-text {
+    min-width: 0;
+  }
+
+  .store-link {
+    font-family: 'DM Mono', ui-monospace, monospace;
+    font-size: 14px;
+    letter-spacing: 0.1em;
+    text-decoration-color: rgba(255, 45, 120, 0.6);
+    text-underline-offset: 5px;
+  }
+
+  .store-link:hover,
+  .store-link:focus-visible {
+    color: var(--pink);
+  }
+
+  .store-note {
+    margin-top: 12px;
+    max-width: 46ch;
     color: var(--muted);
     font-size: 14px;
     line-height: 1.65;
   }
 
-  .pricing-note strong {
-    color: var(--ink);
-  }
-
-  .price-icon {
-    width: 28px;
-    height: 28px;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    color: #fff;
-    background: linear-gradient(135deg, var(--hot-pink), var(--orange));
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-  }
-
-  .final-cta {
-    text-align: center;
-  }
-
-  .final-cta h2,
-  .final-cta .section-intro {
-    margin-inline: auto;
-  }
-
-  .final-cta .download-row {
-    justify-content: center;
-  }
-
+  /* ---- FOOTER ---- */
   footer {
     border-top: 1px solid var(--line);
   }
@@ -584,241 +581,175 @@
   .footer-inner {
     width: var(--page);
     margin: 0 auto;
-    padding: 32px 0 44px;
+    padding: 32px 0 40px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 24px;
+    gap: 20px;
     color: var(--muted);
-    font-size: 12px;
+    font-size: 10px;
+    letter-spacing: 0.2em;
   }
 
   .footer-links {
     display: flex;
-    gap: 20px;
+    gap: 22px;
   }
 
   .footer-links a {
     text-underline-offset: 3px;
   }
 
-  @media (max-width: 1020px) {
-    .hero {
+  @media (max-width: 820px) {
+    .features li {
       grid-template-columns: 1fr;
-      padding-top: 48px;
+      gap: 8px;
     }
 
-    .hero-copy {
-      max-width: 760px;
+    /* Stacked vertically these ran to three full screens. A snap strip with a
+       peek of the next phone shows there is more without the scroll. */
+    .phones {
+      display: flex;
+      grid-template-columns: none;
+      gap: 16px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      margin-inline: calc(var(--gutter, 0px) * -1);
     }
 
-    .desktop-capture {
-      transform: none;
-    }
-
-    .mobile-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      row-gap: 58px;
-    }
-
-    .mobile-story:last-child {
-      grid-column: 1 / -1;
-      width: min(100%, 480px);
-      justify-self: center;
-    }
-  }
-
-  @media (max-width: 760px) {
-    :root {
-      --page: min(100% - 34px, 1200px);
-    }
-
-    .site-header {
-      padding-block: 17px;
-    }
-
-    .site-nav a:not(.source-link) {
+    .phones::-webkit-scrollbar {
       display: none;
     }
 
-    .hero {
-      padding: 44px 0 78px;
-      grid-template-columns: minmax(0, 1fr);
-      gap: 44px;
-    }
-
-    .hero-description,
-    .section-intro {
-      font-size: 16px;
-    }
-
-    .download-row {
-      align-items: stretch;
-    }
-
-    .download-btn {
-      flex: 1 1 150px;
-    }
-
-    .trust-strip-inner {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      row-gap: 15px;
-    }
-
-    .section {
-      padding-block: 80px;
-    }
-
-    .section-heading {
-      margin-bottom: 36px;
-    }
-
-    .feature-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .feature,
-    .feature:nth-child(odd),
-    .feature:nth-child(even) {
-      padding: 28px 0;
-      border-right: 0;
-    }
-
-    .workflow-wrap {
-      padding-bottom: 80px;
-    }
-
-    .diagram-track {
-      grid-template-columns: 1fr;
-      gap: 32px;
-    }
-
-    .diagram-node {
-      padding-left: 52px;
-    }
-
-    .node-number {
-      position: absolute;
-      left: 0;
-      top: 0;
-      margin: 0;
-    }
-
-    .diagram-node:not(:last-child)::after {
-      top: 39px;
-      left: 17px;
-      width: 1px;
-      height: 24px;
-      border-top: 0;
-      border-left: 1px dashed #6f8099;
-    }
-
-    .mobile-section {
-      padding-inline: 17px;
-    }
-
-    .mobile-grid {
-      grid-template-columns: 1fr;
-      gap: 58px;
-    }
-
-    .mobile-story:last-child {
-      grid-column: auto;
-      width: 100%;
+    .phone {
+      flex: 0 0 78%;
+      scroll-snap-align: center;
     }
 
     .phone-frame,
-    .mobile-story figcaption {
-      max-width: 360px;
+    .phone figcaption {
+      max-width: none;
     }
 
-    .footer-inner {
-      flex-direction: column;
-      align-items: flex-start;
-    }
   }
 
-  @media (max-width: 420px) {
-    .trust-strip-inner {
-      grid-template-columns: 1fr;
+  @media (max-width: 620px) {
+    :root {
+      --page: min(100% - 36px, 1000px);
+    }
+
+    .hero {
+      min-height: 0;
+      padding: 92px 18px 76px;
+    }
+
+    .pitch {
+      font-size: 15px;
+      margin-top: 22px;
+    }
+
+    .app-icon {
+      width: 108px;
+      height: 108px;
+      margin-bottom: 26px;
+    }
+
+    .section {
+      padding: 76px 0;
     }
 
     .download-btn {
-      flex-basis: 100%;
+      flex: 1 1 100%;
+      justify-content: center;
+      padding: 0 20px;
     }
 
-    .workflow-illustration {
-      border-radius: 18px;
-    }
-
-    .pricing-note {
-      grid-template-columns: 1fr;
+    .store {
+      gap: 22px;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
+    .track { scroll-behavior: auto; }
     *, *::before, *::after { transition-duration: 0.01ms !important; }
   }
 </style>
 </head>
 <body>
 
-<header class="site-header">
-  <a class="wordmark" href="#top" aria-label="Kanna home">
-    <svg class="brand-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" aria-hidden="true">
-      <defs>
-        <linearGradient id="icon-bg" x1="256" y1="47" x2="256" y2="466" gradientUnits="userSpaceOnUse">
-          <stop offset="0.62" stop-color="#fff"/>
-          <stop offset="1" stop-color="#f3f4f6"/>
-        </linearGradient>
-        <linearGradient id="icon-hot" x1="113" y1="99" x2="354" y2="99" gradientUnits="userSpaceOnUse">
-          <stop stop-color="#f72b89"/><stop offset="1" stop-color="#ff8a12"/>
-        </linearGradient>
-        <linearGradient id="icon-pink" x1="113" y1="178" x2="293" y2="178" gradientUnits="userSpaceOnUse">
-          <stop stop-color="#df1fb7"/><stop offset="1" stop-color="#ef2d9b"/>
-        </linearGradient>
-        <linearGradient id="icon-purple" x1="113" y1="256" x2="226" y2="256" gradientUnits="userSpaceOnUse">
-          <stop stop-color="#9630dc"/><stop offset="1" stop-color="#9e23dd"/>
-        </linearGradient>
-        <linearGradient id="icon-blue" x1="113" y1="335" x2="360" y2="414" gradientUnits="userSpaceOnUse">
-          <stop stop-color="#1957c3"/><stop offset="1" stop-color="#736b91"/>
-        </linearGradient>
-      </defs>
-      <rect x="46" y="46" width="420" height="420" rx="105" fill="url(#icon-bg)" stroke="#d6d6d6"/>
-      <rect x="113" y="82" width="45" height="34" rx="17" fill="url(#icon-hot)"/>
-      <rect x="180" y="82" width="174" height="34" rx="17" fill="url(#icon-hot)"/>
-      <rect x="377" y="82" width="24" height="34" rx="12" fill="#17d34c"/>
-      <rect x="113" y="161" width="45" height="34" rx="17" fill="url(#icon-pink)"/>
-      <rect x="180" y="161" width="113" height="34" rx="17" fill="url(#icon-pink)"/>
-      <rect x="113" y="240" width="45" height="33" rx="16.5" fill="url(#icon-purple)"/>
-      <rect x="180" y="240" width="46" height="33" rx="16.5" fill="url(#icon-purple)"/>
-      <rect x="113" y="318" width="45" height="33" rx="16.5" fill="url(#icon-blue)"/>
-      <rect x="180" y="318" width="47" height="33" rx="16.5" fill="url(#icon-blue)"/>
-      <rect x="245" y="318" width="48" height="33" rx="16.5" fill="url(#icon-blue)"/>
-      <rect x="113" y="397" width="45" height="33" rx="16.5" fill="url(#icon-blue)"/>
-      <rect x="180" y="397" width="47" height="33" rx="16.5" fill="url(#icon-blue)"/>
-      <rect x="245" y="397" width="48" height="33" rx="16.5" fill="url(#icon-blue)"/>
-      <rect x="313" y="397" width="47" height="33" rx="16.5" fill="url(#icon-blue)"/>
-    </svg>
-    <span>Kanna</span>
-  </a>
-  <nav class="site-nav" aria-label="Primary navigation">
-    <a href="#workflows">Workflows</a>
-    <a href="#mobile">Mobile</a>
-    <a class="source-link" href="https://github.com/jemdiggity/kanna">Source ↗</a>
-  </nav>
-</header>
+<a class="gh" href="https://github.com/jemdiggity/kanna" aria-label="Kanna on GitHub">
+  <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/>
+  </svg>
+</a>
 
-<main id="top">
-  <section class="hero" aria-labelledby="hero-title">
-    <div class="hero-copy">
-      <p class="eyebrow">Open-source macOS command center for coding agents</p>
-      <h1 id="hero-title">More agents. One clear path forward.</h1>
-      <p class="slogan">Structured autonomy for coding agents.</p>
-      <p class="hero-description">
-        Kanna runs the agent CLIs you already have installed, giving every task an isolated worktree and a repo-defined route from idea to done.
-      </p>
+<main>
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+
+    <div class="hero-inner">
+      <div class="app-icon">
+        <!--
+          Kanna app icon, dark variant. Geometry and bar gradients are copied
+          verbatim from the product icon at
+          kanna/apps/desktop/src-tauri/icons/icon.svg; only the background
+          plate and its hairline are darkened for this page. Keep the bars in
+          sync if the product icon changes.
+        -->
+        <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Kanna app icon">
+          <defs>
+            <linearGradient id="icon-plate" x1="256" y1="47" x2="256" y2="466" gradientUnits="userSpaceOnUse">
+              <stop offset="0.62" stop-color="#1c1226"/>
+              <stop offset="1" stop-color="#140c1c"/>
+            </linearGradient>
+            <linearGradient id="hot-gradient" x1="113" y1="99" x2="354" y2="99" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#f72b89"/><stop offset="1" stop-color="#ff8a12"/>
+            </linearGradient>
+            <linearGradient id="pink-gradient" x1="113" y1="178" x2="293" y2="178" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#df1fb7"/><stop offset="1" stop-color="#ef2d9b"/>
+            </linearGradient>
+            <linearGradient id="purple-gradient" x1="113" y1="256" x2="226" y2="256" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#9630dc"/><stop offset="1" stop-color="#9e23dd"/>
+            </linearGradient>
+            <linearGradient id="indigo-gradient" x1="113" y1="335" x2="293" y2="335" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#1957c3"/><stop offset="1" stop-color="#6940a4"/>
+            </linearGradient>
+            <linearGradient id="blue-violet-gradient" x1="113" y1="414" x2="360" y2="414" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#1458c5"/><stop offset="1" stop-color="#736b91"/>
+            </linearGradient>
+          </defs>
+
+          <rect x="46" y="46" width="420" height="420" rx="105" fill="url(#icon-plate)"/>
+          <rect x="46.5" y="46.5" width="419" height="419" rx="104.5" fill="none" stroke="rgba(255,255,255,0.16)"/>
+
+          <rect x="113" y="82" width="45" height="34" rx="17" fill="url(#hot-gradient)"/>
+          <rect x="180" y="82" width="174" height="34" rx="17" fill="url(#hot-gradient)"/>
+          <rect x="377" y="82" width="24" height="34" rx="12" fill="#17d34c"/>
+
+          <rect x="113" y="161" width="45" height="34" rx="17" fill="url(#pink-gradient)"/>
+          <rect x="180" y="161" width="113" height="34" rx="17" fill="url(#pink-gradient)"/>
+
+          <rect x="113" y="240" width="45" height="33" rx="16.5" fill="url(#purple-gradient)"/>
+          <rect x="180" y="240" width="46" height="33" rx="16.5" fill="url(#purple-gradient)"/>
+
+          <rect x="113" y="318" width="45" height="33" rx="16.5" fill="url(#indigo-gradient)"/>
+          <rect x="180" y="318" width="47" height="33" rx="16.5" fill="url(#indigo-gradient)"/>
+          <rect x="245" y="318" width="48" height="33" rx="16.5" fill="url(#indigo-gradient)"/>
+
+          <rect x="113" y="397" width="45" height="33" rx="16.5" fill="url(#blue-violet-gradient)"/>
+          <rect x="180" y="397" width="47" height="33" rx="16.5" fill="url(#blue-violet-gradient)"/>
+          <rect x="245" y="397" width="48" height="33" rx="16.5" fill="url(#blue-violet-gradient)"/>
+          <rect x="313" y="397" width="47" height="33" rx="16.5" fill="url(#blue-violet-gradient)"/>
+        </svg>
+      </div>
+
+      <p class="eyebrow">macOS &amp; iOS &middot; structured workflows for agent CLIs</p>
+      <h1>KANNA</h1>
+      <p class="pitch">Build with Opus. Review with Codex. Have Fable manage it all and ping your phone when it needs something.</p>
+
       <div class="download-row">
         <a href="#" class="download-btn primary" id="btn-arm">
           <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
@@ -833,151 +764,134 @@
           Intel
         </a>
       </div>
-      <p class="version" id="version-label">macOS 14+</p>
+      <p class="version" id="version-label">Requires macOS 15 or later</p>
     </div>
+  </section>
 
-    <div class="hero-visual">
-      <figure class="capture">
-        <div class="desktop-capture">
-          <span class="capture-label">Genuine product capture</span>
-          <img src="assets/kanna-desktop.avif" width="2786" height="1424" alt="Kanna for macOS showing repository tasks, an active agent terminal, and a command palette with task transfer and coordinator-agent actions" decoding="async" fetchpriority="high">
-        </div>
-        <figcaption><strong>Kanna for macOS.</strong> Command palette, live agent terminal, and task view. Genuine, unaltered capture.</figcaption>
+  <section class="section carousel" aria-roledescription="carousel" aria-label="Kanna for macOS screenshots">
+    <div class="track" id="shot-track" tabindex="0" aria-live="polite">
+      <figure class="slide">
+        <button class="zoom" type="button" aria-label="Enlarge this screenshot"><img src="assets/kanna-tasks.avif" width="2400" height="1600" alt="Kanna for macOS: a sidebar listing tasks grouped by stage across three repositories, with the selected task&rsquo;s live agent session running in the right-hand pane and reporting the review it just wrote" decoding="async" fetchpriority="high"></button>
+        <figcaption>Tasks, grouped by stage, with the agent running</figcaption>
+      </figure>
+      <figure class="slide">
+        <button class="zoom" type="button" aria-label="Enlarge this screenshot"><img src="assets/kanna-command-palette.avif" width="2400" height="1600" alt="Kanna&rsquo;s command palette open over a running task, listing Rename Task, Push to Machine, Pair Machine, Merge Master, Task Manager, Ship and Set Up Repository" loading="lazy" decoding="async"></button>
+        <figcaption>Command palette</figcaption>
+      </figure>
+      <figure class="slide">
+        <button class="zoom" type="button" aria-label="Enlarge this screenshot"><img src="assets/kanna-diff.avif" width="2400" height="1600" alt="Kanna&rsquo;s diff view showing an agent&rsquo;s working-tree changes across two files, removed lines in red and added lines in green, with Working, Branch and Staged tabs" loading="lazy" decoding="async"></button>
+        <figcaption>Diff view</figcaption>
+      </figure>
+      <figure class="slide">
+        <button class="zoom" type="button" aria-label="Enlarge this screenshot"><img src="assets/kanna-file-explorer.avif" width="2786" height="1626" alt="Kanna&rsquo;s file explorer open over a task, browsing the worktree in three columns from the repository root down into a directory listing, with a filter bar along the bottom" loading="lazy" decoding="async"></button>
+        <figcaption>File explorer</figcaption>
+      </figure>
+      <figure class="slide">
+        <button class="zoom" type="button" aria-label="Enlarge this screenshot"><img src="assets/kanna-commit-graph.avif" width="2786" height="1626" alt="Kanna&rsquo;s commit graph, showing branch lines beside a list of merged pull requests and commits with their branch and tag labels" loading="lazy" decoding="async"></button>
+        <figcaption>Commit graph</figcaption>
       </figure>
     </div>
-  </section>
-
-  <section class="trust-strip" aria-label="Kanna product capabilities">
-    <div class="trust-strip-inner">
-      <div class="trust-item"><span class="trust-dot"></span>Use installed agent CLIs</div>
-      <div class="trust-item"><span class="trust-dot"></span>Repo-defined stages</div>
-      <div class="trust-item"><span class="trust-dot"></span>Worktree-isolated tasks</div>
-      <div class="trust-item"><span class="trust-dot"></span>Cross-machine transfer</div>
+    <div class="carousel-nav">
+      <button class="cbtn" type="button" data-dir="-1" aria-label="Previous screenshot" aria-controls="shot-track">
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="dots" id="shot-dots"></div>
+      <button class="cbtn" type="button" data-dir="1" aria-label="Next screenshot" aria-controls="shot-track">
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
     </div>
   </section>
 
-  <section class="section" id="workflows" aria-labelledby="workflows-title">
-    <div class="section-heading">
-      <p class="section-label">Composed workflows</p>
-      <h2 id="workflows-title">Give autonomy a shape.</h2>
-      <p class="section-intro">
-        Compose stages around the way your repository actually ships. Kanna keeps agents moving when the next step is known—and brings you in when judgment matters.
-      </p>
-    </div>
-
-    <div class="feature-grid">
-      <article class="feature">
-        <span class="feature-index">01</span>
-        <div>
-          <h3>Repo-defined, staged work</h3>
-          <p>Define the stages, automated transitions, and human checkpoints each task follows. The workflow stays with the repository, not in someone’s memory.</p>
-        </div>
-      </article>
-      <article class="feature">
-        <span class="feature-index">02</span>
-        <div>
-          <h3>Isolated by design</h3>
-          <p>Every task runs in its own git worktree, so multiple agents can work at once without sharing an accidental working state.</p>
-        </div>
-      </article>
-      <article class="feature">
-        <span class="feature-index">03</span>
-        <div>
-          <h3>Bring the agents you use</h3>
-          <p>Kanna orchestrates installed agent CLIs instead of replacing them. Keep your chosen tools, models, and repository context.</p>
-        </div>
-      </article>
-      <article class="feature">
-        <span class="feature-index">04</span>
-        <div>
-          <h3>Coordinate the coordinators</h3>
-          <p>Repo-specific coordinator agents can break down work, create follow-up tasks, call specialized reviews, and shepherd work toward completion.</p>
-        </div>
-      </article>
-    </div>
+  <section class="section" aria-labelledby="what-it-does">
+    <p class="section-label" id="what-it-does">// WHAT IT DOES</p>
+    <ul class="features">
+      <li>
+        <span class="feature-key">Composed workflows</span>
+        <p>Name the stages your work actually goes through, give each stage an agent, and decide where Kanna advances on its own and where it stops for you. The workflow is a file in the repository, so it is reviewed and versioned like the rest of the code.</p>
+      </li>
+      <li>
+        <span class="feature-key">Isolated workspaces</span>
+        <p>Each task gets its own git worktree and its own ports. Kanna puts the port values in the environment and runs your startup and teardown scripts, so several workspaces can each run a web app, a mobile app, a Firebase emulator and whatever else the stack needs, side by side.</p>
+      </li>
+      <li>
+        <span class="feature-key">Coordinators</span>
+        <p>Long-running task-manager and merge roles coordinate repository work. A review dispatcher sends one change to the applicable specialists in parallel, then reconciles their verdicts.</p>
+      </li>
+      <li>
+        <span class="feature-key">Agents drive Kanna</span>
+        <p>Kanna exposes one catalog two ways: <code>kanna_*</code> MCP tools for coding agents, and <code>kanna-cli</code> for scripts and people. An agent inside a task can open follow-up tasks, send input to another task, notify your phone, and record its own stage result — which is how the coordinators above do their work.</p>
+      </li>
+      <li>
+        <span class="feature-key">Any agent, any stage</span>
+        <p>A stage is something you compose, not a slot you fill: it carries its own agent, its own prompt, its own follow-up action, and its own rule for whether Kanna advances or waits. Build with one agent and review with another — Claude Code, Codex, GitHub Copilot CLI, OpenCode, or Antigravity.</p>
+      </li>
+      <li>
+        <span class="feature-key">Paired machines</span>
+        <p>Pair another Mac and push a task to it, or pull one back.</p>
+      </li>
+      <li>
+        <span class="feature-key">Away from the desk</span>
+        <p>An agent notifies you when it finishes or needs a decision, and tapping the notification opens that task. From your phone you can talk to a running agent in a live terminal, browse its files and diffs, open the task&rsquo;s own dev server in a preview, and advance a stage.</p>
+      </li>
+    </ul>
   </section>
 
-  <section class="section workflow-wrap" aria-label="Illustration of a composed workflow">
-    <div class="workflow-illustration">
-      <p class="diagram-kicker">Workflow illustration — not product UI</p>
-      <div class="diagram-track">
-        <article class="diagram-node">
-          <span class="node-number">01</span>
-          <h3>Define</h3>
-          <p>The repository describes its stages, transitions, and checkpoints.</p>
-        </article>
-        <article class="diagram-node">
-          <span class="node-number">02</span>
-          <h3>Run</h3>
-          <p>An installed agent CLI works inside a task-specific worktree.</p>
-        </article>
-        <article class="diagram-node">
-          <span class="node-number">03</span>
-          <h3>Review</h3>
-          <p>Specialized agents or a human assess the work where the workflow asks.</p>
-        </article>
-        <article class="diagram-node">
-          <span class="node-number">04</span>
-          <h3>Handoff</h3>
-          <p>The task advances, transfers machines, or waits for your decision.</p>
-        </article>
-      </div>
-    </div>
-  </section>
 
-  <section class="section mobile-section" id="mobile" aria-labelledby="mobile-title">
-    <div class="section-heading">
-      <p class="section-label">Kanna Mobile</p>
-      <h2 id="mobile-title">Stay in the loop. Leave the desk.</h2>
-      <p class="section-intro">
-        Notifications, task control, and a live remote terminal put the important parts of Kanna on your iPhone while the agents keep running on your Mac.
-      </p>
-    </div>
+  <section class="section" aria-labelledby="mobile-label">
+    <p class="section-label" id="mobile-label">// KANNA MOBILE</p>
 
-    <div class="mobile-grid">
-      <figure class="mobile-story">
+    <div class="phones">
+      <figure class="phone">
         <div class="phone-frame">
           <img src="assets/kanna-ios-notifications.avif" width="1180" height="2556" alt="iPhone lock screen showing Kanna notifications for merge-ready pull requests and a task needing attention" loading="lazy" decoding="async">
         </div>
-        <figcaption><strong>Know when you’re needed.</strong> Get iOS notifications for completed work and genuine decision points. Notifications remain free, whether you are on your LAN or away from it.</figcaption>
+        <figcaption>Notifications for finished work and decision points.</figcaption>
       </figure>
 
-      <figure class="mobile-story">
+      <figure class="phone">
         <div class="phone-frame">
           <img src="assets/kanna-mobile-tasks.png" width="1179" height="2556" alt="Kanna Mobile task list showing repositories, task stages, status updates, activity, and task creation controls" loading="lazy" decoding="async">
         </div>
-        <figcaption><strong>Manage work from your phone.</strong> Check task status, move between repositories, and control active work from Kanna Mobile.</figcaption>
+        <figcaption>Task list and controls across your repositories.</figcaption>
       </figure>
 
-      <figure class="mobile-story">
+      <figure class="phone">
         <div class="phone-frame">
           <img src="assets/kanna-mobile-terminal.png" width="1179" height="2556" alt="Kanna Mobile displaying a live Task Manager agent terminal with a reply field and send control" loading="lazy" decoding="async">
         </div>
-        <figcaption><strong>Take the terminal with you.</strong> Use a live agent terminal over your LAN or through Kanna’s cloud relay when you are away.</figcaption>
+        <figcaption>A live agent terminal over your LAN or the cloud relay.</figcaption>
       </figure>
     </div>
 
-    <div class="pricing-note">
-      <span class="price-icon" aria-hidden="true">$</span>
-      <p><strong>Simple mobile access.</strong> LAN mobile access and notifications are free. Only cloud-relay remote terminal access is $5/month—and it is free for beta testers.</p>
-    </div>
-  </section>
-
-  <section class="section final-cta" aria-labelledby="download-title">
-    <p class="section-label">Open source · bring your own model</p>
-    <h2 id="download-title">Compose the way your agents work.</h2>
-    <p class="section-intro">Download Kanna for macOS and turn parallel agent sessions into work you can see, steer, and finish.</p>
-    <div class="download-row">
-      <a href="#" class="download-btn primary" id="btn-arm-footer">Apple Silicon</a>
-      <a href="#" class="download-btn" id="btn-intel-footer">Intel</a>
-      <a href="https://github.com/jemdiggity/kanna" class="download-btn">View source ↗</a>
+    <!--
+      App Store QR code. assets/kanna-mobile-qr.svg is generated locally with
+      segno and committed as a static asset; it encodes the storefront-neutral
+      URL below, which Apple routes to the visitor's own country store. Do not
+      swap this for a runtime or third-party QR service. If the URL ever
+      changes, regenerate the SVG and update both the href and the alt text.
+    -->
+    <div class="store">
+      <div class="store-qr">
+        <img src="assets/kanna-mobile-qr.svg" width="296" height="296" alt="QR code linking to Kanna Mobile on the App Store" loading="lazy" decoding="async">
+      </div>
+      <div class="store-text">
+        <a class="store-link" href="https://apps.apple.com/app/id6802176590">Kanna Mobile on the App Store ↗</a>
+        <p class="store-note">Kanna aims to be free where it can be, and low cost where cloud infrastructure is unavoidable. Notifications are free anywhere, on your own network or away from it. The agent terminal is free over your LAN; reaching it from outside runs through the cloud relay, and that is the $5/month — free for beta testers.</p>
+      </div>
     </div>
   </section>
 </main>
 
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lightbox-close" type="button" id="lightbox-close" aria-label="Close enlarged screenshot">
+    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+  </button>
+  <img id="lightbox-img" src="" alt="" decoding="async">
+</div>
+
 <footer>
   <div class="footer-inner">
-    <span>KANNA — STRUCTURED AUTONOMY FOR CODING AGENTS · © TAMPOPO LLC</span>
+    <span>KANNA · OPEN SOURCE · BRING YOUR OWN MODEL · © TAMPOPO LLC</span>
     <nav class="footer-links" aria-label="Footer navigation">
       <a href="/support/">Support</a>
       <a href="/privacy/">Privacy</a>
@@ -986,6 +900,106 @@
 </footer>
 
 <script>
+  // Progressive enhancement: the track already scrolls and snaps natively, so
+  // this only adds buttons and dots on top of behaviour that works without it.
+  (() => {
+    const track = document.getElementById('shot-track');
+    const dots = document.getElementById('shot-dots');
+    if (!track || !dots) return;
+
+    const slides = [...track.querySelectorAll('.slide')];
+    const buttons = [...document.querySelectorAll('.cbtn')];
+    if (slides.length < 2) return;
+
+    slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'dot';
+      dot.setAttribute('aria-label', `Screenshot ${i + 1} of ${slides.length}`);
+      dot.addEventListener('click', () => scrollToIndex(i));
+      dots.append(dot);
+    });
+
+    const current = () => Math.round(track.scrollLeft / track.clientWidth);
+
+    function scrollToIndex(i) {
+      const clamped = Math.max(0, Math.min(slides.length - 1, i));
+      track.scrollTo({ left: clamped * track.clientWidth });
+    }
+
+    function sync() {
+      const i = current();
+      [...dots.children].forEach((d, n) => d.setAttribute('aria-current', String(n === i)));
+      buttons.forEach(b => {
+        const dir = Number(b.dataset.dir);
+        b.disabled = dir < 0 ? i === 0 : i === slides.length - 1;
+      });
+    }
+
+    buttons.forEach(b =>
+      b.addEventListener('click', () => scrollToIndex(current() + Number(b.dataset.dir)))
+    );
+
+    track.addEventListener('keydown', event => {
+      if (event.key === 'ArrowRight') { event.preventDefault(); scrollToIndex(current() + 1); }
+      if (event.key === 'ArrowLeft') { event.preventDefault(); scrollToIndex(current() - 1); }
+    });
+
+    let frame = 0;
+    track.addEventListener('scroll', () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(sync);
+    });
+    window.addEventListener('resize', sync);
+    sync();
+  })();
+
+  // Tap or click a carousel screenshot to enlarge it.
+  (() => {
+    const box = document.getElementById('lightbox');
+    const boxImg = document.getElementById('lightbox-img');
+    const closeBtn = document.getElementById('lightbox-close');
+    if (!box || !boxImg || !closeBtn) return;
+
+    // Remember the trigger itself, not document.activeElement: a click does not
+    // reliably focus a button, and restoring to <body> would strand focus on
+    // the close button after it is hidden.
+    let opener = null;
+
+    function open(button, img) {
+      opener = button;
+      boxImg.src = img.currentSrc || img.src;
+      boxImg.alt = img.alt;
+      box.hidden = false;
+      document.body.style.overflow = 'hidden';
+      closeBtn.focus();
+    }
+
+    function close() {
+      box.hidden = true;
+      boxImg.src = '';
+      boxImg.alt = '';
+      document.body.style.overflow = '';
+      if (opener && document.contains(opener)) opener.focus();
+      opener = null;
+    }
+
+    document.querySelectorAll('.zoom').forEach(button => {
+      button.addEventListener('click', () => {
+        const img = button.querySelector('img');
+        if (img) open(button, img);
+      });
+    });
+
+    closeBtn.addEventListener('click', close);
+    box.addEventListener('click', event => {
+      if (event.target !== closeBtn && !closeBtn.contains(event.target)) close();
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && !box.hidden) close();
+    });
+  })();
+
   const REPO = 'jemdiggity/kanna';
 
   fetch(`https://api.github.com/repos/${REPO}/releases/latest`)
@@ -1001,14 +1015,12 @@
 
       if (arm) {
         document.getElementById('btn-arm').href = arm.browser_download_url;
-        document.getElementById('btn-arm-footer').href = arm.browser_download_url;
       }
       if (intel) {
         document.getElementById('btn-intel').href = intel.browser_download_url;
-        document.getElementById('btn-intel-footer').href = intel.browser_download_url;
       }
       if (release.tag_name) {
-        document.getElementById('version-label').textContent = `${release.tag_name} · macOS 14+`;
+        document.getElementById('version-label').textContent = `${release.tag_name} · Requires macOS 15 or later`;
       }
     })
     .catch(() => {
