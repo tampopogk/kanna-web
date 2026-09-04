@@ -814,6 +814,10 @@
         <p>Each task gets its own git worktree and its own ports. Kanna puts the port values in the environment and runs your startup and teardown scripts, so several workspaces can each run a web app, a mobile app, a Firebase emulator and whatever else the stack needs, side by side.</p>
       </li>
       <li>
+        <span class="feature-key">Subtasks and blockers</span>
+        <p>Break larger work into subtasks that stay nested under their parent. When a task depends on one or more others, mark it blocked and Kanna keeps the dependency visible until every blocking task is finished.</p>
+      </li>
+      <li>
         <span class="feature-key">Coordinators</span>
         <p>Long-running task-manager and merge roles coordinate repository work. A review dispatcher sends one change to the applicable specialists in parallel, then reconciles their verdicts.</p>
       </li>
