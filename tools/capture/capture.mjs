@@ -18,6 +18,7 @@
  * AVIF files that the page actually references.
  */
 import { mkdir, writeFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { join } from "node:path";
 
 const PORT = process.env.KANNA_WEBDRIVER_PORT || "4555";
@@ -44,10 +45,6 @@ async function wd(method, path, body) {
 }
 
 /**
- * Each shot names the file it produces and the UI state to reach first.
- * `setup` runs in the page; keep it to things a user can actually do.
- */
-/**
  * The app opens a keyboard-shortcuts overlay on a fresh profile. Dismiss it
  * before capturing, the same way a person would.
  */
@@ -59,22 +56,40 @@ const DISMISS_OVERLAYS = `
   }
 `;
 
+/**
+ * Each shot names the file it produces, the UI state to reach first, and a
+ * `verify` expression that must be true before the screenshot is taken.
+ *
+ * `verify` is not optional bookkeeping. Without it, a setup step that silently
+ * does nothing still produces a confident log line and a file that is a
+ * byte-for-byte duplicate of the previous shot. That is exactly what happened
+ * on the first run: "command-palette.png" came out with the same SHA as
+ * "tasks.png" because the palette never opened, and the log claimed both. A
+ * capture harness that mislabels states is worse than one that fails.
+ */
 const SHOTS = [
   {
     name: "tasks",
     description: "Task list across repositories with an agent working",
-    setup: `window.scrollTo(0,0);`,
+    setup: `window.scrollTo(0, 0);`,
+    verify: `document.body.innerText.trim().length > 0`,
     settle: 1200,
   },
   {
     name: "command-palette",
     description: "Command palette open over the task view",
+    // The palette is Shift+Cmd+P, not Cmd+K. Synthetic KeyboardEvents and the
+    // WebDriver actions API have both failed to open it: its shortcut context
+    // wants main-window focus that injected keys do not reach. Driving the
+    // app's own command store is the likely fix. Until then `verify` fails
+    // this shot loudly instead of writing a duplicate of the previous one.
     setup: `
-      const ev = new KeyboardEvent('keydown', {
-        key: 'k', code: 'KeyK', metaKey: true, bubbles: true, cancelable: true
-      });
-      document.dispatchEvent(ev);
+      document.dispatchEvent(new KeyboardEvent('keydown', {
+        key: 'P', code: 'KeyP', metaKey: true, shiftKey: true,
+        bubbles: true, cancelable: true
+      }));
     `,
+    verify: `/type a command/i.test(document.body.innerText)`,
     settle: 900,
   },
 ];
@@ -104,16 +119,47 @@ async function main() {
   try {
     await wd("POST", `/session/${sid}/execute/sync`, { script: DISMISS_OVERLAYS, args: [] });
     await sleep(600);
+    const seen = new Map();
+    const failures = [];
+
     for (const shot of SHOTS) {
       if (shot.setup) {
         await wd("POST", `/session/${sid}/execute/sync`, { script: shot.setup, args: [] });
       }
       await sleep(shot.settle ?? 800);
+
+      if (shot.verify) {
+        const check = await wd("POST", `/session/${sid}/execute/sync`, {
+          script: `return Boolean(${shot.verify});`,
+          args: [],
+        });
+        if (check.value !== true) {
+          failures.push(`${shot.name}: never reached the state it claims (${shot.description}). Not captured.`);
+          continue;
+        }
+      }
+
       const res = await wd("GET", `/session/${sid}/screenshot`);
       const b64 = res.value ?? res;
+      const digest = createHash("sha1").update(b64).digest("hex");
+
+      // A duplicate means two shots are showing the same state, whatever the
+      // labels say. Refuse it rather than write a mislabelled file.
+      if (seen.has(digest)) {
+        failures.push(`${shot.name}: identical to ${seen.get(digest)}. Not captured.`);
+        continue;
+      }
+      seen.set(digest, shot.name);
+
       const file = join(OUT, `${shot.name}.png`);
       await writeFile(file, Buffer.from(b64, "base64"));
       console.log(`captured ${file}  (${shot.description})`);
+    }
+
+    if (failures.length > 0) {
+      console.error(`\n${failures.length} shot(s) not captured:`);
+      for (const f of failures) console.error(`  - ${f}`);
+      process.exitCode = 1;
     }
   } finally {
     await wd("DELETE", `/session/${sid}`).catch(() => undefined);
