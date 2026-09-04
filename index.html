@@ -158,12 +158,9 @@
   }
 
   .app-icon {
-    width: 112px;
-    height: 112px;
-    margin: 0 auto 40px;
-    border-radius: 25px;
-    overflow: hidden;
-    background: var(--deep);
+    width: 132px;
+    height: 132px;
+    margin: 0 auto 32px;
   }
 
   .eyebrow {
@@ -443,9 +440,9 @@
     }
 
     .app-icon {
-      width: 92px;
-      height: 92px;
-      margin-bottom: 32px;
+      width: 108px;
+      height: 108px;
+      margin-bottom: 26px;
     }
 
     .section {
@@ -484,47 +481,57 @@
 
     <div class="hero-inner">
       <div class="app-icon">
-        <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Kanna app icon">
+        <!--
+          Kanna app icon, dark variant. Geometry and bar gradients are copied
+          verbatim from the product icon at
+          kanna/apps/desktop/src-tauri/icons/icon.svg; only the background
+          plate and its hairline are darkened for this page. Keep the bars in
+          sync if the product icon changes.
+        -->
+        <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Kanna app icon">
           <defs>
-            <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#1a0533"/>
-              <stop offset="40%" stop-color="#6b1a8a"/>
-              <stop offset="75%" stop-color="#e8357a"/>
-              <stop offset="100%" stop-color="#ff8c00"/>
+            <linearGradient id="icon-plate" x1="256" y1="47" x2="256" y2="466" gradientUnits="userSpaceOnUse">
+              <stop offset="0.62" stop-color="#1c1226"/>
+              <stop offset="1" stop-color="#140c1c"/>
             </linearGradient>
-            <linearGradient id="b1" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stop-color="#ff2d78"/><stop offset="100%" stop-color="#ff8c00"/>
+            <linearGradient id="hot-gradient" x1="113" y1="99" x2="354" y2="99" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#f72b89"/><stop offset="1" stop-color="#ff8a12"/>
             </linearGradient>
-            <linearGradient id="b2" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stop-color="#cc1fcc"/><stop offset="100%" stop-color="#ff2d78"/>
+            <linearGradient id="pink-gradient" x1="113" y1="178" x2="293" y2="178" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#df1fb7"/><stop offset="1" stop-color="#ef2d9b"/>
             </linearGradient>
-            <linearGradient id="b3" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stop-color="#9b1faa"/><stop offset="100%" stop-color="#cc1fcc"/>
+            <linearGradient id="purple-gradient" x1="113" y1="256" x2="226" y2="256" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#9630dc"/><stop offset="1" stop-color="#9e23dd"/>
             </linearGradient>
-            <linearGradient id="b4" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stop-color="#4a0e72"/><stop offset="100%" stop-color="#9b1faa"/>
+            <linearGradient id="indigo-gradient" x1="113" y1="335" x2="293" y2="335" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#1957c3"/><stop offset="1" stop-color="#6940a4"/>
             </linearGradient>
-            <linearGradient id="b5" x1="0" y1="0" x2="1" y2="0">
-              <stop offset="0%" stop-color="#2a0544"/><stop offset="100%" stop-color="#4a0e72"/>
+            <linearGradient id="blue-violet-gradient" x1="113" y1="414" x2="360" y2="414" gradientUnits="userSpaceOnUse">
+              <stop stop-color="#1458c5"/><stop offset="1" stop-color="#736b91"/>
             </linearGradient>
-            <clipPath id="clip"><rect width="256" height="256" rx="56"/></clipPath>
           </defs>
-          <rect width="256" height="256" rx="56" fill="#1a0533"/>
-          <rect width="256" height="256" clip-path="url(#clip)" fill="url(#sky)"/>
-          <rect x="40"  y="22"  width="28"  height="20" rx="10" fill="url(#b1)"/>
-          <rect x="82"  y="22"  width="106" height="20" rx="10" fill="url(#b1)"/>
-          <rect x="202" y="22"  width="14"  height="20" rx="5"  fill="#00ff41" opacity="0.92"/>
-          <rect x="40"  y="70"  width="28"  height="20" rx="10" fill="url(#b2)"/>
-          <rect x="82"  y="70"  width="68"  height="20" rx="10" fill="url(#b2)"/>
-          <rect x="40"  y="118" width="28"  height="20" rx="10" fill="url(#b3)"/>
-          <rect x="82"  y="118" width="30"  height="20" rx="10" fill="url(#b3)" opacity="0.6"/>
-          <rect x="40"  y="166" width="28"  height="20" rx="10" fill="url(#b4)"/>
-          <rect x="82"  y="166" width="30"  height="20" rx="10" fill="url(#b4)" opacity="0.72"/>
-          <rect x="120" y="166" width="30"  height="20" rx="10" fill="url(#b4)" opacity="0.38"/>
-          <rect x="40"  y="214" width="28"  height="20" rx="10" fill="url(#b5)"/>
-          <rect x="82"  y="214" width="30"  height="20" rx="10" fill="url(#b5)" opacity="0.72"/>
-          <rect x="120" y="214" width="30"  height="20" rx="10" fill="url(#b5)" opacity="0.5"/>
-          <rect x="158" y="214" width="30"  height="20" rx="10" fill="url(#b5)" opacity="0.28"/>
+
+          <rect x="46" y="46" width="420" height="420" rx="105" fill="url(#icon-plate)"/>
+          <rect x="46.5" y="46.5" width="419" height="419" rx="104.5" fill="none" stroke="rgba(255,255,255,0.16)"/>
+
+          <rect x="113" y="82" width="45" height="34" rx="17" fill="url(#hot-gradient)"/>
+          <rect x="180" y="82" width="174" height="34" rx="17" fill="url(#hot-gradient)"/>
+          <rect x="377" y="82" width="24" height="34" rx="12" fill="#17d34c"/>
+
+          <rect x="113" y="161" width="45" height="34" rx="17" fill="url(#pink-gradient)"/>
+          <rect x="180" y="161" width="113" height="34" rx="17" fill="url(#pink-gradient)"/>
+
+          <rect x="113" y="240" width="45" height="33" rx="16.5" fill="url(#purple-gradient)"/>
+          <rect x="180" y="240" width="46" height="33" rx="16.5" fill="url(#purple-gradient)"/>
+
+          <rect x="113" y="318" width="45" height="33" rx="16.5" fill="url(#indigo-gradient)"/>
+          <rect x="180" y="318" width="47" height="33" rx="16.5" fill="url(#indigo-gradient)"/>
+          <rect x="245" y="318" width="48" height="33" rx="16.5" fill="url(#indigo-gradient)"/>
+
+          <rect x="113" y="397" width="45" height="33" rx="16.5" fill="url(#blue-violet-gradient)"/>
+          <rect x="180" y="397" width="47" height="33" rx="16.5" fill="url(#blue-violet-gradient)"/>
+          <rect x="245" y="397" width="48" height="33" rx="16.5" fill="url(#blue-violet-gradient)"/>
+          <rect x="313" y="397" width="47" height="33" rx="16.5" fill="url(#blue-violet-gradient)"/>
         </svg>
       </div>
 
@@ -561,11 +568,11 @@
     <ul class="features">
       <li>
         <span class="feature-key">Composed workflows</span>
-        <p>Named stages, an agent assigned to each one, automatic or human-controlled transitions, and a revision limit — checked into the repository as a versioned file.</p>
+        <p>Name the stages your work actually goes through, give each stage an agent, and decide where Kanna advances on its own and where it stops for you. The workflow is a file in the repository, so it is reviewed and versioned like the rest of the code.</p>
       </li>
       <li>
-        <span class="feature-key">One durable task</span>
-        <p>A task keeps its identity and instruction history through every stage, while each stage gets a fresh branch and worktree from the last committed tip.</p>
+        <span class="feature-key">Isolated worktrees</span>
+        <p>Every task runs on its own branch in its own git worktree, so several agents can work at once without standing on each other.</p>
       </li>
       <li>
         <span class="feature-key">Coordinators</span>
@@ -576,8 +583,12 @@
         <p>Run Claude Code, Codex, GitHub Copilot CLI, OpenCode, or Antigravity — whichever suits the stage.</p>
       </li>
       <li>
+        <span class="feature-key">Paired machines</span>
+        <p>Pair another Mac and push a task to it, or pull one back. Work follows the machine that should be doing it.</p>
+      </li>
+      <li>
         <span class="feature-key">Away from the desk</span>
-        <p>Follow task-linked notifications, inspect state and diffs, send input, and advance eligible stages from your phone. Move a task between reachable Kanna machines.</p>
+        <p>Follow task-linked notifications, inspect state and diffs, send input, and advance eligible stages from your phone.</p>
       </li>
     </ul>
   </section>
@@ -621,7 +632,7 @@
       </div>
       <div class="store-text">
         <a class="store-link" href="https://apps.apple.com/app/id6802176590">Kanna Mobile on the App Store ↗</a>
-        <p class="store-note">LAN access and notifications are free. Cloud-relay terminal access is $5/month, and free for beta testers.</p>
+        <p class="store-note">Kanna aims to be free where it can be, and low cost where cloud infrastructure is unavoidable. On your own network, traffic stays on the LAN and costs nothing, and notifications are free. The $5/month covers the cloud infrastructure behind remote terminal access — free for beta testers.</p>
       </div>
     </div>
   </section>
