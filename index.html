@@ -289,6 +289,32 @@
     letter-spacing: 0.16em;
   }
 
+  .stills {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px;
+    padding-top: 0;
+  }
+
+  .stills figure {
+    min-width: 0;
+  }
+
+  .stills img {
+    width: 100%;
+    height: auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+
+  .stills figcaption {
+    margin-top: 13px;
+    color: var(--muted);
+    font-family: 'DM Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+  }
+
   /* ---- FEATURE LIST ---- */
   .features {
     list-style: none;
@@ -435,6 +461,11 @@
       grid-template-columns: 1fr;
       gap: 52px;
     }
+
+    .stills {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
   }
 
   @media (max-width: 620px) {
@@ -572,7 +603,7 @@
 
   <section class="section shot" aria-label="Kanna for macOS">
     <figure>
-      <img src="assets/kanna-desktop.avif" width="2786" height="1424" alt="Kanna for macOS showing repository tasks, an active agent terminal, and a command palette with task transfer and coordinator-agent actions" decoding="async" fetchpriority="high">
+      <img src="assets/kanna-tasks.avif" width="2400" height="1600" alt="Kanna for macOS: a sidebar listing tasks grouped by stage across three repositories, with the selected task&rsquo;s live agent session running in the right-hand pane and reporting the review it just wrote" decoding="async" fetchpriority="high">
       <figcaption>Kanna for macOS</figcaption>
     </figure>
   </section>
@@ -605,6 +636,17 @@
         <p>An agent notifies you when it finishes or needs a decision, and tapping the notification opens that task. From your phone you can talk to a running agent in a live terminal, browse its files and diffs, open the task&rsquo;s own dev server in a preview, and advance a stage.</p>
       </li>
     </ul>
+  </section>
+
+  <section class="section stills" aria-label="More of the Kanna desktop app">
+    <figure>
+      <img src="assets/kanna-command-palette.avif" width="2400" height="1600" alt="Kanna&rsquo;s command palette open over a running task, listing Rename Task, Push to Machine, Pair Machine, Merge Master, Task Manager, Ship and Set Up Repository" loading="lazy" decoding="async">
+      <figcaption>Command palette</figcaption>
+    </figure>
+    <figure>
+      <img src="assets/kanna-diff.avif" width="2400" height="1600" alt="Kanna&rsquo;s diff view showing an agent&rsquo;s working-tree changes across two files, removed lines in red and added lines in green, with Working, Branch and Staged tabs" loading="lazy" decoding="async">
+      <figcaption>Diff view</figcaption>
+    </figure>
   </section>
 
   <section class="section" aria-labelledby="mobile-label">
