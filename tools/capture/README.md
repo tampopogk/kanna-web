@@ -55,13 +55,34 @@ env KANNA_DB_NAME=kanna-capture.db \
     ./kd dev up --db kanna-capture.db --delete-db --daemon-dir "$SCRATCH/daemon"
 ```
 
-The app creates its schema on first run. Then seed and capture:
+The app creates its schema on first run.
+
+**Find the database the app actually opened — it is probably not where you
+put it.** `KANNA_DB_PATH` is honoured by `kd`, which will create and reset a
+file there, but the app resolves its own database *by name* into its
+Application Support directory. For a debug build that is
+`~/Library/Application Support/build.kanna/kanna-capture.db`, not the scratch
+path. Two files called `kanna-capture.db` therefore exist and only one of them
+is live, so ask the running process rather than guessing:
 
 ```sh
-sqlite3 "$SCRATCH/kanna-capture.db" < tools/capture/seed.sql
+DB="$(lsof 2>/dev/null | grep -oE '/[^ ]*kanna-capture\.db' | sort -u | head -1)"
+# confirm the app agrees, via the E2E hook:
+#   window.__KANNA_E2E__.dbName
+```
+
+Then create the fixtures, seed, and capture:
+
+```sh
+tools/capture/fixtures.sh "$SCRATCH/repos"
+tools/capture/seed.sh "$DB" "$SCRATCH/repos"
 KANNA_WEBDRIVER_PORT=4555 node tools/capture/capture.mjs
 tools/capture/convert.sh .tmp/capture assets
 ```
+
+Reload the window after seeding. Kanna reconciles against the filesystem on
+load: run `fixtures.sh` *before* seeding, or every task is closed and moved to
+the `done` stage within seconds because its worktree is missing.
 
 `seed.sql` is INSERT-only by design, so it runs against a database the shipped
 app created and cannot drift from the real schema.
