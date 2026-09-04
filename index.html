@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Kanna is a native macOS app that runs your installed coding-agent CLIs on repo-defined workflows, each task in its own git worktree.">
+<meta name="description" content="Kanna is a macOS and iOS app that gives agent CLIs structured workflows. Build with one agent, review with another, and let a coordinator manage it and notify your phone when it needs you.">
 <meta name="theme-color" content="#0d0010">
-<title>Kanna — macOS app for coding agents</title>
+<title>Kanna — structured workflows for agent CLIs</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap');
 
@@ -187,9 +187,17 @@
     -webkit-text-fill-color: transparent;
   }
 
+  .pitch {
+    max-width: 40ch;
+    margin: 26px auto 0;
+    color: #b9aac6;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+
   .download-row {
     width: 100%;
-    margin-top: 44px;
+    margin-top: 38px;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
@@ -439,6 +447,11 @@
       padding: 92px 18px 76px;
     }
 
+    .pitch {
+      font-size: 15px;
+      margin-top: 22px;
+    }
+
     .app-icon {
       width: 108px;
       height: 108px;
@@ -535,8 +548,9 @@
         </svg>
       </div>
 
-      <p class="eyebrow">macOS app for coding agents</p>
+      <p class="eyebrow">macOS &amp; iOS &middot; structured workflows for agent CLIs</p>
       <h1>KANNA</h1>
+      <p class="pitch">Build with Opus. Review with Codex. Have Fable manage it all and ping your phone when it needs something.</p>
 
       <div class="download-row">
         <a href="#" class="download-btn primary" id="btn-arm">
@@ -579,8 +593,8 @@
         <p>Long-running task-manager and merge roles coordinate repository work. A review dispatcher sends one change to the applicable specialists in parallel, then reconciles their verdicts.</p>
       </li>
       <li>
-        <span class="feature-key">Agent per stage</span>
-        <p>Run Claude Code, Codex, GitHub Copilot CLI, OpenCode, or Antigravity — whichever suits the stage.</p>
+        <span class="feature-key">Any agent, any stage</span>
+        <p>A stage is something you compose, not a slot you fill: it carries its own agent, its own prompt, its own follow-up action, and its own rule for whether Kanna advances or waits. Build with one agent and review with another — Claude Code, Codex, GitHub Copilot CLI, OpenCode, or Antigravity.</p>
       </li>
       <li>
         <span class="feature-key">Paired machines</span>
