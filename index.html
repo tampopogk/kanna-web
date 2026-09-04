@@ -273,46 +273,115 @@
     opacity: 0.7;
   }
 
-  /* ---- SHOT ---- */
-  .shot img {
-    width: 100%;
-    height: auto;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
+  /* ---- SCREENSHOT CAROUSEL ---- */
+  .carousel {
+    padding-bottom: 0;
   }
 
-  .shot figcaption {
-    margin-top: 16px;
-    color: var(--muted);
-    font-family: 'DM Mono', ui-monospace, monospace;
-    font-size: 11px;
-    letter-spacing: 0.16em;
+  /* Native scroll-snap: this works, and can be swiped, with no JavaScript. */
+  .track {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
   }
 
-  .stills {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 28px;
-    padding-top: 0;
+  .track::-webkit-scrollbar {
+    display: none;
   }
 
-  .stills figure {
+  .track:focus-visible {
+    outline: 2px solid var(--pink);
+    outline-offset: 6px;
+  }
+
+  .slide {
+    flex: 0 0 100%;
     min-width: 0;
+    scroll-snap-align: center;
   }
 
-  .stills img {
+  .slide img {
     width: 100%;
     height: auto;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 10px;
   }
 
-  .stills figcaption {
-    margin-top: 13px;
+  .slide figcaption {
+    margin-top: 14px;
     color: var(--muted);
     font-family: 'DM Mono', ui-monospace, monospace;
     font-size: 11px;
     letter-spacing: 0.16em;
+  }
+
+  .carousel-nav {
+    margin-top: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+  }
+
+  .cbtn {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 50%;
+    color: var(--text);
+    background: transparent;
+    cursor: pointer;
+    transition: border-color 160ms ease, opacity 160ms ease;
+  }
+
+  .cbtn:hover {
+    border-color: rgba(255, 255, 255, 0.45);
+  }
+
+  .cbtn:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 3px;
+  }
+
+  .cbtn[disabled] {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  .cbtn svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  .dots {
+    display: flex;
+    gap: 9px;
+  }
+
+  .dot {
+    width: 7px;
+    height: 7px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.24);
+    cursor: pointer;
+    transition: background 160ms ease, transform 160ms ease;
+  }
+
+  .dot[aria-current="true"] {
+    background: linear-gradient(135deg, var(--pink), var(--orange));
+    transform: scale(1.3);
+  }
+
+  .dot:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 3px;
   }
 
   /* ---- FEATURE LIST ---- */
@@ -341,6 +410,15 @@
     color: var(--muted);
     font-size: 15px;
     line-height: 1.7;
+  }
+
+  .features code {
+    padding: 1px 5px;
+    border-radius: 4px;
+    color: #d8cbe4;
+    background: rgba(255, 255, 255, 0.07);
+    font-family: 'DM Mono', ui-monospace, monospace;
+    font-size: 13px;
   }
 
   /* ---- MOBILE ---- */
@@ -462,10 +540,6 @@
       gap: 52px;
     }
 
-    .stills {
-      grid-template-columns: 1fr;
-      gap: 40px;
-    }
   }
 
   @media (max-width: 620px) {
@@ -506,6 +580,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
+    .track { scroll-behavior: auto; }
     *, *::before, *::after { transition-duration: 0.01ms !important; }
   }
 </style>
@@ -601,11 +676,34 @@
     </div>
   </section>
 
-  <section class="section shot" aria-label="Kanna for macOS">
-    <figure>
-      <img src="assets/kanna-tasks.avif" width="2400" height="1600" alt="Kanna for macOS: a sidebar listing tasks grouped by stage across three repositories, with the selected task&rsquo;s live agent session running in the right-hand pane and reporting the review it just wrote" decoding="async" fetchpriority="high">
-      <figcaption>Kanna for macOS</figcaption>
-    </figure>
+  <section class="section carousel" aria-roledescription="carousel" aria-label="Kanna for macOS screenshots">
+    <div class="track" id="shot-track" tabindex="0" aria-live="polite">
+      <figure class="slide">
+        <img src="assets/kanna-tasks.avif" width="2400" height="1600" alt="Kanna for macOS: a sidebar listing tasks grouped by stage across three repositories, with the selected task&rsquo;s live agent session running in the right-hand pane and reporting the review it just wrote" decoding="async" fetchpriority="high">
+        <figcaption>Tasks, grouped by stage, with the agent running</figcaption>
+      </figure>
+      <figure class="slide">
+        <img src="assets/kanna-command-palette.avif" width="2400" height="1600" alt="Kanna&rsquo;s command palette open over a running task, listing Rename Task, Push to Machine, Pair Machine, Merge Master, Task Manager, Ship and Set Up Repository" loading="lazy" decoding="async">
+        <figcaption>Command palette</figcaption>
+      </figure>
+      <figure class="slide">
+        <img src="assets/kanna-diff.avif" width="2400" height="1600" alt="Kanna&rsquo;s diff view showing an agent&rsquo;s working-tree changes across two files, removed lines in red and added lines in green, with Working, Branch and Staged tabs" loading="lazy" decoding="async">
+        <figcaption>Diff view</figcaption>
+      </figure>
+      <figure class="slide">
+        <img src="assets/kanna-commit-graph.avif" width="2400" height="1600" alt="Kanna&rsquo;s commit graph for a repository, showing a task branch one commit ahead of main above the earlier history" loading="lazy" decoding="async">
+        <figcaption>Commit graph</figcaption>
+      </figure>
+    </div>
+    <div class="carousel-nav">
+      <button class="cbtn" type="button" data-dir="-1" aria-label="Previous screenshot" aria-controls="shot-track">
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="dots" id="shot-dots"></div>
+      <button class="cbtn" type="button" data-dir="1" aria-label="Next screenshot" aria-controls="shot-track">
+        <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M6 3l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
   </section>
 
   <section class="section" aria-labelledby="what-it-does">
@@ -624,6 +722,10 @@
         <p>Long-running task-manager and merge roles coordinate repository work. A review dispatcher sends one change to the applicable specialists in parallel, then reconciles their verdicts.</p>
       </li>
       <li>
+        <span class="feature-key">Agents drive Kanna</span>
+        <p>Kanna exposes one catalog two ways: <code>kanna_*</code> MCP tools for coding agents, and <code>kanna-cli</code> for scripts and people. An agent inside a task can open follow-up tasks, send input to another task, notify your phone, and record its own stage result — which is how the coordinators above do their work.</p>
+      </li>
+      <li>
         <span class="feature-key">Any agent, any stage</span>
         <p>A stage is something you compose, not a slot you fill: it carries its own agent, its own prompt, its own follow-up action, and its own rule for whether Kanna advances or waits. Build with one agent and review with another — Claude Code, Codex, GitHub Copilot CLI, OpenCode, or Antigravity.</p>
       </li>
@@ -638,16 +740,6 @@
     </ul>
   </section>
 
-  <section class="section stills" aria-label="More of the Kanna desktop app">
-    <figure>
-      <img src="assets/kanna-command-palette.avif" width="2400" height="1600" alt="Kanna&rsquo;s command palette open over a running task, listing Rename Task, Push to Machine, Pair Machine, Merge Master, Task Manager, Ship and Set Up Repository" loading="lazy" decoding="async">
-      <figcaption>Command palette</figcaption>
-    </figure>
-    <figure>
-      <img src="assets/kanna-diff.avif" width="2400" height="1600" alt="Kanna&rsquo;s diff view showing an agent&rsquo;s working-tree changes across two files, removed lines in red and added lines in green, with Working, Branch and Staged tabs" loading="lazy" decoding="async">
-      <figcaption>Diff view</figcaption>
-    </figure>
-  </section>
 
   <section class="section" aria-labelledby="mobile-label">
     <p class="section-label" id="mobile-label">// KANNA MOBILE</p>
@@ -705,6 +797,60 @@
 </footer>
 
 <script>
+  // Progressive enhancement: the track already scrolls and snaps natively, so
+  // this only adds buttons and dots on top of behaviour that works without it.
+  (() => {
+    const track = document.getElementById('shot-track');
+    const dots = document.getElementById('shot-dots');
+    if (!track || !dots) return;
+
+    const slides = [...track.querySelectorAll('.slide')];
+    const buttons = [...document.querySelectorAll('.cbtn')];
+    if (slides.length < 2) return;
+
+    slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'dot';
+      dot.setAttribute('aria-label', `Screenshot ${i + 1} of ${slides.length}`);
+      dot.addEventListener('click', () => scrollToIndex(i));
+      dots.append(dot);
+    });
+
+    const current = () => Math.round(track.scrollLeft / track.clientWidth);
+
+    function scrollToIndex(i) {
+      const clamped = Math.max(0, Math.min(slides.length - 1, i));
+      track.scrollTo({ left: clamped * track.clientWidth });
+    }
+
+    function sync() {
+      const i = current();
+      [...dots.children].forEach((d, n) => d.setAttribute('aria-current', String(n === i)));
+      buttons.forEach(b => {
+        const dir = Number(b.dataset.dir);
+        b.disabled = dir < 0 ? i === 0 : i === slides.length - 1;
+      });
+    }
+
+    buttons.forEach(b =>
+      b.addEventListener('click', () => scrollToIndex(current() + Number(b.dataset.dir)))
+    );
+
+    track.addEventListener('keydown', event => {
+      if (event.key === 'ArrowRight') { event.preventDefault(); scrollToIndex(current() + 1); }
+      if (event.key === 'ArrowLeft') { event.preventDefault(); scrollToIndex(current() - 1); }
+    });
+
+    let frame = 0;
+    track.addEventListener('scroll', () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(sync);
+    });
+    window.addEventListener('resize', sync);
+    sync();
+  })();
+
   const REPO = 'jemdiggity/kanna';
 
   fetch(`https://api.github.com/repos/${REPO}/releases/latest`)
