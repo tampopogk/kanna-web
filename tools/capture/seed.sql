@@ -11,6 +11,13 @@
 --   * no private repository names and no real in-flight work
 --   * repository paths point at throwaway fixtures, never a real checkout
 --
+-- Providers are spread across all five agents Kanna can launch, so the
+-- screenshots show variety rather than one provider everywhere. Note the two
+-- columns: `agent_provider` carries the provider, and `agent_type` is the
+-- session kind ('pty' / 'agent') that TerminalTabs.vue renders on. Putting a
+-- provider name in `agent_type` renders no terminal at all, which is why this
+-- file sets both explicitly rather than relying on a follow-up fixup.
+--
 -- INSERT-only on purpose: run it against a database the app has already
 -- created, so the schema always matches the shipped app rather than a copy
 -- of it that can drift. See README.md for the order of operations.
@@ -38,110 +45,110 @@ VALUES ('cap-fieldnotes', '__FIXTURE_ROOT__/fieldnotes', 'fieldnotes', 'main', 0
 -- ── orchard-web ─────────────────────────────────────────────────────────────
 
 INSERT INTO pipeline_item
-  (id, repo_id, issue_number, issue_title, prompt, stage, tags, branch,
-   agent_type, activity, activity_changed_at, pinned, pin_order, base_ref,
+  (id, repo_id, issue_number, issue_title, prompt, stage, branch,
+   agent_type, agent_provider, activity, activity_changed_at, pinned, pin_order, base_ref,
    created_at, updated_at)
 VALUES
   ('cap-auth-middleware', 'cap-orchard-web', 214, 'Refactor auth middleware',
    'Move the auth middleware onto the new token validation library and keep the session tests green',
-   'in_progress', '["in progress"]', 'task-auth-middleware',
-   'claude', 'working', datetime('now', '-4 minutes'), 1, 1, 'origin/main',
+   'in_progress', 'task-auth-middleware',
+   'pty', 'claude', 'working', datetime('now', '-4 minutes'), 1, 1, 'origin/main',
    datetime('now', '-2 days'), datetime('now', '-4 minutes'));
 
 INSERT INTO pipeline_item
-  (id, repo_id, issue_number, issue_title, prompt, stage, tags, branch,
-   agent_type, activity, activity_changed_at, pinned, pin_order, base_ref,
+  (id, repo_id, issue_number, issue_title, prompt, stage, branch,
+   agent_type, agent_provider, activity, activity_changed_at, pinned, pin_order, base_ref,
    created_at, updated_at)
 VALUES
   ('cap-empty-states', 'cap-orchard-web', 208, 'Empty states for the task list',
    'Design and build empty states for the task list, including first run and filtered-to-nothing',
-   'in_progress', '["in progress"]', 'task-empty-states',
-   'codex', 'working', datetime('now', '-18 minutes'), 1, 2, 'origin/main',
+   'in_progress', 'task-empty-states',
+   'pty', 'codex', 'working', datetime('now', '-18 minutes'), 1, 2, 'origin/main',
    datetime('now', '-3 days'), datetime('now', '-18 minutes'));
 
 INSERT INTO pipeline_item
-  (id, repo_id, issue_number, issue_title, prompt, stage, tags, branch,
-   agent_type, activity, activity_changed_at, unread_at, base_ref,
+  (id, repo_id, issue_number, issue_title, prompt, stage, branch,
+   agent_type, agent_provider, activity, activity_changed_at, unread_at, base_ref,
    created_at, updated_at)
 VALUES
   ('cap-keyboard-nav', 'cap-orchard-web', 219, 'Keyboard navigation in the sidebar',
    'Add full keyboard navigation to the sidebar and document the shortcuts',
-   'in_progress', '["in progress"]', 'task-keyboard-nav',
-   'claude', 'unread', datetime('now', '-51 minutes'), datetime('now', '-51 minutes'), 'origin/main',
+   'in_progress', 'task-keyboard-nav',
+   'pty', 'copilot', 'unread', datetime('now', '-51 minutes'), datetime('now', '-51 minutes'), 'origin/main',
    datetime('now', '-1 days'), datetime('now', '-51 minutes'));
 
 INSERT INTO pipeline_item
-  (id, repo_id, issue_number, issue_title, prompt, stage, tags, branch,
-   agent_type, activity, pr_number, pr_url, base_ref, created_at, updated_at)
+  (id, repo_id, issue_number, issue_title, prompt, stage, branch,
+   agent_type, agent_provider, activity, pr_number, pr_url, base_ref, created_at, updated_at)
 VALUES
   ('cap-image-pipeline', 'cap-orchard-web', 197, 'Responsive image pipeline',
    'Generate responsive image variants at build time and swap the loader over',
-   'pr', '["pr"]', 'task-image-pipeline',
-   'claude', 'idle', 341, 'https://github.com/orchard/orchard-web/pull/341', 'origin/main',
+   'pr', 'task-image-pipeline',
+   'pty', 'antigravity', 'idle', 341, 'https://github.com/orchard/orchard-web/pull/341', 'origin/main',
    datetime('now', '-6 days'), datetime('now', '-3 hours'));
 
 -- ── orchard-api ─────────────────────────────────────────────────────────────
 
 INSERT INTO pipeline_item
-  (id, repo_id, issue_number, issue_title, prompt, stage, tags, branch,
-   agent_type, activity, activity_changed_at, base_ref, created_at, updated_at)
+  (id, repo_id, issue_number, issue_title, prompt, stage, branch,
+   agent_type, agent_provider, activity, activity_changed_at, base_ref, created_at, updated_at)
 VALUES
   ('cap-rate-limiting', 'cap-orchard-api', 88, 'Rate limiting on the public API',
    'Add per-token rate limiting to the public API with a shared bucket in Redis',
-   'in_progress', '["in progress"]', 'task-rate-limiting',
-   'codex', 'working', datetime('now', '-2 minutes'), 'origin/main',
+   'in_progress', 'task-rate-limiting',
+   'pty', 'opencode', 'working', datetime('now', '-2 minutes'), 'origin/main',
    datetime('now', '-1 days'), datetime('now', '-2 minutes'));
 
 INSERT INTO pipeline_item
-  (id, repo_id, issue_number, issue_title, prompt, stage, tags, branch,
-   agent_type, activity, activity_changed_at, base_ref, created_at, updated_at)
+  (id, repo_id, issue_number, issue_title, prompt, stage, branch,
+   agent_type, agent_provider, activity, activity_changed_at, base_ref, created_at, updated_at)
 VALUES
   ('cap-webhook-retries', 'cap-orchard-api', 91, 'Webhook delivery retries',
    'Retry failed webhook deliveries with exponential backoff and a dead letter queue',
-   'in_progress', '["in progress"]', 'task-webhook-retries',
-   'claude', 'idle', datetime('now', '-4 hours'), 'origin/main',
+   'in_progress', 'task-webhook-retries',
+   'pty', 'codex', 'idle', datetime('now', '-4 hours'), 'origin/main',
    datetime('now', '-4 days'), datetime('now', '-4 hours'));
 
 INSERT INTO pipeline_item
-  (id, repo_id, issue_number, issue_title, prompt, stage, tags, branch,
-   agent_type, activity, pr_number, pr_url, base_ref, created_at, updated_at)
+  (id, repo_id, issue_number, issue_title, prompt, stage, branch,
+   agent_type, agent_provider, activity, pr_number, pr_url, base_ref, created_at, updated_at)
 VALUES
   ('cap-schema-migration', 'cap-orchard-api', 84, 'Schema migration v3',
    'Write and verify the v3 schema migration, including the backfill and its rollback',
-   'pr', '["pr"]', 'task-schema-migration',
-   'copilot', 'idle', 512, 'https://github.com/orchard/orchard-api/pull/512', 'origin/main',
+   'pr', 'task-schema-migration',
+   'pty', 'copilot', 'idle', 512, 'https://github.com/orchard/orchard-api/pull/512', 'origin/main',
    datetime('now', '-8 days'), datetime('now', '-5 hours'));
 
 INSERT INTO pipeline_item
-  (id, repo_id, issue_number, issue_title, prompt, stage, tags, branch,
-   agent_type, activity, base_ref, created_at, updated_at)
+  (id, repo_id, issue_number, issue_title, prompt, stage, branch,
+   agent_type, agent_provider, activity, base_ref, created_at, updated_at)
 VALUES
   ('cap-flaky-upload', 'cap-orchard-api', 79, 'Fix the flaky upload test',
    'Track down and fix the intermittent failure in the multipart upload test',
-   'done', '["done"]', 'task-flaky-upload',
-   'claude', 'idle', 'origin/main',
+   'done', 'task-flaky-upload',
+   'pty', 'claude', 'idle', 'origin/main',
    datetime('now', '-11 days'), datetime('now', '-9 days'));
 
 -- ── fieldnotes ──────────────────────────────────────────────────────────────
 
 INSERT INTO pipeline_item
-  (id, repo_id, issue_number, issue_title, prompt, stage, tags, branch,
-   agent_type, activity, activity_changed_at, base_ref, created_at, updated_at)
+  (id, repo_id, issue_number, issue_title, prompt, stage, branch,
+   agent_type, agent_provider, activity, activity_changed_at, base_ref, created_at, updated_at)
 VALUES
   ('cap-getting-started', 'cap-fieldnotes', 31, 'Getting started guide',
    'Write the getting started guide and check every command in it actually runs',
-   'in_progress', '["in progress"]', 'task-getting-started',
-   'claude', 'working', datetime('now', '-9 minutes'), 'origin/main',
+   'in_progress', 'task-getting-started',
+   'pty', 'antigravity', 'working', datetime('now', '-9 minutes'), 'origin/main',
    datetime('now', '-2 days'), datetime('now', '-9 minutes'));
 
 INSERT INTO pipeline_item
-  (id, repo_id, issue_number, issue_title, prompt, stage, tags, branch,
-   agent_type, activity, base_ref, created_at, updated_at)
+  (id, repo_id, issue_number, issue_title, prompt, stage, branch,
+   agent_type, agent_provider, activity, base_ref, created_at, updated_at)
 VALUES
   ('cap-changelog', 'cap-fieldnotes', 27, 'Generate the changelog from tags',
    'Generate the changelog from git tags and merged pull requests',
-   'done', '["done"]', 'task-changelog',
-   'opencode', 'idle', 'origin/main',
+   'done', 'task-changelog',
+   'pty', 'opencode', 'idle', 'origin/main',
    datetime('now', '-14 days'), datetime('now', '-12 days'));
 
 -- ── Worktrees ───────────────────────────────────────────────────────────────

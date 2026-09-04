@@ -3,170 +3,123 @@
  * Marketing capture harness for the Kanna homepage.
  *
  * Drives a Kanna *debug* build over the WebDriver server that
- * tauri-plugin-webdriver exposes (it is compiled in under
- * #[cfg(debug_assertions)] only, which is why the installed release app
- * cannot be driven and a dev build is required).
+ * tauri-plugin-webdriver exposes (compiled in under #[cfg(debug_assertions)]
+ * only, which is why the installed release app cannot be driven).
  *
- * This captures the real application UI. It is not a mock, a facsimile, or a
- * composite: every pixel comes from the shipped frontend rendering state the
- * app genuinely produces, seeded from ./seed.sql.
+ * This captures the real application UI. Nothing is mocked, hand-built or
+ * composited: every pixel comes from the shipped frontend rendering state the
+ * app genuinely produces, over a real daemon PTY session in a real git
+ * worktree. Run prepare.mjs first.
  *
  * Usage:
- *   KANNA_WEBDRIVER_PORT=4555 node tools/capture/capture.mjs
- *
- * Writes PNGs to .tmp/capture/. Run convert.sh afterwards to produce the
- * AVIF files that the page actually references.
+ *   KANNA_WEBDRIVER_PORT=4447 node capture.mjs [shot-name ...]
  */
 import { mkdir, writeFile } from "node:fs/promises";
-import { createHash } from "node:crypto";
 import { join } from "node:path";
+import { open, focusWindow, sleep, CLOSE_OVERLAYS } from "./wd.mjs";
 
-const PORT = process.env.KANNA_WEBDRIVER_PORT || "4555";
-const BASE = `http://127.0.0.1:${PORT}`;
 const OUT = process.env.CAPTURE_OUT || ".tmp/capture";
-
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
-
-async function wd(method, path, body) {
-  const res = await fetch(`${BASE}${path}`, {
-    method,
-    headers: { "Content-Type": "application/json" },
-    body: body === undefined ? undefined : JSON.stringify(body),
-  });
-  const text = await res.text();
-  let json;
-  try {
-    json = JSON.parse(text);
-  } catch {
-    throw new Error(`${method} ${path} -> non-JSON: ${text.slice(0, 200)}`);
-  }
-  if (!res.ok) throw new Error(`${method} ${path} -> ${res.status} ${text.slice(0, 200)}`);
-  return json;
-}
+const TASK = process.env.CAPTURE_TASK_ID || "cap-auth-middleware";
 
 /**
- * The app opens a keyboard-shortcuts overlay on a fresh profile. Dismiss it
- * before capturing, the same way a person would.
+ * Refuse to capture the task view while the agent composer holds text nobody
+ * typed.
+ *
+ * An idle Claude CLI fills its composer with a tab-to-accept suggestion. That
+ * text is provider chrome, and on a homepage it would read as an instruction
+ * somebody gave. The check below is why captures are taken while the agent is
+ * working: a busy session leaves its composer empty.
  */
-const DISMISS_OVERLAYS = `
-  for (let i = 0; i < 3; i += 1) {
-    document.dispatchEvent(new KeyboardEvent('keydown', {
-      key: 'Escape', code: 'Escape', bubbles: true, cancelable: true
-    }));
-  }
+const COMPOSER_TEXT = `
+  const tb = window.__KANNA_E2E__.terminalBuffers;
+  if (!tb || !tb.sessionIds().includes(${JSON.stringify(TASK)})) return "";
+  const lines = tb.lines(${JSON.stringify(TASK)});
+  const composer = lines.map((l) => l.trim()).filter((l) => l.startsWith("\\u276f"));
+  return composer.length ? composer[composer.length - 1].slice(1).trim() : "";
 `;
 
-/**
- * Each shot names the file it produces, the UI state to reach first, and a
- * `verify` expression that must be true before the screenshot is taken.
- *
- * `verify` is not optional bookkeeping. Without it, a setup step that silently
- * does nothing still produces a confident log line and a file that is a
- * byte-for-byte duplicate of the previous shot. That is exactly what happened
- * on the first run: "command-palette.png" came out with the same SHA as
- * "tasks.png" because the palette never opened, and the log claimed both. A
- * capture harness that mislabels states is worse than one that fails.
- */
 const SHOTS = [
   {
     name: "tasks",
-    description: "Task list across repositories with an agent working",
-    setup: `window.scrollTo(0, 0);`,
-    verify: `document.body.innerText.trim().length > 0`,
-    settle: 1200,
+    description:
+      "Task list across three repositories with a live agent session in the right pane",
+    setup: CLOSE_OVERLAYS,
+    settle: 1500,
+    guard: COMPOSER_TEXT,
   },
   {
     name: "command-palette",
     description: "Command palette open over the task view",
-    // The palette is Shift+Cmd+P, not Cmd+K. Synthetic KeyboardEvents and the
-    // WebDriver actions API have both failed to open it: its shortcut context
-    // wants main-window focus that injected keys do not reach. Driving the
-    // app's own command store is the likely fix. Until then `verify` fails
-    // this shot loudly instead of writing a duplicate of the previous one.
     setup: `
-      document.dispatchEvent(new KeyboardEvent('keydown', {
-        key: 'P', code: 'KeyP', metaKey: true, shiftKey: true,
-        bubbles: true, cancelable: true
-      }));
+      const s = window.__KANNA_E2E__.setupState;
+      s.showShortcutsModal = false;
+      s.keyboardActions.commandPalette();
+      return s.showCommandPalette === true;
     `,
-    verify: `/type a command/i.test(document.body.innerText)`,
-    settle: 900,
+    settle: 1400,
+    teardown: `window.__KANNA_E2E__.setupState.showCommandPalette = false; return true;`,
+  },
+  {
+    name: "diff",
+    description: "Diff view of the agent's changes on the task branch",
+    setup: `window.__KANNA_E2E__.setupState.showDiffModal = true; return true;`,
+    settle: 4000,
+    // Land on a file with edits rather than the first added file, so the shot
+    // shows a real before/after rather than a wall of green.
+    beforeShot: `
+      const scroller = [...document.querySelectorAll("*")]
+        .filter((el) => el.scrollHeight > el.clientHeight + 100 && el.clientHeight > 300)
+        .sort((a, b) => b.clientHeight - a.clientHeight)[0];
+      if (scroller) scroller.scrollTop = Number(${JSON.stringify(process.env.CAPTURE_DIFF_SCROLL || "2600")});
+      return scroller ? scroller.scrollTop : -1;
+    `,
+    teardown: `window.__KANNA_E2E__.setupState.showDiffModal = false; return true;`,
+  },
+  {
+    name: "commit-graph",
+    description: "Commit graph for the selected repository",
+    setup: `window.__KANNA_E2E__.setupState.showCommitGraphModal = true; return true;`,
+    settle: 4000,
+    teardown: `window.__KANNA_E2E__.setupState.showCommitGraphModal = false; return true;`,
   },
 ];
 
-async function main() {
-  await mkdir(OUT, { recursive: true });
+const only = process.argv.slice(2);
+await mkdir(OUT, { recursive: true });
 
-  const status = await fetch(`${BASE}/status`).catch(() => null);
-  if (!status?.ok) {
-    console.error(
-      [
-        `No WebDriver on ${BASE}.`,
-        "Start a Kanna debug build with an isolated database and daemon dir, e.g.",
-        "  KANNA_WEBDRIVER_PORT=4555 \\",
-        "  KANNA_DAEMON_DIR=<scratch>/daemon \\",
-        "  ./kd dev up --db kanna-capture.db --delete-db --daemon-dir <scratch>/daemon",
-        "then seed it (see README.md) and re-run this script.",
-      ].join("\n")
-    );
-    process.exit(1);
+const wd = await open();
+try {
+  const dbName = await wd.eval(`return window.__KANNA_E2E__ ? window.__KANNA_E2E__.dbName : null;`);
+  if (!dbName || !/capture/.test(dbName)) {
+    throw new Error(`refusing to capture: app is on database "${dbName}", not a capture database`);
   }
+  console.log(`database: ${dbName}`);
+  console.log(`window: ${await focusWindow(wd)}`);
 
-  const session = await wd("POST", "/session", { capabilities: {} });
-  const sid = session.value?.sessionId || session.sessionId;
-  if (!sid) throw new Error("no sessionId in /session response");
-
-  try {
-    await wd("POST", `/session/${sid}/execute/sync`, { script: DISMISS_OVERLAYS, args: [] });
-    await sleep(600);
-    const seen = new Map();
-    const failures = [];
-
-    for (const shot of SHOTS) {
-      if (shot.setup) {
-        await wd("POST", `/session/${sid}/execute/sync`, { script: shot.setup, args: [] });
+  for (const shot of SHOTS) {
+    if (only.length && !only.includes(shot.name)) continue;
+    if (shot.setup) await wd.eval(shot.setup);
+    await sleep(shot.settle ?? 800);
+    if (shot.guard) {
+      const composer = await wd.eval(shot.guard);
+      if (composer) {
+        throw new Error(
+          `refusing to capture "${shot.name}": the agent composer holds untyped text (${JSON.stringify(composer)}). ` +
+            `Capture while the agent is working.`,
+        );
       }
-      await sleep(shot.settle ?? 800);
-
-      if (shot.verify) {
-        const check = await wd("POST", `/session/${sid}/execute/sync`, {
-          script: `return Boolean(${shot.verify});`,
-          args: [],
-        });
-        if (check.value !== true) {
-          failures.push(`${shot.name}: never reached the state it claims (${shot.description}). Not captured.`);
-          continue;
-        }
-      }
-
-      const res = await wd("GET", `/session/${sid}/screenshot`);
-      const b64 = res.value ?? res;
-      const digest = createHash("sha1").update(b64).digest("hex");
-
-      // A duplicate means two shots are showing the same state, whatever the
-      // labels say. Refuse it rather than write a mislabelled file.
-      if (seen.has(digest)) {
-        failures.push(`${shot.name}: identical to ${seen.get(digest)}. Not captured.`);
-        continue;
-      }
-      seen.set(digest, shot.name);
-
-      const file = join(OUT, `${shot.name}.png`);
-      await writeFile(file, Buffer.from(b64, "base64"));
-      console.log(`captured ${file}  (${shot.description})`);
     }
-
-    if (failures.length > 0) {
-      console.error(`\n${failures.length} shot(s) not captured:`);
-      for (const f of failures) console.error(`  - ${f}`);
-      process.exitCode = 1;
+    if (shot.beforeShot) {
+      await wd.eval(shot.beforeShot);
+      await sleep(1200);
     }
-  } finally {
-    await wd("DELETE", `/session/${sid}`).catch(() => undefined);
+    const png = await wd.screenshot();
+    const file = join(OUT, `${shot.name}.png`);
+    await writeFile(file, png);
+    console.log(`captured ${file}  (${shot.description})`);
+    if (shot.teardown) await wd.eval(shot.teardown);
+    await sleep(400);
   }
+} finally {
+  await wd.close();
 }
-
-main().catch((error) => {
-  console.error(error.message);
-  process.exit(1);
-});

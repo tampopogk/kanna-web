@@ -318,6 +318,71 @@
     letter-spacing: 0.16em;
   }
 
+  .zoom {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+  }
+
+  .zoom:focus-visible {
+    outline: 2px solid var(--pink);
+    outline-offset: 4px;
+  }
+
+  /* An author rule beats the UA [hidden] rule at equal specificity, so
+     .lightbox{display:grid} alone leaves the overlay covering the page. */
+  .lightbox[hidden] {
+    display: none;
+  }
+
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    display: grid;
+    place-items: center;
+    padding: clamp(12px, 4vw, 48px);
+    background: rgba(6, 0, 8, 0.94);
+    cursor: zoom-out;
+  }
+
+  .lightbox img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 8px;
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 40px;
+    height: 40px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    color: var(--text);
+    background: rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+  }
+
+  .lightbox-close:focus-visible {
+    outline: 2px solid var(--text);
+    outline-offset: 3px;
+  }
+
+  .lightbox-close svg {
+    width: 16px;
+    height: 16px;
+  }
+
   .carousel-nav {
     margin-top: 22px;
     display: flex;
@@ -535,9 +600,30 @@
       gap: 8px;
     }
 
+    /* Stacked vertically these ran to three full screens. A snap strip with a
+       peek of the next phone shows there is more without the scroll. */
     .phones {
-      grid-template-columns: 1fr;
-      gap: 52px;
+      display: flex;
+      grid-template-columns: none;
+      gap: 16px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      margin-inline: calc(var(--gutter, 0px) * -1);
+    }
+
+    .phones::-webkit-scrollbar {
+      display: none;
+    }
+
+    .phone {
+      flex: 0 0 78%;
+      scroll-snap-align: center;
+    }
+
+    .phone-frame,
+    .phone figcaption {
+      max-width: none;
     }
 
   }
@@ -679,19 +765,19 @@
   <section class="section carousel" aria-roledescription="carousel" aria-label="Kanna for macOS screenshots">
     <div class="track" id="shot-track" tabindex="0" aria-live="polite">
       <figure class="slide">
-        <img src="assets/kanna-tasks.avif" width="2400" height="1600" alt="Kanna for macOS: a sidebar listing tasks grouped by stage across three repositories, with the selected task&rsquo;s live agent session running in the right-hand pane and reporting the review it just wrote" decoding="async" fetchpriority="high">
+        <button class="zoom" type="button" aria-label="Enlarge this screenshot"><img src="assets/kanna-tasks.avif" width="2400" height="1600" alt="Kanna for macOS: a sidebar listing tasks grouped by stage across three repositories, with the selected task&rsquo;s live agent session running in the right-hand pane and reporting the review it just wrote" decoding="async" fetchpriority="high"></button>
         <figcaption>Tasks, grouped by stage, with the agent running</figcaption>
       </figure>
       <figure class="slide">
-        <img src="assets/kanna-command-palette.avif" width="2400" height="1600" alt="Kanna&rsquo;s command palette open over a running task, listing Rename Task, Push to Machine, Pair Machine, Merge Master, Task Manager, Ship and Set Up Repository" loading="lazy" decoding="async">
+        <button class="zoom" type="button" aria-label="Enlarge this screenshot"><img src="assets/kanna-command-palette.avif" width="2400" height="1600" alt="Kanna&rsquo;s command palette open over a running task, listing Rename Task, Push to Machine, Pair Machine, Merge Master, Task Manager, Ship and Set Up Repository" loading="lazy" decoding="async"></button>
         <figcaption>Command palette</figcaption>
       </figure>
       <figure class="slide">
-        <img src="assets/kanna-diff.avif" width="2400" height="1600" alt="Kanna&rsquo;s diff view showing an agent&rsquo;s working-tree changes across two files, removed lines in red and added lines in green, with Working, Branch and Staged tabs" loading="lazy" decoding="async">
+        <button class="zoom" type="button" aria-label="Enlarge this screenshot"><img src="assets/kanna-diff.avif" width="2400" height="1600" alt="Kanna&rsquo;s diff view showing an agent&rsquo;s working-tree changes across two files, removed lines in red and added lines in green, with Working, Branch and Staged tabs" loading="lazy" decoding="async"></button>
         <figcaption>Diff view</figcaption>
       </figure>
       <figure class="slide">
-        <img src="assets/kanna-commit-graph.avif" width="2400" height="1600" alt="Kanna&rsquo;s commit graph for a repository, showing a task branch one commit ahead of main above the earlier history" loading="lazy" decoding="async">
+        <button class="zoom" type="button" aria-label="Enlarge this screenshot"><img src="assets/kanna-commit-graph.avif" width="2400" height="1600" alt="Kanna&rsquo;s commit graph for a repository, showing a task branch one commit ahead of main above the earlier history" loading="lazy" decoding="async"></button>
         <figcaption>Commit graph</figcaption>
       </figure>
     </div>
@@ -786,6 +872,13 @@
   </section>
 </main>
 
+<div class="lightbox" id="lightbox" hidden>
+  <button class="lightbox-close" type="button" id="lightbox-close" aria-label="Close enlarged screenshot">
+    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+  </button>
+  <img id="lightbox-img" src="" alt="" decoding="async">
+</div>
+
 <footer>
   <div class="footer-inner">
     <span>KANNA · OPEN SOURCE · BRING YOUR OWN MODEL · © TAMPOPO LLC</span>
@@ -849,6 +942,52 @@
     });
     window.addEventListener('resize', sync);
     sync();
+  })();
+
+  // Tap or click a carousel screenshot to enlarge it.
+  (() => {
+    const box = document.getElementById('lightbox');
+    const boxImg = document.getElementById('lightbox-img');
+    const closeBtn = document.getElementById('lightbox-close');
+    if (!box || !boxImg || !closeBtn) return;
+
+    // Remember the trigger itself, not document.activeElement: a click does not
+    // reliably focus a button, and restoring to <body> would strand focus on
+    // the close button after it is hidden.
+    let opener = null;
+
+    function open(button, img) {
+      opener = button;
+      boxImg.src = img.currentSrc || img.src;
+      boxImg.alt = img.alt;
+      box.hidden = false;
+      document.body.style.overflow = 'hidden';
+      closeBtn.focus();
+    }
+
+    function close() {
+      box.hidden = true;
+      boxImg.src = '';
+      boxImg.alt = '';
+      document.body.style.overflow = '';
+      if (opener && document.contains(opener)) opener.focus();
+      opener = null;
+    }
+
+    document.querySelectorAll('.zoom').forEach(button => {
+      button.addEventListener('click', () => {
+        const img = button.querySelector('img');
+        if (img) open(button, img);
+      });
+    });
+
+    closeBtn.addEventListener('click', close);
+    box.addEventListener('click', event => {
+      if (event.target !== closeBtn && !closeBtn.contains(event.target)) close();
+    });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && !box.hidden) close();
+    });
   })();
 
   const REPO = 'jemdiggity/kanna';
