@@ -306,8 +306,14 @@
   .slide img {
     width: 100%;
     height: auto;
+    /* Slides come from two capture sizes. A fixed box with `contain` keeps the
+       carousel from changing height between them, and shows every image whole
+       rather than cropping one set to match the other. */
+    aspect-ratio: 16 / 10;
+    object-fit: contain;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 10px;
+    background: var(--bg);
   }
 
   .slide figcaption {
@@ -777,7 +783,11 @@
         <figcaption>Diff view</figcaption>
       </figure>
       <figure class="slide">
-        <button class="zoom" type="button" aria-label="Enlarge this screenshot"><img src="assets/kanna-commit-graph.avif" width="2400" height="1600" alt="Kanna&rsquo;s commit graph for a repository, showing a task branch one commit ahead of main above the earlier history" loading="lazy" decoding="async"></button>
+        <button class="zoom" type="button" aria-label="Enlarge this screenshot"><img src="assets/kanna-file-explorer.avif" width="2786" height="1626" alt="Kanna&rsquo;s file explorer open over a task, browsing the worktree in three columns from the repository root down into a directory listing, with a filter bar along the bottom" loading="lazy" decoding="async"></button>
+        <figcaption>File explorer</figcaption>
+      </figure>
+      <figure class="slide">
+        <button class="zoom" type="button" aria-label="Enlarge this screenshot"><img src="assets/kanna-commit-graph.avif" width="2786" height="1626" alt="Kanna&rsquo;s commit graph, showing branch lines beside a list of merged pull requests and commits with their branch and tag labels" loading="lazy" decoding="async"></button>
         <figcaption>Commit graph</figcaption>
       </figure>
     </div>
