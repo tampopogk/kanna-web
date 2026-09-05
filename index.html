@@ -112,7 +112,7 @@
   .hero {
     position: relative;
     overflow: hidden;
-    min-height: 86vh;
+    min-height: 74vh;
     padding: 96px 24px 88px;
     display: flex;
     flex-direction: column;
@@ -746,7 +746,7 @@
         </svg>
       </div>
 
-      <p class="eyebrow">macOS &amp; iOS &middot; structured workflows for agent CLIs</p>
+      <p class="eyebrow">structured workflows for agent CLIs</p>
       <h1>KANNA</h1>
       <p class="pitch">Build with Opus. Review with Codex. Have Fable manage it all and ping your phone when it needs something.</p>
 
@@ -807,31 +807,39 @@
     <ul class="features">
       <li>
         <span class="feature-key">Composed workflows</span>
-        <p>Name the stages your work actually goes through, give each stage an agent, and decide where Kanna advances on its own and where it stops for you. The workflow is a file in the repository, so it is reviewed and versioned like the rest of the code.</p>
+        <p>Define the structured stages your work goes through and decide where Kanna advances on its own or stops for you. The workflow is a file in the repository, so it is reviewed and versioned like the rest of the code.</p>
       </li>
       <li>
         <span class="feature-key">Isolated workspaces</span>
         <p>Each task gets its own git worktree and its own ports. Kanna puts the port values in the environment and runs your startup and teardown scripts, so several workspaces can each run a web app, a mobile app, a Firebase emulator and whatever else the stack needs, side by side.</p>
       </li>
       <li>
-        <span class="feature-key">Coordinators</span>
-        <p>Long-running task-manager and merge roles coordinate repository work. A review dispatcher sends one change to the applicable specialists in parallel, then reconciles their verdicts.</p>
+        <span class="feature-key">Subtasks</span>
+        <p>Break larger work into subtasks that stay nested under their parent. A specialized review, for example, runs each applicable reviewer as a subtask and then reconciles their verdicts.</p>
+      </li>
+      <li>
+        <span class="feature-key">Task blockers</span>
+        <p>Stack up dependent tasks — for example, queue a UI task behind an API task, then an integration task behind both. Kanna automatically starts each one when everything it depends on is done.</p>
+      </li>
+      <li>
+        <span class="feature-key">Task manager</span>
+        <p>The long-running task manager babysits tasks across machines, giving you a single point of contact for all of them.</p>
       </li>
       <li>
         <span class="feature-key">Agents drive Kanna</span>
-        <p>Kanna exposes one catalog two ways: <code>kanna_*</code> MCP tools for coding agents, and <code>kanna-cli</code> for scripts and people. An agent inside a task can open follow-up tasks, send input to another task, notify your phone, and record its own stage result — which is how the coordinators above do their work.</p>
+        <p>Agents can open follow-up tasks, talk to other tasks, notify your phone, and record stage results through Kanna&rsquo;s MCP tools or CLI — which is how the task manager above does its work.</p>
       </li>
       <li>
-        <span class="feature-key">Any agent, any stage</span>
-        <p>A stage is something you compose, not a slot you fill: it carries its own agent, its own prompt, its own follow-up action, and its own rule for whether Kanna advances or waits. Build with one agent and review with another — Claude Code, Codex, GitHub Copilot CLI, OpenCode, or Antigravity.</p>
+        <span class="feature-key">Agent per stage</span>
+        <p>Each stage maps to a built-in or repository-defined agent, with a stage-specific prompt and transition policy plus an optional follow-up action. Choose Claude Code, Codex, GitHub Copilot CLI, OpenCode, or Antigravity CLI as the agent provider for each stage.</p>
       </li>
       <li>
-        <span class="feature-key">Paired machines</span>
+        <span class="feature-key">Work across machines</span>
         <p>Pair another Mac and push a task to it, or pull one back.</p>
       </li>
       <li>
         <span class="feature-key">Away from the desk</span>
-        <p>An agent notifies you when it finishes or needs a decision, and tapping the notification opens that task. From your phone you can talk to a running agent in a live terminal, browse its files and diffs, open the task&rsquo;s own dev server in a preview, and advance a stage.</p>
+        <p>An agent notifies you when it finishes or needs a decision. From your phone, you can talk to a running agent in a live terminal, browse its files and diffs, open the task&rsquo;s own dev server in a preview, and advance a stage.</p>
       </li>
     </ul>
   </section>
