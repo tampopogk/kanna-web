@@ -1,8 +1,8 @@
 # iOS 1.0.4 privacy correction — owner review handoff
 
-Status: **OWNER APPROVAL REQUIRED FOR THE SUPPORT-PAGE COPY.** The privacy
-policy and App Store Connect matrix remain owner-approved as of September 16,
-2026. This stage did not merge, deploy, publish, or change App Store Connect.
+Status: **OWNER APPROVED September 16, 2026.** The privacy policy, the App
+Store Connect matrix, and the support-page copy are all owner-approved. This
+stage did not merge, deploy, publish, or change App Store Connect.
 
 Prepared September 16, 2026 from Kanna product commit
 `a15e643850a74399b16bf30dca438cbc7492945b` (`apps/mobile/VERSION`
@@ -15,7 +15,7 @@ bundle `build.kanna.app`, source commit `a15e643850a74399b16bf30dca438cbc7492945
 
 - Owner-approved website policy: [`privacy/index.html`](../privacy/index.html),
   with an effective date of September 16, 2026.
-- Support-page consistency correction awaiting owner approval:
+- Owner-approved support-page consistency correction:
   [`support/index.html`](../support/index.html). It repeats only the approved
   policy's purchase paths, in-app deletion flow, subscription-cancellation
   behavior, and email fallback.
@@ -26,11 +26,11 @@ bundle `build.kanna.app`, source commit `a15e643850a74399b16bf30dca438cbc7492945
 
 The exact review diff is the repository diff for this document,
 `privacy/index.html`, and `support/index.html`. The owner approved the policy
-wording, matrix, and September 16, 2026 effective date in the task conversation;
-approval of the support-page text is still required. Merging this site branch
-deploys the site, so normal review and merge controls still apply. If deployment
-slips past September 16, update the effective date to the actual deployment date
-before merge rather than backdating the policy.
+wording, matrix, September 16, 2026 effective date, and the exact support-page
+text in the task conversation. Merging this site branch deploys the site, so
+normal review and merge controls still apply. If deployment slips past
+September 16, update the effective date to the actual deployment date before
+merge rather than backdating the policy.
 
 ## Current public claims vs proposed claims
 
@@ -39,8 +39,8 @@ before merge rather than backdating the policy.
 | App Store privacy label | “Data Not Collected.” | Answer **Yes** and declare the source-supported types below. |
 | Purchases | Website policy does not mention subscriptions, StoreKit, Stripe, or purchase records. | Describes both purchase paths, provider processing, UID-linked Apple and Stripe subscription records, purposes, and service providers. |
 | Account deletion | Says there is no in-app account deletion and promises email-request deletion within 30 days. | Describes the shipped `Delete account` flow and what a successful callable deletes; removes the unsupported 30-day guarantee. |
-| Support purchase guidance (`support/index.html`) | Says there is no cloud purchase flow in the mobile app. | **Pending owner approval:** Describes Apple in-app purchase and Stripe Checkout in an external browser from the account portal, matching the approved policy. |
-| Support deletion guidance (`support/index.html`) | Says there is no in-app deletion workflow, promises completion within 30 days, and describes backup rotation. | **Pending owner approval:** Gives the in-app steps, explains that successful deletion cancels Stripe-billed but not Apple subscriptions, and provides the email fallback without a duration guarantee. |
+| Support purchase guidance (`support/index.html`) | Says there is no cloud purchase flow in the mobile app. | Describes Apple in-app purchase and Stripe Checkout in an external browser from the account portal, matching the approved policy. |
+| Support deletion guidance (`support/index.html`) | Says there is no in-app deletion workflow, promises completion within 30 days, and describes backup rotation. | Gives the in-app steps, explains that successful deletion cancels Stripe-billed but not Apple subscriptions, and provides the email fallback without a duration guarantee. |
 | Subscription cancellation on deletion | Omitted. | Stripe subscriptions are canceled by successful account deletion; Apple subscriptions are not and must be canceled in Apple settings. |
 | Retained exceptions | Claims logs are kept for a “short” period and backups rotate, without a source-supported duration. | Makes no duration claim; identifies the retained UID deletion fence and calls out provider records, logs, backups, and support correspondence that the callable does not delete. |
 | Photos and camera | Says camera is used only for QR scanning and no photo is uploaded. | Describes optional message attachments, on-device resize/re-encode, LAN or transient relay path, Mac storage until task closure, and optional camera/library access. |
@@ -254,12 +254,12 @@ These approvals make the package ready for the normal review workflow; they do
 not themselves merge, deploy, publish, or modify App Store Connect.
 
 The support-page correction in [`support/index.html`](../support/index.html) was
-added during revision round 1 and has not yet received explicit owner approval.
-The proposed text repeats the already approved policy facts about Apple and
-Stripe purchase paths, the in-app <strong>Delete account</strong> steps, Stripe
-and Apple subscription cancellation behavior, and the email fallback. Owner
-approval of this exact support-page text is required before merge, deployment,
-or publication.
+added during revision round 1 and was approved by the owner on September 16,
+2026. Its text repeats only the already approved policy facts about Apple and
+Stripe purchase paths, the in-app **Delete account** steps, Stripe and Apple
+subscription cancellation behavior, and the email fallback. That approval covers
+the exact support-page text in this branch; it does not merge, deploy, or
+publish it.
 
 ## Definition references
 
