@@ -113,7 +113,8 @@
   .shots.two { grid-template-columns: 1fr 1fr; }
   .shot img { display: block; width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
   .hero .shot img { box-shadow: 0 40px 120px -40px rgba(247,43,137,.35); }
-  .shot.pending img { display: none; }
+  .shot.pending img { position: absolute; width: 1px; height: 1px; opacity: 0; } /* not display:none: a lazy image that isn't laid out never loads */
+  .shot { position: relative; }
   .shot:not(.pending) .ph { display: none; }
   .mode { position: fixed; right: 16px; bottom: 16px; z-index: 10; display: flex; gap: 4px; padding: 4px; border-radius: 10px;
     background: var(--bg-2); border: 1px solid var(--line); font-family: var(--mono); font-size: 12px; }
@@ -221,7 +222,7 @@
       </div>
       <p class="version js-version">Requires macOS 15 or later</p>
     </div>
-    <figure class="shot"><img data-name="desk" width="2560" height="1600" alt="Kanna's Desk with no task on it: the planning agent on the left summing up what's running and offering a quiz, and on the right the Shelf with three tasks and the backlog, one task blocked" fetchpriority="high" decoding="async"><figcaption class="cap">The planning agent beside the Shelf: three tasks on it, three waiting in the backlog, one of them blocked.</figcaption></figure>
+    <figure class="shot"><img data-name="desk" width="2560" height="1600" alt="Kanna's Desk with no task on it: the planning agent on the left summing up what's running and offering a quiz, and on the right the Shelf with three tasks and the backlog, one task blocked" fetchpriority="high" decoding="async"><figcaption class="cap">The planning agent beside the Shelf: three tasks on it, the backlog below, one task blocked.</figcaption></figure>
   </section>
 
   <section class="wrap chapter" id="plan">

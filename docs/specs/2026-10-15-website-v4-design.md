@@ -144,12 +144,12 @@ Real captures of Kanna 4.0.0 by `tools/capture` (a private Kanna running real Cl
 
 | Where | NAME | Shows | Caption | Captured |
 |---|---|---|---|---|
-| Hero | `desk` | The Desk with no task: the planning agent summing up what's running and offering a quiz, beside the Shelf (three tasks) and backlog (one blocked) | The planning agent beside the Shelf: three tasks on it, three waiting in the backlog, one of them blocked. | light |
-| 01 plan | `plan` | The planning agent helping write a task prompt: asking about the decisions it needs, or reading back the first message before making the task | The planning agent turns what you want into a task an agent can finish in one go. | asked for |
-| 02 model | `model` | A task presenting a model for approval: a mockup or spec with doc-markup threads (a comment and the agent's reply), beside the agent | The model, marked up: you comment, the agent answers and refines it. | asked for |
-| 03 desk | `presenting` | "Fix DST gap in daily tides" called up to the Desk: its agent's summary beside the diff it opened | Called up to the Desk: the task explains its fix, with the diff open beside it. | light |
-| 04 connected | `code` | A code walk-through: the agent's note above `harmonics.ts:35–44`, the rest dimmed | A walk through the code, one note at a time. | light |
-| 04 connected | `quiz` | The Quiz window after a miss: a spot-the-bug question, the code open at the line with the explanation | The daily quiz: miss one and the code opens at the line. | light |
+| Hero | `desk` | The Desk with no task: the planning agent summing up what's running and offering a quiz, beside the Shelf (three tasks) and backlog (one blocked) | The planning agent beside the Shelf: three tasks on it, the backlog below, one task blocked. | light, dark |
+| 01 plan | `plan` | The planning agent helping write a task prompt: the user asks for a king-tide heads-up, and the agent asks how it should be delivered before writing the task | The planning agent turns what you want into a task an agent can finish in one go. | light, dark |
+| 02 model | `model` | "Mock up the day page" presenting its mockup, with a markup thread: the user asks where the tide is now, the agent's reply says what it added | The model, marked up: you comment, the agent answers and refines it. | light, dark |
+| 03 desk | `presenting` | "Fix DST gap in daily tides" called up to the Desk: its agent's summary beside the diff it opened | Called up to the Desk: the task explains its fix, with the diff open beside it. | light, dark |
+| 04 connected | `code` | A code walk-through: the agent's note above `harmonics.ts:35–44`, the rest dimmed | A walk through the code, one note at a time. | light, dark |
+| 04 connected | `quiz` | The Quiz window after a miss: a spot-the-bug question, the code open at the line with the explanation | The daily quiz: miss one and the code opens at the line. | light, dark |
 
 Alt text for each is in the mockup.
 
