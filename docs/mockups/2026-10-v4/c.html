@@ -1,0 +1,302 @@
+<!doctype html>
+<!--
+  Direction C — "Bars"
+  The idea: the app icon blown up into the whole page. Its rounded bars and five
+  gradients become the layout: the headline's three promises (understand, sustain, fun)
+  sit in pills coloured like the icon's rows, and each pill is a link to a big rounded
+  panel in that colour. Bold grotesque type, a warm white page, pills and soft corners
+  everywhere (the icon's radius), a little motion on the hero bars. It leans on the
+  "while having fun" part: confident, friendly, a bit loud.
+  Copy: the first draft, since superseded (final copy: docs/specs/2026-10-15-website-v4-design.md). Dashed boxes are placeholders for
+  real v4 screenshots, never simulated UI.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kanna — C: Bars</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Figtree:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+  :root {
+    --page: #fffaf4;
+    --ink: #17121f;
+    --ink-2: #4c4557;
+    --muted: #857d90;
+    --card: #ffffff;
+    --hot: linear-gradient(100deg, #f72b89, #ff8a12);
+    --pink: linear-gradient(100deg, #df1fb7, #ef2d9b);
+    --purple: linear-gradient(100deg, #9630dc, #6940a4);
+    --indigo: linear-gradient(100deg, #1957c3, #6940a4);
+    --bv: linear-gradient(100deg, #1458c5, #736b91);
+    --green: #17d34c;
+    --display: 'Bricolage Grotesque', -apple-system, BlinkMacSystemFont, sans-serif;
+    --sans: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
+    --mono: 'DM Mono', ui-monospace, Menlo, monospace;
+    --r: 32px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  body { background: var(--page); color: var(--ink); font-family: var(--sans); font-size: 17px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  code { font-family: var(--mono); font-size: .9em; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 28px; }
+
+  /* ---- top ---- */
+  .top { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-family: var(--display); font-weight: 800; font-size: 22px; letter-spacing: -.02em; }
+  .brand svg { width: 34px; height: 34px; }
+  .top nav { display: flex; gap: 8px; }
+  .top nav a { text-decoration: none; font-weight: 600; font-size: 14px; padding: 8px 16px; border-radius: 999px; background: #f2ebe2; }
+  .top nav a:hover { background: #e9e0d4; }
+
+  /* ---- hero ---- */
+  .hero { text-align: center; padding: 64px 0 40px; }
+  .hero-icon { width: 132px; height: 132px; margin: 0 auto 36px; display: block; filter: drop-shadow(0 18px 40px rgba(150, 48, 220, .18)); }
+  .hero-icon .bar { transform-box: fill-box; transform-origin: left center; animation: grow .7s cubic-bezier(.2,.9,.3,1.2) both; }
+  @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 14px; padding: 7px 16px 7px 12px; border-radius: 999px; background: #f2ebe2; }
+  .eyebrow .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--green); }
+  h1 { font-family: var(--display); font-weight: 800; font-size: clamp(40px, 7.2vw, 92px); line-height: 1.04; letter-spacing: -.035em; margin: 28px auto 0; max-width: 15ch; }
+  h1 a.pill { text-decoration: none; color: #fff; padding: 0 .28em .04em; border-radius: .6em; display: inline-block; line-height: 1.12; transition: transform .2s; }
+  h1 a.pill:hover { transform: rotate(-2deg) scale(1.03); }
+  .pitch { margin: 30px auto 0; max-width: 32em; font-size: 20px; color: var(--ink-2); }
+  .downloads { margin-top: 36px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font-weight: 600; font-size: 16px; padding: 15px 26px; border-radius: 999px; background: #fff; box-shadow: inset 0 0 0 2px var(--ink); transition: transform .15s; }
+  .btn svg { width: 17px; height: 17px; }
+  .btn.primary { background: var(--ink); color: #fff; }
+  .btn:hover { transform: translateY(-2px); }
+  .version { margin-top: 14px; font-family: var(--mono); font-size: 13px; color: var(--muted); }
+
+  .ph { width: 100%; aspect-ratio: 3 / 2; border-radius: 24px; border: 2px dashed rgba(23,18,31,.22);
+    background: repeating-linear-gradient(135deg, transparent 0 16px, rgba(23,18,31,.035) 16px 17px), #f4ede4;
+    display: grid; place-items: center; text-align: center; padding: 24px; }
+  .ph b { display: block; font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 8px; }
+  .ph span { display: block; font-family: var(--display); font-weight: 600; font-size: clamp(17px, 2vw, 24px); color: var(--ink-2); max-width: 24ch; line-height: 1.2; }
+  .hero-shot { margin-top: 64px; }
+
+  /* ---- panels ---- */
+  .panel { margin-top: 96px; border-radius: 48px; padding: 80px 64px; color: #fff; position: relative; overflow: hidden; }
+  .panel.hot { background: var(--hot); }
+  .panel.purple { background: linear-gradient(140deg, #9630dc, #1957c3); }
+  .panel.bv { background: linear-gradient(140deg, #1458c5, #736b91); }
+  .panel::after { /* a giant ghost bar, from the icon */
+    content: ''; position: absolute; right: -80px; top: 48px; width: 420px; height: 110px; border-radius: 55px; background: rgba(255,255,255,.12); }
+  .kicker { display: inline-block; font-weight: 600; font-size: 14px; padding: 6px 14px; border-radius: 999px; background: rgba(255,255,255,.2); }
+  h2 { font-family: var(--display); font-weight: 800; font-size: clamp(36px, 5.6vw, 72px); line-height: 1; letter-spacing: -.035em; margin: 20px 0 18px; max-width: 14ch; position: relative; }
+  .lead { font-size: 20px; max-width: 32em; opacity: .92; position: relative; }
+  .tiles { margin-top: 48px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; position: relative; }
+  .tile { background: var(--card); color: var(--ink); border-radius: 24px; padding: 28px 28px 30px; }
+  .tile h3 { font-family: var(--display); font-weight: 800; font-size: 22px; letter-spacing: -.02em; margin-bottom: 8px; display: flex; align-items: center; gap: 12px; }
+  .tile h3 .chip { width: 30px; height: 14px; border-radius: 7px; flex: none; }
+  .tile p { color: var(--ink-2); font-size: 16px; }
+  .tile.wide { grid-column: 1 / -1; }
+  .hot .chip { background: var(--hot); }
+  .purple .chip { background: var(--purple); }
+  .bv .chip { background: var(--bv); }
+  .panel .ph { border-color: rgba(255,255,255,.55); background: repeating-linear-gradient(135deg, transparent 0 16px, rgba(255,255,255,.06) 16px 17px), rgba(255,255,255,.1); }
+  .panel .ph b { color: rgba(255,255,255,.8); }
+  .panel .ph span { color: #fff; }
+  .shots { margin-top: 16px; display: grid; gap: 16px; position: relative; }
+  .shots.two { grid-template-columns: 1fr 1fr; }
+  .shots.first { margin-top: 48px; }
+
+  pre.cli { margin-top: 16px; background: var(--ink); color: #f4eefc; border-radius: 24px; padding: 26px 30px; font-family: var(--mono); font-size: 15px; line-height: 1.9; overflow-x: auto; position: relative; }
+  pre.cli .p { color: #ff8a12; user-select: none; }
+
+  /* ---- closing ---- */
+  .closing { text-align: center; padding: 140px 0 120px; }
+  .closing .icon { width: 110px; height: 110px; margin: 0 auto 28px; display: block; }
+  .closing h2 { margin: 0 auto 16px; color: var(--ink); max-width: none; }
+  .closing .lead { margin: 0 auto; color: var(--ink-2); }
+  .closing .links { margin-top: 28px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .closing .links a { text-decoration: none; font-weight: 600; font-size: 15px; padding: 10px 18px; border-radius: 999px; background: #f2ebe2; }
+
+  footer { padding: 28px 0 40px; }
+  footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px; font-family: var(--mono); font-size: 12px; letter-spacing: .1em; color: var(--muted); border-top: 2px solid #efe6da; padding-top: 24px; }
+  footer a { text-decoration: none; }
+  footer a:hover { color: var(--ink); }
+  footer nav { display: flex; gap: 20px; }
+
+  @media (prefers-reduced-motion: reduce) { .hero-icon .bar { animation: none; } html { scroll-behavior: auto; } }
+  @media (max-width: 860px) {
+    .panel { padding: 56px 32px; border-radius: 36px; margin-top: 64px; }
+    .tiles, .shots.two { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 520px) {
+    body { font-size: 16px; }
+    .wrap { padding: 0 14px; }
+    .top nav a.hide-s { display: none; }
+    .hero { padding-top: 40px; }
+    .hero-icon { width: 104px; height: 104px; }
+    .pitch, .lead { font-size: 17px; }
+    .btn { flex: 1 1 140px; justify-content: center; }
+    .panel { padding: 44px 20px 20px; border-radius: 28px; }
+    .panel::after { width: 220px; height: 60px; right: -60px; top: 24px; }
+    .tile { padding: 22px 20px; border-radius: 20px; }
+    .ph { aspect-ratio: 4 / 3; border-radius: 18px; }
+    pre.cli { font-size: 12px; padding: 18px; border-radius: 18px; }
+    .closing { padding: 96px 0 72px; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="g-hot" x1="113" y1="0" x2="354" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#f72b89"/><stop offset="1" stop-color="#ff8a12"/></linearGradient>
+    <linearGradient id="g-pink" x1="113" y1="0" x2="293" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#df1fb7"/><stop offset="1" stop-color="#ef2d9b"/></linearGradient>
+    <linearGradient id="g-purple" x1="113" y1="0" x2="226" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#9630dc"/><stop offset="1" stop-color="#9e23dd"/></linearGradient>
+    <linearGradient id="g-indigo" x1="113" y1="0" x2="293" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#1957c3"/><stop offset="1" stop-color="#6940a4"/></linearGradient>
+    <linearGradient id="g-bv" x1="113" y1="0" x2="360" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#1458c5"/><stop offset="1" stop-color="#736b91"/></linearGradient>
+    <symbol id="kanna-icon" viewBox="0 0 512 512">
+      <rect x="46" y="46" width="420" height="420" rx="105" fill="#fff"/>
+      <rect x="46.5" y="46.5" width="419" height="419" rx="104.5" fill="none" stroke="rgba(0,0,0,.08)"/>
+      <rect x="113" y="82" width="45" height="34" rx="17" fill="url(#g-hot)"/>
+      <rect x="180" y="82" width="174" height="34" rx="17" fill="url(#g-hot)"/>
+      <rect x="377" y="82" width="24" height="34" rx="12" fill="#17d34c"/>
+      <rect x="113" y="161" width="45" height="34" rx="17" fill="url(#g-pink)"/>
+      <rect x="180" y="161" width="113" height="34" rx="17" fill="url(#g-pink)"/>
+      <rect x="113" y="240" width="45" height="33" rx="16.5" fill="url(#g-purple)"/>
+      <rect x="180" y="240" width="46" height="33" rx="16.5" fill="url(#g-purple)"/>
+      <rect x="113" y="318" width="45" height="33" rx="16.5" fill="url(#g-indigo)"/>
+      <rect x="180" y="318" width="47" height="33" rx="16.5" fill="url(#g-indigo)"/>
+      <rect x="245" y="318" width="48" height="33" rx="16.5" fill="url(#g-indigo)"/>
+      <rect x="113" y="397" width="45" height="33" rx="16.5" fill="url(#g-bv)"/>
+      <rect x="180" y="397" width="47" height="33" rx="16.5" fill="url(#g-bv)"/>
+      <rect x="245" y="397" width="48" height="33" rx="16.5" fill="url(#g-bv)"/>
+      <rect x="313" y="397" width="47" height="33" rx="16.5" fill="url(#g-bv)"/>
+    </symbol>
+    <symbol id="dl" viewBox="0 0 16 16"><path d="M8 2v8M5 7l3 3 3-3M3 12h10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<header class="wrap top">
+  <a class="brand" href="#"><svg aria-hidden="true"><use href="#kanna-icon"/></svg>Kanna</a>
+  <nav aria-label="Site">
+    <a class="hide-s" href="https://github.com/tampopogk/kanna">GitHub</a>
+    <a href="https://discord.gg/WpT5N9kWa">Discord</a>
+  </nav>
+</header>
+
+<main>
+  <section class="wrap hero">
+    <!-- The hero icon is drawn inline so its bars can grow in, row by row. Same geometry as the symbol. -->
+    <svg class="hero-icon" viewBox="0 0 512 512" role="img" aria-label="Kanna app icon">
+      <rect x="46" y="46" width="420" height="420" rx="105" fill="#fff"/>
+      <rect x="46.5" y="46.5" width="419" height="419" rx="104.5" fill="none" stroke="rgba(0,0,0,.08)"/>
+      <rect class="bar" style="animation-delay:.05s" x="113" y="82" width="45" height="34" rx="17" fill="url(#g-hot)"/>
+      <rect class="bar" style="animation-delay:.12s" x="180" y="82" width="174" height="34" rx="17" fill="url(#g-hot)"/>
+      <rect class="bar" style="animation-delay:.2s" x="377" y="82" width="24" height="34" rx="12" fill="#17d34c"/>
+      <rect class="bar" style="animation-delay:.15s" x="113" y="161" width="45" height="34" rx="17" fill="url(#g-pink)"/>
+      <rect class="bar" style="animation-delay:.22s" x="180" y="161" width="113" height="34" rx="17" fill="url(#g-pink)"/>
+      <rect class="bar" style="animation-delay:.25s" x="113" y="240" width="45" height="33" rx="16.5" fill="url(#g-purple)"/>
+      <rect class="bar" style="animation-delay:.32s" x="180" y="240" width="46" height="33" rx="16.5" fill="url(#g-purple)"/>
+      <rect class="bar" style="animation-delay:.35s" x="113" y="318" width="45" height="33" rx="16.5" fill="url(#g-indigo)"/>
+      <rect class="bar" style="animation-delay:.42s" x="180" y="318" width="47" height="33" rx="16.5" fill="url(#g-indigo)"/>
+      <rect class="bar" style="animation-delay:.49s" x="245" y="318" width="48" height="33" rx="16.5" fill="url(#g-indigo)"/>
+      <rect class="bar" style="animation-delay:.45s" x="113" y="397" width="45" height="33" rx="16.5" fill="url(#g-bv)"/>
+      <rect class="bar" style="animation-delay:.52s" x="180" y="397" width="47" height="33" rx="16.5" fill="url(#g-bv)"/>
+      <rect class="bar" style="animation-delay:.59s" x="245" y="397" width="48" height="33" rx="16.5" fill="url(#g-bv)"/>
+      <rect class="bar" style="animation-delay:.66s" x="313" y="397" width="47" height="33" rx="16.5" fill="url(#g-bv)"/>
+    </svg>
+    <span class="eyebrow"><span class="dot"></span>Kanna 4 · for macOS</span>
+    <h1>Build software you <a class="pill" href="#understand" style="background:var(--hot)">understand</a>, at a pace you can <a class="pill" href="#sustain" style="background:linear-gradient(100deg,#9630dc,#1957c3)">sustain</a>, while having <a class="pill" href="#fun" style="background:var(--bv)">fun</a>.</h1>
+    <p class="pitch">Kanna is a terminal for macOS that runs your coding agents as tasks, each in its own worktree, each showing you what it did when it's done. Its terminals outlive the app.</p>
+    <div class="downloads">
+      <a href="#" class="btn primary js-arm"><svg aria-hidden="true"><use href="#dl"/></svg>Apple Silicon</a>
+      <a href="#" class="btn js-intel"><svg aria-hidden="true"><use href="#dl"/></svg>Intel</a>
+    </div>
+    <p class="version js-version">Requires macOS 15 or later</p>
+    <div class="hero-shot">
+      <div class="ph"><div><b>Screenshot placeholder · 1</b><span>The Desk: a task's agent on the left, its tabs on the right, the Shelf below</span></div></div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <section class="panel hot" id="understand">
+      <span class="kicker">Understand</span>
+      <h2>Know what your agents built.</h2>
+      <p class="lead">Agents write code faster than you can read it. Kanna keeps you on top of it: every task shows its work, explains it on the lines, and asks you what landed.</p>
+      <div class="tiles">
+        <div class="tile"><h3><span class="chip"></span>Tasks present their work.</h3><p>When a task is done, its agent lays out its Desk to show you what changed and why: the spec, the mockup, the diff, comments on the key lines. Pull it hours later and it's waiting as it was left.</p></div>
+        <div class="tile"><h3><span class="chip"></span>Explained on the lines.</h3><p>Ask how something works and the agent opens the file in a code tab and comments on the lines it's talking about, the rest dimmed. For the bigger picture, a markdown doc with mermaid diagrams.</p></div>
+        <div class="tile"><h3><span class="chip"></span>Review like a colleague.</h3><p>Comment on a spec or a mockup and the agent beside it reads, answers and fixes.</p></div>
+        <div class="tile"><h3><span class="chip"></span>A quiz on what landed.</h3><p>Five questions on what merged into main today, about two minutes. Miss one and the code opens at the line, with the reason on it. No streaks, no score to protect.</p></div>
+      </div>
+      <div class="shots first">
+        <div class="ph"><div><b>Screenshot placeholder · 2</b><span>A task presenting its work: its agent beside a diff or markdown tab</span></div></div>
+      </div>
+      <div class="shots two">
+        <div class="ph"><div><b>Screenshot placeholder · 3</b><span>A code tab with the agent's comment on the lines</span></div></div>
+        <div class="ph"><div><b>Screenshot placeholder · 4</b><span>A quiz question, or a miss with the code beside it</span></div></div>
+      </div>
+    </section>
+
+    <section class="panel purple" id="sustain">
+      <span class="kicker">Sustain</span>
+      <h2>Work at a pace you can keep.</h2>
+      <p class="lead">Say what you want once. Kanna runs the rest a few at a time, and keeps your attention for one task.</p>
+      <div class="tiles">
+        <div class="tile"><h3><span class="chip"></span>Plan with one agent.</h3><p>Every window has a planning agent. Tell it what you want; it reads the code, asks until the decisions are settled, and writes the tasks.</p></div>
+        <div class="tile"><h3><span class="chip"></span>The backlog runs itself.</h3><p>Backlog tasks start on their own, three at a time, oldest first, and stop when they're done or need you. One that's finished when you pull it is a happy surprise.</p></div>
+        <div class="tile"><h3><span class="chip"></span>One Desk, a short Shelf.</h3><p>One task on the Desk: its agent on the left, its work in tabs on the right. Two more wait on the Shelf, still running. Three at a time, by design.</p></div>
+        <div class="tile"><h3><span class="chip"></span>Tasks that wait their turn.</h3><p>A task can wait for others, and won't start until they're done.</p></div>
+        <div class="tile wide"><h3><span class="chip" style="background:var(--green)"></span>Terminals that never die.</h3><p>Quit Kanna, crash it, upgrade it: every shell and agent keeps running, its screen intact.</p></div>
+      </div>
+      <div class="shots first">
+        <div class="ph"><div><b>Screenshot placeholder · 5</b><span>The planning agent beside the full Shelf and backlog</span></div></div>
+      </div>
+    </section>
+
+    <section class="panel bv" id="fun">
+      <span class="kicker">Fun</span>
+      <h2>And enjoy it.</h2>
+      <p class="lead">A fast, good-looking terminal with everything you're building beside it.</p>
+      <div class="tiles">
+        <div class="tile wide"><h3><span class="chip"></span>Everything side by side.</h3><p>Terminals drawn by Ghostty, web pages, markdown with mermaid diagrams, highlighted code and the iOS Simulator, in windows, tabs and splits.</p></div>
+        <div class="tile"><h3><span class="chip"></span>Agents drive it too.</h3><p>The <code>kanna</code> CLI opens, arranges and shows it all, for you and for your agents.</p></div>
+        <div class="tile"><h3><span class="chip"></span>Bring your agent.</h3><p>Claude Code, Codex, Copilot, OpenCode and more.</p></div>
+      </div>
+<pre class="cli"><span class="p">$ </span>kanna open --name server --cmd "npm run dev" --split right --size 1/3
+<span class="p">$ </span>kanna open web http://localhost:3000 --tab
+<span class="p">$ </span>kanna open md docs/spec.md --tab
+<span class="p">$ </span>kanna open ios --app MyApp</pre>
+    </section>
+  </div>
+
+  <section class="wrap closing">
+    <svg class="icon" aria-hidden="true"><use href="#kanna-icon"/></svg>
+    <h2>Kanna 4 is here.</h2>
+    <p class="lead">Download it for your Mac. Source available under FSL-1.1-MIT: each release becomes MIT two years after it ships.</p>
+    <div class="downloads">
+      <a href="#" class="btn primary js-arm"><svg aria-hidden="true"><use href="#dl"/></svg>Apple Silicon</a>
+      <a href="#" class="btn js-intel"><svg aria-hidden="true"><use href="#dl"/></svg>Intel</a>
+    </div>
+    <p class="version js-version">Requires macOS 15 or later</p>
+    <p class="links"><a href="https://github.com/tampopogk/kanna">Source on GitHub</a><a href="https://discord.gg/WpT5N9kWa">Join the Discord</a></p>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>KANNA · <a href="https://github.com/tampopogk/kanna/blob/main/LICENSE">SOURCE AVAILABLE</a> · © TAMPOPO LLC</span>
+    <nav aria-label="Footer"><a href="https://discord.gg/WpT5N9kWa">DISCORD</a><a href="/support/">SUPPORT</a><a href="/privacy/">PRIVACY</a></nav>
+  </div>
+</footer>
+
+<script>
+  fetch('https://api.github.com/repos/tampopogk/kanna/releases/latest')
+    .then(r => r.json())
+    .then(release => {
+      const assets = release.assets || [];
+      const arm = assets.find(a => /arm64|apple.?silicon/i.test(a.name) && a.name.endsWith('.dmg'));
+      const intel = assets.find(a => /x86|intel/i.test(a.name) && a.name.endsWith('.dmg'));
+      if (arm) document.querySelectorAll('.js-arm').forEach(el => el.href = arm.browser_download_url);
+      if (intel) document.querySelectorAll('.js-intel').forEach(el => el.href = intel.browser_download_url);
+      if (release.tag_name) document.querySelectorAll('.js-version').forEach(el => el.textContent = `${release.tag_name} · Requires macOS 15 or later`);
+    })
+    .catch(() => {});
+</script>
+</body>
+</html>
