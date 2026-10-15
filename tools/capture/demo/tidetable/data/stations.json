@@ -1,0 +1,79 @@
+[
+  {
+    "id": "sf-golden-gate",
+    "name": "San Francisco, Golden Gate",
+    "timeZone": "America/Los_Angeles",
+    "lat": 37.8063,
+    "lon": -122.4659,
+    "datum": 0.97,
+    "constituents": [
+      { "name": "M2", "amplitude": 0.580, "phase": 205.4 },
+      { "name": "K1", "amplitude": 0.368, "phase": 106.2 },
+      { "name": "O1", "amplitude": 0.230, "phase": 89.7 },
+      { "name": "S2", "amplitude": 0.134, "phase": 211.0 },
+      { "name": "N2", "amplitude": 0.122, "phase": 181.3 },
+      { "name": "P1", "amplitude": 0.114, "phase": 104.8 }
+    ]
+  },
+  {
+    "id": "seattle",
+    "name": "Seattle, Elliott Bay",
+    "timeZone": "America/Los_Angeles",
+    "lat": 47.6026,
+    "lon": -122.3393,
+    "datum": 2.03,
+    "constituents": [
+      { "name": "M2", "amplitude": 1.066, "phase": 138.9 },
+      { "name": "K1", "amplitude": 0.832, "phase": 260.1 },
+      { "name": "O1", "amplitude": 0.459, "phase": 241.6 },
+      { "name": "S2", "amplitude": 0.263, "phase": 160.2 },
+      { "name": "N2", "amplitude": 0.207, "phase": 112.5 },
+      { "name": "P1", "amplitude": 0.257, "phase": 258.0 }
+    ]
+  },
+  {
+    "id": "the-battery",
+    "name": "New York, The Battery",
+    "timeZone": "America/New_York",
+    "lat": 40.7006,
+    "lon": -74.0142,
+    "datum": 0.79,
+    "constituents": [
+      { "name": "M2", "amplitude": 0.661, "phase": 47.2 },
+      { "name": "N2", "amplitude": 0.149, "phase": 29.8 },
+      { "name": "S2", "amplitude": 0.131, "phase": 74.6 },
+      { "name": "K1", "amplitude": 0.097, "phase": 302.4 },
+      { "name": "O1", "amplitude": 0.052, "phase": 298.1 }
+    ]
+  },
+  {
+    "id": "boston",
+    "name": "Boston Harbor",
+    "timeZone": "America/New_York",
+    "lat": 42.3539,
+    "lon": -71.0503,
+    "datum": 1.58,
+    "constituents": [
+      { "name": "M2", "amplitude": 1.362, "phase": 111.3 },
+      { "name": "N2", "amplitude": 0.310, "phase": 79.4 },
+      { "name": "S2", "amplitude": 0.212, "phase": 152.8 },
+      { "name": "K1", "amplitude": 0.141, "phase": 18.9 },
+      { "name": "O1", "amplitude": 0.112, "phase": 11.2 }
+    ]
+  },
+  {
+    "id": "honolulu",
+    "name": "Honolulu Harbor",
+    "timeZone": "Pacific/Honolulu",
+    "lat": 21.3067,
+    "lon": -157.867,
+    "datum": 0.36,
+    "constituents": [
+      { "name": "M2", "amplitude": 0.168, "phase": 112.0 },
+      { "name": "K1", "amplitude": 0.148, "phase": 243.7 },
+      { "name": "O1", "amplitude": 0.079, "phase": 226.5 },
+      { "name": "S2", "amplitude": 0.058, "phase": 99.3 },
+      { "name": "N2", "amplitude": 0.034, "phase": 95.1 }
+    ]
+  }
+]
