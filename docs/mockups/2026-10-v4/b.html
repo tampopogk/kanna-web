@@ -103,7 +103,7 @@
   .wrap { max-width: 1240px; margin: 0 auto; padding: 0 32px; }
 
   /* ---- top ---- */
-  .top { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
+  .top { display: flex; align-items: center; justify-content: space-between; padding-top: 20px; padding-bottom: 20px; }
   .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-family: var(--mono); font-weight: 700; font-size: 15px; letter-spacing: .04em; }
   .brand svg { width: 26px; height: 26px; }
   .top nav { display: flex; gap: 6px; }
@@ -114,7 +114,7 @@
   .top nav a:hover { color: var(--text); border-color: var(--hover-line); }
 
   /* ---- hero ---- */
-  .hero { display: grid; grid-template-columns: 5fr 7fr; gap: 56px; align-items: center; padding: 80px 0 96px; }
+  .hero { display: grid; grid-template-columns: 5fr 7fr; gap: 56px; align-items: center; padding-top: 80px; padding-bottom: 96px; }
   .status { display: inline-flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 12px; color: var(--text-2);
     border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px 6px 10px; background: var(--bg-2); }
   .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 4px rgba(23,211,76,.15); }
@@ -125,7 +125,7 @@
   .pitch { font-size: 18px; color: var(--text-2); max-width: 30em; }
   .downloads { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 10px; }
   .btn {
-    display: inline-flex; align-items: center; gap: 10px; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 10px; text-decoration: none; white-space: nowrap;
     font-family: var(--mono); font-size: 14px; font-weight: 500;
     padding: 12px 18px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg-2);
     transition: border-color .15s, transform .15s;
@@ -145,7 +145,7 @@
   .hero .ph { box-shadow: 0 40px 120px -40px var(--glow); }
 
   /* ---- chapters ---- */
-  .chapter { display: grid; grid-template-columns: 280px 1fr; gap: 56px; padding: 96px 0; border-top: 1px solid var(--line); }
+  .chapter { display: grid; grid-template-columns: 280px 1fr; gap: 56px; padding-top: 96px; padding-bottom: 96px; border-top: 1px solid var(--line); }
   .hero > *, .chapter > * { min-width: 0; }
   .rail { position: sticky; top: 32px; align-self: start; }
   .rail .row { display: flex; gap: 6px; margin-bottom: 18px; }
@@ -184,7 +184,7 @@
   .closing .fine { margin-top: 18px; font-size: 13px; color: var(--muted); }
 
   /* ---- closing ---- */
-  .closing { border-top: 1px solid var(--line); padding: 120px 0; display: grid; grid-template-columns: auto 1fr; gap: 48px; align-items: center; }
+  .closing { border-top: 1px solid var(--line); padding-top: 120px; padding-bottom: 120px; display: grid; grid-template-columns: auto 1fr; gap: 48px; align-items: center; }
   .closing .icon { width: 160px; height: 160px; }
   .closing h2 { font-size: clamp(32px, 4.6vw, 56px); }
   .closing .links { margin-top: 24px; display: flex; gap: 20px; font-family: var(--mono); font-size: 13px; color: var(--text-2); }
@@ -197,11 +197,11 @@
 
   @media (max-width: 960px) {
     .hero { grid-template-columns: 1fr; gap: 48px; padding-top: 56px; }
-    .chapter { grid-template-columns: 1fr; gap: 24px; padding: 72px 0; }
+    .chapter { grid-template-columns: 1fr; gap: 24px; padding-top: 72px; padding-bottom: 72px; }
     .rail { position: static; }
   }
   @media (max-width: 620px) {
-    .wrap { padding: 0 18px; }
+    .wrap { padding-left: 18px; padding-right: 18px; }
     .top nav a.hide-s { display: none; }
     .cards, .cards.three, .shots.two { grid-template-columns: 1fr; }
     .card { padding: 22px 20px; }
@@ -209,7 +209,7 @@
     .pitch, .lead { font-size: 16px; }
     .ph { aspect-ratio: 4 / 3; }
     pre.cli { font-size: 12px; padding: 16px; }
-    .closing { grid-template-columns: 1fr; padding: 80px 0; gap: 28px; }
+    .closing { grid-template-columns: 1fr; padding-top: 80px; padding-bottom: 80px; gap: 28px; }
     .closing .icon { width: 96px; height: 96px; }
   }
 </style>
@@ -287,7 +287,7 @@
       <p class="lead">Most tools hand you a prompt box. In Kanna, the planning agent helps you write better task prompts.</p>
       <p class="body">Each task starts with enough detail to go from idea to production code, often in one go. You're still the bottleneck, but for design decisions, not for reviewing PRs.</p>
       <div class="shots">
-        <figure class="shot pending" data-shot="plan"><img data-name="plan" width="2560" height="1600" alt="The planning agent helping write a task prompt, asking about the decisions it needs, beside the Shelf and backlog" loading="lazy" decoding="async"><div class="ph"><div><b>Screenshot coming · plan</b><span>The planning agent helping you write a task prompt</span></div></div><figcaption class="cap">The planning agent turns what you want into a task an agent can finish in one go.</figcaption></figure>
+        <figure class="shot pending" data-shot="plan"><img data-name="plan" width="2560" height="1600" alt="The planning agent helping write a task: the user asks for a heads-up before king tides, and the agent asks how it should be delivered, with choices, beside the Shelf and backlog" loading="lazy" decoding="async"><div class="ph"><div><b>Screenshot coming · plan</b><span>The planning agent helping you write a task prompt</span></div></div><figcaption class="cap">The planning agent turns what you want into a task an agent can finish in one go.</figcaption></figure>
       </div>
     </div>
   </section>
@@ -307,7 +307,7 @@
         <div class="card"><h3><span class="k">02.3</span>Approve, then build.</h3><p>Once you approve the model, the agent writes the production code to match it.</p></div>
       </div>
       <div class="shots">
-        <figure class="shot pending" data-shot="model"><img data-name="model" width="2560" height="1600" alt="A task presenting a mockup for approval, with comment threads on it, beside its agent" loading="lazy" decoding="async"><div class="ph"><div><b>Screenshot coming · model</b><span>A mockup with comment threads, beside the agent</span></div></div><figcaption class="cap">The model, marked up: you comment, the agent answers and refines it.</figcaption></figure>
+        <figure class="shot pending" data-shot="model"><img data-name="model" width="2560" height="1600" alt="A task presenting its mockup of a tide-table day page, with a comment thread beside it: the user asks where the tide is now, and the agent replies with what it added" loading="lazy" decoding="async"><div class="ph"><div><b>Screenshot coming · model</b><span>A mockup with comment threads, beside the agent</span></div></div><figcaption class="cap">The model, marked up: you comment, the agent answers and refines it.</figcaption></figure>
       </div>
     </div>
   </section>

@@ -1,6 +1,6 @@
 # Website v4 design
 
-**Status:** chosen 2026-10-15 · **Mockup:** [`docs/mockups/2026-10-v4/b.html`](../mockups/2026-10-v4/b.html) (direction B, "After hours") · **Rejected:** [`a.html`](../mockups/2026-10-v4/a.html) (Field notes: warm paper, serif), [`c.html`](../mockups/2026-10-v4/c.html) (Bars: loud gradient panels); both still carry the first draft of the copy · **Screenshots:** the "Capture v4 screenshots" task, branch `capture-harness-v4` (`tools/capture/`)
+**Status:** chosen 2026-10-15, built in `index.html` 2026-10-16 · **Mockup:** [`docs/mockups/2026-10-v4/b.html`](../mockups/2026-10-v4/b.html) (direction B, "After hours") · **Rejected:** [`a.html`](../mockups/2026-10-v4/a.html) (Field notes: warm paper, serif), [`c.html`](../mockups/2026-10-v4/c.html) (Bars: loud gradient panels); both still carry the first draft of the copy · **Screenshots:** the "Capture v4 screenshots" task, branch `capture-harness-v4` (`tools/capture/`)
 
 The homepage (`index.html`) for Kanna v4, replacing the page that sells the Tauri product. This spec is what the page is built from: the direction, its tokens, the sections in order with their final copy, and where each screenshot goes. The mockup is the reference model: when this spec and the mockup disagree on something visual, the mockup wins; on words, this spec wins.
 
@@ -75,7 +75,7 @@ Gradients run left to right (`90deg`). The page background has a 48px grid of 1p
 - **Screenshots:** full width of the chapter column, one under another; 12px radius, 1px `--line` border, caption below in mono `--muted`.
 - **Closing:** icon left, words right (stacked under 620px).
 - **Footer:** one line, wraps on phones.
-- **Checked** at 1280px and 390px: no horizontal scroll (`min-width: 0` on the grid columns lets the CLI and long words shrink).
+- **Checked** at 1280, 1000 and 390px, dark and light: no horizontal scroll (`min-width: 0` on the grid columns lets long words shrink). Sections set only their top and bottom padding (`padding-top`/`padding-bottom`), never `padding: X 0`, which would wipe `.wrap`'s side padding.
 
 ## 4. Sections and copy
 
@@ -177,7 +177,7 @@ Alt text for each is in the mockup.
 
 ## 7. Removed
 
-From the current page: Linux downloads and install notes; Kanna Mobile and the App Store QR; pricing and the relay; stages, workflows, agent-per-stage, subtasks, the task manager, pairing Macs; the old screenshot carousel and lightbox; "OPEN SOURCE" and "BRING YOUR OWN MODEL" in the footer.
+From the current page: Linux downloads and install notes; Kanna Mobile and the App Store QR; pricing and the relay; stages, workflows, agent-per-stage, subtasks, the task manager, pairing Macs; the old screenshot carousel and lightbox, and its images in `assets/` (`kanna-tasks`, `-diff`, `-commit-graph`, `-command-palette`, `-file-explorer`, `-ios-notifications`, `-mobile-*`); "OPEN SOURCE" and "BRING YOUR OWN MODEL" in the footer.
 
 Considered and cut while writing the copy: terminals that outlive the app ("a pretty standard feature these days"); a separate Fun section (fun is now the model loop and the closing line); CLI examples; the pane types list.
 
