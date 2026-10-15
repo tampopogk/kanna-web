@@ -21,11 +21,11 @@ The homepage (`index.html`) for Kanna v4, replacing the page that sells the Taur
 
 **The story follows the workflow:** plan well-defined tasks with the planning agent → each task builds a model (mockup or prototype, plus a markdown spec) that you mark up together and approve: reference-driven development → three tasks on your Desk while the backlog works in the background, each presenting its results when you call it up → stay connected to the code with explanations on the lines and a daily quiz. It closes on "enjoy coding again", a bookend to the headline's "having fun".
 
-**The look:** dark first, with a light mode that follows the system appearance. Kanna is a terminal, so the page lives where its users do: a dark, quiet near-black, monospace headlines, a faint grid, and the app icon's five coloured bars as the system. Each chapter is labelled with one of the icon's rows; the icon's green dot means "running", as on the Shelf. Dense and technical, but calm.
+**The look:** designed dark, with a light mode; the page follows the system appearance. Kanna is a terminal, so the page lives where its users do: a dark, quiet near-black, monospace headlines, a faint grid, and the app icon's five coloured bars as the system. Each chapter is labelled with one of the icon's rows; the icon's green dot means "running", as on the Shelf. Dense and technical, but calm.
 
 ## 2. Look
 
-**Appearance:** the page follows the system (`prefers-color-scheme`): dark by default and when the system is dark, light when it's light. Every colour is a custom property on `:root` (dark), redefined under `@media (prefers-color-scheme: light)`; the screenshots switch with it ([§5](#5-screenshots)). The gradients, green and type are the same in both.
+**Appearance:** the page follows the system (`prefers-color-scheme`): dark when the system is dark, light when it's light. Dark is the design's home and the `:root` default; browsers that report no preference report light. Every colour is a custom property on `:root` (dark), redefined under `@media (prefers-color-scheme: light)`; the screenshots switch with it ([§5](#5-screenshots)). The gradients, green and type are the same in both.
 
 **Palette** (CSS custom properties on `:root`; light values in the last column):
 
