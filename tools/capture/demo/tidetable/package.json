@@ -1,0 +1,12 @@
+{
+  "name": "tidetable",
+  "version": "0.3.0",
+  "description": "Tide predictions for coastal stations, from harmonic constants, over a small HTTP API",
+  "type": "module",
+  "engines": { "node": ">=23.6" },
+  "scripts": {
+    "start": "node src/main.ts",
+    "test": "node --test"
+  },
+  "license": "MIT"
+}

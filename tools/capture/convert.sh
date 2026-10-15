@@ -5,8 +5,9 @@
 # markup is on you.
 set -euo pipefail
 
-IN="${1:-.tmp/capture}"
-OUT="${2:-assets}"
+HERE="$(cd "$(dirname "$0")" && pwd)"
+IN="${1:-$HERE/.out}"
+OUT="${2:-$HERE/../../assets}"
 
 command -v avifenc >/dev/null 2>&1 || {
   echo "avifenc not found. brew install libavif" >&2
@@ -16,8 +17,8 @@ command -v avifenc >/dev/null 2>&1 || {
 for png in "$IN"/*.png; do
   [ -e "$png" ] || { echo "no PNGs in $IN" >&2; exit 1; }
   base="$(basename "$png" .png)"
-  avifenc --min 20 --max 34 --speed 4 "$png" "$OUT/kanna-$base.avif"
+  avifenc --min 20 --max 34 --speed 4 "$png" "$OUT/kanna-v4-$base.avif"
   # print the intrinsic size so the markup can carry matching width/height
   sips -g pixelWidth -g pixelHeight "$png" | tail -2 | tr -d ' \n'
-  echo "  -> $OUT/kanna-$base.avif"
+  echo "  -> $OUT/kanna-v4-$base.avif"
 done
