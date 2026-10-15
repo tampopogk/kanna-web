@@ -9,12 +9,13 @@ if k capabilities >/dev/null 2>&1; then die "a capture Kanna is already running 
 
 mkdir -p "$STATE/xdg/ghostty"
 # The terminal's colours. Kanna's terminals are Ghostty, which reads its config
-# from $XDG_CONFIG_HOME/ghostty/config. With no config it draws a dark terminal
-# whatever the system's appearance, so a light window gets a dark panel in it.
+# from $XDG_CONFIG_HOME/ghostty/config. With no config it draws the same dark
+# terminal whatever the system's appearance, so a light window gets a dark
+# panel in it; and the dark default doesn't match Kanna's dark window either.
 # This file is only the capture app's: XDG_CONFIG_HOME is set for the app alone
 # (the daemon it starts passes on only KANNA_* variables, so agents and shells
 # never see it).
-cp "$HERE/ghostty.conf" "$STATE/xdg/ghostty/config"
+cp "$HERE/ghostty-$THEME.conf" "$STATE/xdg/ghostty/config"
 
 launch --fresh
 has_planner() { k list | grep -q "planner.sh"; }

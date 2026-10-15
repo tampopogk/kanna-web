@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 # Drive the capture Kanna to each shot's state and capture it. Every agent here
 # is a real Claude doing real work in the demo repo; the only things typed into
-# them are what a user would type ("go on", "Yes, quiz me", a quiz answer).
+# them are what a user would type ("go on", "Yes, quiz me", a quiz answer, a
+# review comment posted through the app's own comment box, an idea to plan).
 #
-#   ./stage.sh                       # all four, in this order
+#   ./stage.sh                       # all six, in this order
 #   ./stage.sh presenting code       # just those (each needs the ones before it to have run)
 #
 # Order matters. A task presents its work by opening tabs from its own
@@ -14,11 +15,15 @@
 # rate-limit task, shown "working" in the Desk shot and stopped right after.
 source "$(dirname "$0")/lib.sh"
 # shellcheck disable=SC1091
-source "$STATE/tasks.env" # DST, RATE, TOUR from tasks.sh
+source "$STATE/tasks.env" # DST, RATE, TOUR, MOCK from tasks.sh
+
+# A display that sleeps captures blank: the window server has nothing to give.
+# Keep it awake while this runs.
+caffeinate -d -w $$ &
 
 W="$(desk_window)"
 SHOTS=("$@")
-[ ${#SHOTS[@]} -gt 0 ] || SHOTS=(presenting code desk quiz)
+[ ${#SHOTS[@]} -gt 0 ] || SHOTS=(presenting code desk model quiz plan)
 
 planner() { k list --json | python3 -c 'import json,sys; print(next(w["planner"]["pane"] for w in json.load(sys.stdin)["windows"] if w.get("planner")))'; }
 task_pane() { pane_field "$1" id; } # a started task's pane, by its name
@@ -48,7 +53,7 @@ code() {
   wait_turn "$p" 600
   for _ in 1 2 3 4 5 6; do
     code_open harmonics.ts && break
-    k send "$p" "go on" >/dev/null
+    say "$p" "go on"
     wait_turn "$p" 300
   done
   code_open harmonics.ts || log "warning: the tour hasn't reached src/harmonics.ts; capturing where it is"
@@ -79,7 +84,7 @@ quiz_code() { k list --json | python3 -c 'import json,sys; sys.exit(0 if any(p["
 quiz() {
   local pl; pl="$(planner)"
   log "quiz: accepting the planner's offer"
-  k send "$pl" "Yes, quiz me on what landed today" >/dev/null
+  say "$pl" "Yes, quiz me on what landed today"
   wait_for 180 "the Quiz window" quiz_open
   wait_turn quiz 600 # writes question 1 and asks it with its question tool
   local keys=(return) i
@@ -115,6 +120,68 @@ d = json.load(sys.stdin)
 q = next(p for p in d["panes"] if p.get("name") == "quiz")
 print(next(w["id"] for w in d["windows"] if q["id"] in json.dumps(w) or "\"quiz\"" in json.dumps(w)))')"
   shot quiz "$qw"
+}
+
+# 5. Reference-driven development: a task models a feature before building it,
+# an HTML mockup opened for review with `kanna markup`. We comment on it the
+# way you would, through the app's comment box (the app's debug hooks click,
+# type and press keys in its real views: ⌘-click a part of the page, write,
+# ⌘↵), and the comment goes to the agent, which changes the mockup and replies
+# in the thread.
+web() { k raw "{\"cmd\":\"debug.web\",\"args\":{\"pane\":\"$1\"${2:-}}}"; }
+web_field() { web "$1" "${3:-}" | python3 -c 'import json,sys
+v = json.load(sys.stdin)
+for k in sys.argv[1].split("."): v = v.get(k) if isinstance(v, dict) else None
+print("" if v is None else json.dumps(v) if not isinstance(v, str) else v)' "$2"; }
+# The mockup's pane, opened with comments on (`kanna markup`).
+mockup_pane() { k list --json | python3 -c 'import json,sys; print(next((p["id"] for p in json.load(sys.stdin)["panes"] if p["type"]=="web" and p.get("markup") and "day.html" in p.get("url","")), ""))'; }
+has_mockup() { [ -n "$(mockup_pane)" ]; }
+thread_sent() { web "$1" | python3 -c 'import json,sys; sys.exit(0 if any(t["id"]=="c1" for t in json.load(sys.stdin).get("threads") or []) else 1)'; }
+thread_replied() { web "$1" | python3 -c 'import json,sys; sys.exit(0 if any(t["id"]=="c1" and len(t.get("messages",[]))>1 for t in json.load(sys.stdin).get("threads") or []) else 1)'; }
+model() {
+  log "model: making room on the Shelf, starting 'Mock up the day page' on the Desk"
+  k task defer "$(task_pane "Walk through the prediction pipeline")" >/dev/null || true
+  k task shelve "$MOCK" --window "$W" >/dev/null || true # (already there on a re-run)
+  sleep 3
+  local p; p="$(task_pane "Mock up the day page")"
+  wait_turn "$p" 1200
+  has_mockup || { log "warning: the task didn't open its mockup with kanna markup; capturing as it is"; shot model "$W"; return; }
+  local m at text; m="$(mockup_pane)"
+  # A comment on the chart, or on the heading if there's no SVG.
+  at="$(web_field "$m" at ',"find":"svg"')"
+  text="Can you mark where the tide is right now when the page shows today? That's the first thing I'd look for."
+  if [ -z "$at" ]; then
+    at="$(web_field "$m" at ',"find":"h1"')"
+    text="Put the time zone right under the station's name, so the times below make sense at a glance."
+  fi
+  [ -n "$at" ] || die "model: found nothing in the mockup to comment on"
+  log "model: commenting on the mockup"
+  k raw "{\"cmd\":\"debug.click\",\"args\":{\"pane\":\"$m\",\"command\":true,\"at\":$at}}" >/dev/null
+  sleep 1
+  k raw "$(python3 -c 'import json,sys; print(json.dumps({"cmd":"debug.type","args":{"focused":True,"text":sys.argv[1]}}))' "$text")" >/dev/null
+  k raw '{"cmd":"debug.key","args":{"key":"cmd+return"}}' >/dev/null
+  wait_for 20 "the comment to post" thread_sent "$m"
+  wait_turn "$p" 900 # the comment arrives in the agent's terminal; it revises the mockup and replies
+  wait_for 120 "the agent's reply in the thread" thread_replied "$m"
+  # The thread list beside the page shows the comment and the reply; opening
+  # the thread's card would cover the mockup.
+  sleep 2
+  shot model "$W"
+}
+
+# 6. Planning a task: a fresh planning agent, given an idea the way you'd say
+# it, works out the task with you (the kanna-planning skill: it reads the code,
+# asks about the decisions the task needs, reads the task back before making
+# it). Captured when its turn ends, beside the full Shelf.
+plan() {
+  log "plan: clearing the Desk and giving a fresh planner an idea"
+  k task park --window "$W" >/dev/null || true
+  local pl; pl="$(planner)"
+  k restart "$pl" >/dev/null
+  wait_turn "$pl" 180
+  say "$pl" "I'd like people to get a heads-up about unusually high tides, king tides, a few days before they happen. Can you help me turn that into a task?"
+  wait_turn "$pl" 600
+  shot plan "$W"
 }
 
 for s in "${SHOTS[@]}"; do "$s"; done

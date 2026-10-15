@@ -12,7 +12,8 @@ hand-built, or composited, and no state is shown that the app does not
 genuinely produce. Every agent conversation on screen is a real Claude Code
 session doing real work in the demo repo; the only things typed into them are
 what a user would type ("go on", "Yes, quiz me on what landed today", a quiz
-answer). That distinction is a standing rule for this site: never present a
+answer, an idea to plan, a review comment posted through the app's comment
+box). That distinction is a standing rule for this site: never present a
 simulated or hand-built interface as if it were a screenshot.
 
 Demo content is written for public display: no "example"/"foo" names, no
@@ -22,15 +23,19 @@ little different.
 
 ## The shots
 
-| File | Window | What's on screen |
-|---|---|---|
-| `kanna-v4-desk` | the Desk, no task on it | the planning agent greeting you with what's running and waiting (and offering a quiz), beside the full Shelf (three tasks: two finished, one working) and the backlog (two waiting, one blocked) |
-| `kanna-v4-presenting` | the Desk, "Fix DST gap in daily tides" | the task's agent, its work done, beside the tab it opened to present it (usually a diff) |
-| `kanna-v4-code` | the Desk, "Walk through the prediction pipeline" | an agent explaining the code a step at a time: a code tab at `src/harmonics.ts` with its comment on the lines, earlier steps (a mermaid diagram, the handler, the cache, the day window) in the other tabs |
-| `kanna-v4-quiz` | the Quiz window | the quiz agent after a missed question, the code opened at the line with the explanation on it |
+Six shots, each in light and dark: `assets/kanna-v4-NAME.avif` (light) and
+`assets/kanna-v4-NAME-dark.avif` (dark).
 
-Windows are 1280×800 points, so 2560×1600 PNGs on a retina display, in light
-mode.
+| NAME | Window | What's on screen |
+|---|---|---|
+| `desk` | the Desk, no task on it | the planning agent greeting you with what's running and waiting (and offering a quiz), beside the full Shelf (three tasks: two finished, one working) and the backlog (two waiting, one blocked) |
+| `plan` | the Desk, no task on it | a fresh planning agent given an idea ("a heads-up about king tides…"): it has read the code and asks about the decisions the task needs (the kanna-planning skill), beside the Shelf and backlog |
+| `model` | the Desk, "Mock up the day page" | reference-driven development: the task models the feature before building it, an HTML mockup opened for review with `kanna markup`, with a comment posted on its chart and the agent's reply in the thread list beside it (the mockup already revised) |
+| `presenting` | the Desk, "Fix DST gap in daily tides" | the task's agent, its work done, beside the tab it opened to present it (usually a diff) |
+| `code` | the Desk, "Walk through the prediction pipeline" | an agent explaining the code a step at a time: a code tab at `src/harmonics.ts` with its comment on the lines, earlier steps (a mermaid diagram, the handler, the cache, the day window) in the other tabs |
+| `quiz` | the Quiz window | the quiz agent after a missed question, the code opened at the line with the explanation on it |
+
+Windows are 1280×800 points, so 2560×1600 PNGs on a retina display.
 
 ## The demo repo
 
@@ -46,9 +51,10 @@ days clocks change.
 whose last three commits are from the past few hours, so the planning agent
 offers a quiz on "what landed today". Its `.kanna/config.json` makes Claude the
 planning agent and turns backlog runners off (tasks wait until the harness
-starts them). Its `.claude/settings.json` gives Claude its light theme (your
-global theme would otherwise apply: the dark one draws your messages as dark
-bars and a question's text nearly invisible on a light terminal), turns off
+starts them). Its `.claude/settings.json` gives Claude the run's theme
+(`seed.sh` writes light or dark; your global theme would otherwise apply, and
+the dark one on a light terminal draws your messages as dark bars and a
+question's text nearly invisible), turns off
 prompt suggestions (ghost text in an idle composer reads as an instruction
 somebody typed) and spinner tips, and lets Claude's sandbox bind local ports,
 so the server tests run inside it and the agents' summaries don't spend lines
@@ -72,7 +78,8 @@ in a temp folder.
 
 ```sh
 cd tools/capture
-./run.sh            # clean state → assets/kanna-v4-*.avif, 15-25 minutes
+./run.sh            # clean state → assets/kanna-v4-*.avif: light, then dark, 25-35 minutes each
+./run.sh dark       # one theme
 ./stop.sh --clean   # afterwards: stop the capture Kanna, delete it and the demo repo
 ```
 
@@ -82,11 +89,14 @@ cd tools/capture
 |---|---|
 | `seed.sh [--force]` | commits the demo repo to `$DEMO` |
 | `start.sh` | starts the capture Kanna on it, light, windows sized |
-| `tasks.sh` | makes six backlog tasks, as the planning agent would |
-| `stage.sh [SHOT...]` | drives each shot's state and captures it to `.out/` (`presenting code desk quiz`, in that order) |
+| `tasks.sh` | makes seven backlog tasks, as the planning agent would |
+| `stage.sh [SHOT...]` | drives each shot's state and captures it to `.out/` (`presenting code desk model quiz plan`, in that order) |
 | `size-windows.sh` | gives every window the capture size (`CAPTURE_W`, `CAPTURE_H`) |
 | `convert.sh [IN] [OUT]` | `.out/*.png` → `assets/kanna-v4-*.avif`, printing each size for the markup's `width`/`height` |
 | `stop.sh [--clean]` | stops the capture Kanna; `--clean` deletes its folder and the demo repo |
+
+Every step reads `CAPTURE_THEME` (`light`, the default, or `dark`), which
+`run.sh` sets for each pass: dark shots are `.out/NAME-dark.png`.
 
 The PNGs stay in `.out/`, which git ignores. You can keep using the machine
 while it runs: the capture app stays in the background, and `kanna screenshot`
@@ -109,13 +119,14 @@ window's title ("Shelf · capture"). A daemon in a folder that isn't a channel's
 cost: with `KANNA_SOCKET` set the CLI never starts an app, so `start.sh` starts
 it with `open -n --env …` itself.
 
-**Light mode needs two things.** The system here is dark, so `start.sh` sets
-the app's appearance with its own debug hook (`debug.app {appearance: light}`,
-on with `KANNA_DEBUG=1`), after every launch. And Ghostty with no config draws a
-dark terminal whatever the appearance, so the app gets `XDG_CONFIG_HOME`
-pointing at a folder holding `ghostty.conf` (light colours). Only the app sees
-it: the daemon passes on only `KANNA_*` variables, so agents and shells don't.
-Claude Code's colours are its own theme, set in the demo repo (above).
+**Light and dark need three things each.** The app's appearance is set with
+its own debug hook (`debug.app {appearance: light|dark}`, on with
+`KANNA_DEBUG=1`) after every launch, whatever the system's is. Ghostty with no
+config draws the same dark terminal whatever the appearance, so the app gets
+`XDG_CONFIG_HOME` pointing at a folder holding `ghostty-light.conf` or
+`ghostty-dark.conf` (only the app sees it: the daemon passes on only `KANNA_*`
+variables, so agents and shells don't). And Claude Code's colours are its own
+theme, set in the demo repo (above).
 
 **Kanna has no command that sizes a window.** It restores each window's frame
 from `layout.json` when it starts, so `size-windows.sh` quits the app (the
@@ -148,6 +159,25 @@ so the two are never on screen together. `stage.sh` does what a user would:
 moves the code pane beside the agent (`kanna move … --to quiz --side right`)
 and names the tab "Quiz" (a plain window's title is its tab's name and the
 window's ID, "Quiz — w3").
+
+**A sleeping display captures blank.** With the display asleep, every
+window of every app comes out as a plain white PNG. `stage.sh` keeps the
+display awake (`caffeinate -d`) while it runs, and `shot` wakes it, checks the
+PNG isn't blank (under 150 KB at this size) and tries again. A locked screen
+can't be helped: run it unlocked.
+
+**Long messages to an agent need a second Return.** `kanna send` types text and
+presses Return, but Claude reads a long message typed that fast as a paste, and
+the Return becomes a newline in its composer. `say` (lib.sh) checks the agent
+started and otherwise removes the newline and presses Return again.
+
+**A review comment is posted through the app's own comment box.** There's no
+CLI for a user's comment (`kanna markup` only reads and answers threads), so
+`stage.sh` does what you'd do, through the app's debug hooks, which act on its
+real views as the e2e tests do: find the mockup's chart (`debug.web` with a
+selector), ⌘-click it (`debug.click`), type (`debug.type`), ⌘↵ (`debug.key`).
+Kanna sends it to the agent like any comment, and the agent revises the
+mockup and replies with `kanna markup reply`.
 
 **Claude asks once whether to trust the demo folder.** The prompt shows the
 full path (with your username), so `start.sh` answers it before any capture;

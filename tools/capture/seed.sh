@@ -26,12 +26,14 @@ git -C "$DEMO" config user.name "Tidetable"
 git -C "$DEMO" config user.email "dev@tidetable.dev"
 git -C "$DEMO" config commit.gpgsign false
 
-# commit HOURS_AGO MESSAGE FILE...: copy FILEs from the source tree and commit them.
+# commit HOURS_AGO MESSAGE FILE...: copy FILEs from the source tree and commit
+# them, as they are except Claude's theme, which follows THEME.
 commit() {
   local ago="$1" msg="$2"; shift 2
   for f in "$@"; do
     mkdir -p "$DEMO/$(dirname "$f")"
     cp "$SRC/$f" "$DEMO/$f"
+    if [ "$f" = .claude/settings.json ]; then sed -i '' "s/\"theme\": \"light\"/\"theme\": \"$THEME\"/" "$DEMO/$f"; fi
     git -C "$DEMO" add "$f"
   done
   local when; when="$(date -v-"${ago}"H '+%Y-%m-%dT%H:%M:%S')"

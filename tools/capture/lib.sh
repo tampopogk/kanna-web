@@ -26,6 +26,7 @@ WIN_H="${CAPTURE_H:-800}"
 
 OUT="${CAPTURE_OUT:-$HERE/.out}" # PNGs, kept out of git
 
+
 # Every kanna command goes to the capture Kanna, never the one this shell may
 # be running in. With KANNA_SOCKET set the CLI never starts an app itself;
 # start.sh does that.
@@ -33,6 +34,12 @@ k() { env -u KANNA_PANE -u KANNA_INSTANCE KANNA_SOCKET="$SOCKET" "$KANNA" "$@"; 
 
 log() { printf '\033[2m[capture]\033[0m %s\n' "$*" >&2; }
 die() { printf 'capture: %s\n' "$*" >&2; exit 1; }
+
+# light or dark: the app's appearance, the terminal's colours (ghostty-THEME.conf)
+# and Claude's theme (set in the demo repo by seed.sh). Dark shots are named
+# NAME-dark.png, light ones NAME.png.
+THEME="${CAPTURE_THEME:-light}"
+case "$THEME" in light) SUFFIX="" ;; dark) SUFFIX="-dark" ;; *) die "CAPTURE_THEME is light or dark, not $THEME" ;; esac
 
 # wait_for SECONDS DESCRIPTION COMMAND...: run COMMAND every 2s until it succeeds.
 wait_for() {
@@ -54,9 +61,9 @@ launch() {
     --env KANNA_DEBUG=1 \
     -a "$APP" --args --bg "$@"
   wait_for 30 "Kanna.app to attach" attached
-  # Light mode, through the app's own debug hook (KANNA_DEBUG=1): the same
-  # NSApp.appearance a light system gives it. The terminals follow it.
-  k raw '{"cmd":"debug.app","args":{"appearance":"light"}}' >/dev/null
+  # The appearance, through the app's own debug hook (KANNA_DEBUG=1): the same
+  # NSApp.appearance a light or dark system gives it. The terminals follow it.
+  k raw "{\"cmd\":\"debug.app\",\"args\":{\"appearance\":\"$THEME\"}}" >/dev/null
 }
 attached() { k capabilities 2>/dev/null | grep -q 'Kanna.app: attached'; }
 
@@ -105,6 +112,19 @@ done = re.search(r"for \d+(m \d+)?s · done", tail) or re.search(r"Enter to sele
 sys.exit(0 if done and not working else 1)'
 }
 
+# say PANE TEXT: type a message to an agent and submit it, as you would.
+# `kanna send` types the text and presses Return, but Claude reads a long
+# message typed that fast as a paste, and the Return becomes a newline in its
+# composer. If the agent hasn't started after a few seconds, take the newline
+# back out and press Return again.
+say() {
+  k send "$1" "$2" >/dev/null
+  sleep 4
+  if [ "$(pane_field "$1" status)" != working ] && claude_waiting "$1"; then
+    k send-key "$1" backspace return >/dev/null
+  fi
+}
+
 # wait_turn PANE SECONDS: wait for the agent to start working, then to finish its turn.
 wait_turn() {
   local end=$((SECONDS + 60))
@@ -112,11 +132,20 @@ wait_turn() {
   wait_for "$2" "$1 ($(pane_field "$1" name)) to finish its turn" turn_over "$1"
 }
 
-# shot NAME WINDOW: the whole window as drawn, to $OUT/NAME.png.
+# shot NAME WINDOW: the whole window as drawn, to $OUT/NAME.png (NAME-dark.png in dark).
+# A sleeping display captures blank (every window, every app), so wake it first
+# and check the PNG has something in it: a blank 2560x1600 one is under 100 KB.
 shot() {
   mkdir -p "$OUT"
-  k screenshot --window "$2" -o "$OUT/$1.png" --force >/dev/null
-  log "captured $OUT/$1.png"
+  local f="$OUT/$1$SUFFIX.png"
+  for _ in 1 2 3; do
+    caffeinate -u -t 2
+    k screenshot --window "$2" -o "$f" --force >/dev/null
+    [ "$(stat -f %z "$f")" -gt 150000 ] && { log "captured $f"; return; }
+    log "$f came out blank (display asleep?); trying again"
+    sleep 3
+  done
+  die "$f is blank: is the display asleep or the screen locked?"
 }
 
 # desk: the Desk window (the one with the planning terminal).
