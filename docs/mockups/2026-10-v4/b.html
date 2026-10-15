@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-  Direction B — "After hours"
+  Direction B — "After hours" (dark, with a light mode that follows the system)
   The idea: Kanna is a terminal, so the page lives where its users do: a dark, quiet
   near-black, monospace headlines, a faint grid, and the app icon's five coloured bars
   used as the system. Each chapter (plan, model, desk, connected) is labelled by one of the icon's rows (hot, pink,
@@ -28,6 +28,16 @@
     --text-2: #a9acb8;
     --muted: #6d7180;
     --green: #17d34c;
+    --grid: rgba(255,255,255,.025);
+    --code: #ffb27a;
+    --flag: #c79bff;
+    --hover-line: #4a5060;
+    --ph-line: #3b4050;
+    --plate-1: #1a1d25;
+    --plate-2: #111318;
+    --plate-line: rgba(255,255,255,.14);
+    --glow: rgba(247,43,137,.35);
+    color-scheme: dark;
     --hot: linear-gradient(90deg, #f72b89, #ff8a12);
     --pink: linear-gradient(90deg, #df1fb7, #ef2d9b);
     --purple: linear-gradient(90deg, #9630dc, #9e23dd);
@@ -36,6 +46,47 @@
     --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
     --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   }
+  /* Light: follows the system; data-theme (the mockup's switch) overrides it. */
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #f7f7f9;
+      --bg-2: #eef0f3;
+      --bg-3: #e6e8ed;
+      --line: #dfe2e8;
+      --text: #15171c;
+      --text-2: #4a4f5c;
+      --muted: #7d8290;
+      --grid: rgba(20,24,40,.045);
+      --code: #c2410c;
+      --flag: #7c3aed;
+      --hover-line: #b9bec9;
+      --ph-line: #c3c8d2;
+      --plate-1: #ffffff;
+      --plate-2: #ffffff;
+      --plate-line: rgba(0,0,0,.08);
+      --glow: rgba(247,43,137,.22);
+      color-scheme: light;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #f7f7f9;
+    --bg-2: #eef0f3;
+    --bg-3: #e6e8ed;
+    --line: #dfe2e8;
+    --text: #15171c;
+    --text-2: #4a4f5c;
+    --muted: #7d8290;
+    --grid: rgba(20,24,40,.045);
+    --code: #c2410c;
+    --flag: #7c3aed;
+    --hover-line: #b9bec9;
+    --ph-line: #c3c8d2;
+    --plate-1: #ffffff;
+    --plate-2: #ffffff;
+    --plate-line: rgba(0,0,0,.08);
+    --glow: rgba(247,43,137,.22);
+    color-scheme: light;
+  }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
   body {
@@ -43,12 +94,12 @@
     font-family: var(--sans); font-size: 16px; line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     background-image:
-      linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
     background-size: 48px 48px;
   }
   a { color: inherit; }
-  code { font-family: var(--mono); font-size: .92em; color: #ffb27a; }
+  code { font-family: var(--mono); font-size: .92em; color: var(--code); }
   .wrap { max-width: 1240px; margin: 0 auto; padding: 0 32px; }
 
   /* ---- top ---- */
@@ -60,7 +111,7 @@
     font-family: var(--mono); font-size: 12px; text-decoration: none; color: var(--text-2);
     padding: 7px 12px; border: 1px solid var(--line); border-radius: 8px;
   }
-  .top nav a:hover { color: var(--text); border-color: #3a3f4d; }
+  .top nav a:hover { color: var(--text); border-color: var(--hover-line); }
 
   /* ---- hero ---- */
   .hero { display: grid; grid-template-columns: 5fr 7fr; gap: 56px; align-items: center; padding: 80px 0 96px; }
@@ -81,17 +132,17 @@
   }
   .btn svg { width: 16px; height: 16px; }
   .btn.primary { background: var(--text); color: var(--bg); border-color: var(--text); }
-  .btn:hover { transform: translateY(-1px); border-color: #4a5060; }
+  .btn:hover { transform: translateY(-1px); border-color: var(--hover-line); }
   .version { margin-top: 14px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
 
   .ph {
     width: 100%; aspect-ratio: 3 / 2; border-radius: 14px;
-    border: 1.5px dashed #3b4050; background: repeating-linear-gradient(135deg, transparent 0 16px, rgba(255,255,255,.02) 16px 17px), var(--bg-2);
+    border: 1.5px dashed var(--ph-line); background: repeating-linear-gradient(135deg, transparent 0 16px, var(--grid) 16px 17px), var(--bg-2);
     display: grid; place-items: center; text-align: center; padding: 24px;
   }
   .ph b { display: block; font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 8px; }
   .ph span { display: block; font-family: var(--mono); font-size: clamp(13px, 1.4vw, 15px); color: var(--text-2); max-width: 30ch; }
-  .hero .ph { box-shadow: 0 40px 120px -40px rgba(247,43,137,.35), 0 0 0 1px rgba(255,255,255,.02); }
+  .hero .ph { box-shadow: 0 40px 120px -40px var(--glow); }
 
   /* ---- chapters ---- */
   .chapter { display: grid; grid-template-columns: 280px 1fr; gap: 56px; padding: 96px 0; border-top: 1px solid var(--line); }
@@ -111,8 +162,8 @@
   .card.wide { grid-column: 1 / -1; }
   .shots { margin-top: 28px; display: grid; gap: 20px; }
   .shots.two { grid-template-columns: 1fr 1fr; }
-  .shot img { display: block; width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
-  .hero .shot img { box-shadow: 0 40px 120px -40px rgba(247,43,137,.35); }
+  .shot img { display: block; width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--line); background: var(--bg-2); }
+  .hero .shot img { box-shadow: 0 40px 120px -40px var(--glow); }
   .shot.pending img { position: absolute; width: 1px; height: 1px; opacity: 0; } /* not display:none: a lazy image that isn't laid out never loads */
   .shot { position: relative; }
   .shot:not(.pending) .ph { display: none; }
@@ -126,7 +177,7 @@
   pre.cli { margin-top: 28px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px;
     font-family: var(--mono); font-size: 14px; line-height: 1.9; overflow-x: auto; color: var(--text); }
   pre.cli .p { color: var(--green); user-select: none; }
-  pre.cli .f { color: #c79bff; }
+  pre.cli .f { color: var(--flag); }
 
   .body { font-size: 16px; color: var(--text-2); margin-top: 14px; max-width: 38em; }
   .cards.three { grid-template-columns: repeat(3, 1fr); }
@@ -167,7 +218,7 @@
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <linearGradient id="g-plate" x1="256" y1="47" x2="256" y2="466" gradientUnits="userSpaceOnUse"><stop offset=".62" stop-color="#1a1d25"/><stop offset="1" stop-color="#111318"/></linearGradient>
+    <linearGradient id="g-plate" x1="256" y1="47" x2="256" y2="466" gradientUnits="userSpaceOnUse"><stop offset=".62" style="stop-color: var(--plate-1)"/><stop offset="1" style="stop-color: var(--plate-2)"/></linearGradient>
     <linearGradient id="g-hot" x1="113" y1="0" x2="354" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#f72b89"/><stop offset="1" stop-color="#ff8a12"/></linearGradient>
     <linearGradient id="g-pink" x1="113" y1="0" x2="293" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#df1fb7"/><stop offset="1" stop-color="#ef2d9b"/></linearGradient>
     <linearGradient id="g-purple" x1="113" y1="0" x2="226" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#9630dc"/><stop offset="1" stop-color="#9e23dd"/></linearGradient>
@@ -175,7 +226,7 @@
     <linearGradient id="g-bv" x1="113" y1="0" x2="360" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#1458c5"/><stop offset="1" stop-color="#736b91"/></linearGradient>
     <symbol id="kanna-icon" viewBox="0 0 512 512">
       <rect x="46" y="46" width="420" height="420" rx="105" fill="url(#g-plate)"/>
-      <rect x="46.5" y="46.5" width="419" height="419" rx="104.5" fill="none" stroke="rgba(255,255,255,.14)"/>
+      <rect x="46.5" y="46.5" width="419" height="419" rx="104.5" fill="none" style="stroke: var(--plate-line)"/>
       <rect x="113" y="82" width="45" height="34" rx="17" fill="url(#g-hot)"/>
       <rect x="180" y="82" width="174" height="34" rx="17" fill="url(#g-hot)"/>
       <rect x="377" y="82" width="24" height="34" rx="12" fill="#17d34c"/>
@@ -324,29 +375,32 @@
   </div>
 </footer>
 
-<!-- Mockup only: compare light and dark screenshots on this page. Not part of the design. -->
-<div class="mode" role="group" aria-label="Screenshots"><span>shots</span><button type="button" data-mode="dark">dark</button><button type="button" data-mode="light">light</button></div>
+<!-- Mockup only: preview the page in light or dark. The real page just follows the system. -->
+<div class="mode" role="group" aria-label="Page appearance"><span>page</span><button type="button" data-mode="system">system</button><button type="button" data-mode="dark">dark</button><button type="button" data-mode="light">light</button></div>
 <script>
-  // Shots load from assets/kanna-v4-NAME(-dark).avif. A dark shot not captured yet falls back to
-  // the light one; a shot with neither keeps its placeholder.
+  // Each shot follows the page: assets/kanna-v4-NAME.avif in light, -dark.avif in dark (on the real
+  // page a <picture> with a prefers-color-scheme source does this without script). A shot not
+  // captured yet keeps its placeholder.
   (() => {
     const imgs = [...document.querySelectorAll('img[data-name]')];
     const buttons = [...document.querySelectorAll('.mode button')];
-    function show(mode) {
+    const system = matchMedia('(prefers-color-scheme: light)');
+    let mode = 'system';
+    function render() {
+      if (mode === 'system') delete document.documentElement.dataset.theme;
+      else document.documentElement.dataset.theme = mode;
       buttons.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
+      const dark = mode === 'dark' || (mode === 'system' && !system.matches);
       imgs.forEach(img => {
         const fig = img.closest('.shot');
-        const base = '../../../assets/kanna-v4-' + img.dataset.name;
         img.onload = () => fig.classList.remove('pending');
-        img.onerror = () => {
-          if (img.src.endsWith('-dark.avif')) img.src = base + '.avif';
-          else fig.classList.add('pending');
-        };
-        img.src = base + (mode === 'dark' ? '-dark' : '') + '.avif';
+        img.onerror = () => fig.classList.add('pending');
+        img.src = '../../../assets/kanna-v4-' + img.dataset.name + (dark ? '-dark' : '') + '.avif';
       });
     }
-    buttons.forEach(b => b.addEventListener('click', () => show(b.dataset.mode)));
-    show('dark');
+    buttons.forEach(b => b.addEventListener('click', () => { mode = b.dataset.mode; render(); }));
+    system.addEventListener('change', render);
+    render();
   })();
 </script>
 

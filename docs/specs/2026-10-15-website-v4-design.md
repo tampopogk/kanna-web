@@ -21,29 +21,35 @@ The homepage (`index.html`) for Kanna v4, replacing the page that sells the Taur
 
 **The story follows the workflow:** plan well-defined tasks with the planning agent → each task builds a model (mockup or prototype, plus a markdown spec) that you mark up together and approve: reference-driven development → three tasks on your Desk while the backlog works in the background, each presenting its results when you call it up → stay connected to the code with explanations on the lines and a daily quiz. It closes on "enjoy coding again", a bookend to the headline's "having fun".
 
-**The look:** Kanna is a terminal, so the page lives where its users do: a dark, quiet near-black, monospace headlines, a faint grid, and the app icon's five coloured bars as the system. Each chapter is labelled with one of the icon's rows; the icon's green dot means "running", as on the Shelf. Dense and technical, but calm.
+**The look:** dark first, with a light mode that follows the system appearance. Kanna is a terminal, so the page lives where its users do: a dark, quiet near-black, monospace headlines, a faint grid, and the app icon's five coloured bars as the system. Each chapter is labelled with one of the icon's rows; the icon's green dot means "running", as on the Shelf. Dense and technical, but calm.
 
 ## 2. Look
 
-**Palette** (CSS custom properties on `:root`):
+**Appearance:** the page follows the system (`prefers-color-scheme`): dark by default and when the system is dark, light when it's light. Every colour is a custom property on `:root` (dark), redefined under `@media (prefers-color-scheme: light)`; the screenshots switch with it ([§5](#5-screenshots)). The gradients, green and type are the same in both.
 
-| Token | Value | Use |
-|---|---|---|
-| `--bg` | `#0c0d11` | page |
-| `--bg-2` | `#13151b` | buttons, chips, placeholders, CLI |
-| `--line` | `#262a35` | rules, card borders, card gaps |
-| `--text` | `#e9e9ee` | headings, body on dark; primary button fill |
-| `--text-2` | `#a9acb8` | leads, card text, second half of the headline |
-| `--muted` | `#6d7180` | section numbers, captions, version line, footer |
-| `--green` | `#17d34c` | the status dot (icon's top-right bar) |
-| `--hot` | `#f72b89 → #ff8a12` | icon row 1: hero bars, chapter 01 |
-| `--pink` | `#df1fb7 → #ef2d9b` | icon row 2: chapter 02 |
-| `--purple` | `#9630dc → #9e23dd` | icon row 3: chapter 03 (with indigo) |
-| `--indigo` | `#1957c3 → #6940a4` | icon row 4: chapter 03 |
-| `--bv` | `#1458c5 → #736b91` | icon row 5: chapter 04 |
-| code | `#ffb27a` | inline `code` |
+**Palette** (CSS custom properties on `:root`; light values in the last column):
 
-Gradients run left to right (`90deg`). The page background has a 48px grid of 1px lines at `rgba(255,255,255,.025)`. The hero screenshot has a soft pink glow (`0 40px 120px -40px rgba(247,43,137,.35)`).
+| Token | Dark | Use | Light |
+|---|---|---|---|
+| `--bg` | `#0c0d11` | page | `#f7f7f9` |
+| `--bg-2` | `#13151b` | buttons, chips, placeholders, image backing | `#eef0f3` |
+| `--line` | `#262a35` | rules, card borders, card gaps, image border | `#dfe2e8` |
+| `--text` | `#e9e9ee` | headings; primary button fill (its label is `--bg`) | `#15171c` |
+| `--text-2` | `#a9acb8` | leads, card text, second half of the headline | `#4a4f5c` |
+| `--muted` | `#6d7180` | section numbers, captions, version line, footer | `#7d8290` |
+| `--green` | `#17d34c` | the status dot (icon's top-right bar) | same |
+| `--hot` | `#f72b89 → #ff8a12` | icon row 1: hero bars, chapter 01 | same |
+| `--pink` | `#df1fb7 → #ef2d9b` | icon row 2: chapter 02 | same |
+| `--purple` | `#9630dc → #9e23dd` | icon row 3: chapter 03 (with indigo) | same |
+| `--indigo` | `#1957c3 → #6940a4` | icon row 4: chapter 03 | same |
+| `--bv` | `#1458c5 → #736b91` | icon row 5: chapter 04 | same |
+| `--code` | `#ffb27a` | inline `code` | `#c2410c` |
+| `--grid` | `rgba(255,255,255,.025)` | the background grid lines and placeholder hatching | `rgba(20,24,40,.045)` |
+| `--hover-line` | `#4a5060` | nav and button border on hover | `#b9bec9` |
+| `--glow` | `rgba(247,43,137,.35)` | the hero screenshot's glow | `rgba(247,43,137,.22)` |
+| `--plate-1`, `--plate-2`, `--plate-line` | `#1a1d25`, `#111318`, `rgba(255,255,255,.14)` | the icon's plate and hairline | `#fff`, `#fff`, `rgba(0,0,0,.08)` (the product icon's own white plate) |
+
+Gradients run left to right (`90deg`). The page background has a 48px grid of 1px lines in `--grid`. The hero screenshot has a soft pink glow (`0 40px 120px -40px var(--glow)`). Set `color-scheme` to match each mode.
 
 **Type** (Google Fonts):
 
@@ -55,7 +61,7 @@ Gradients run left to right (`90deg`). The page background has a 48px grid of 1p
 | body, leads | Inter 400 | 16px body, 18px leads and pitch (16px on phones) |
 | footer | JetBrains Mono, `.12em` tracking, caps | 11px |
 
-**Icon:** the Kanna app icon, inline SVG, bar geometry and gradients copied from the product icon (`kanna/assets/Kanna.icns`, as in the current `index.html`), on a dark plate (`#1a1d25 → #111318`, hairline `rgba(255,255,255,.14)`). Used at 26px in the header and 160px (96px on phones) in the closing.
+**Icon:** the Kanna app icon, inline SVG, bar geometry and gradients copied from the product icon (`kanna/assets/Kanna.icns`, as in the current `index.html`), on a plate coloured by `--plate-1`/`--plate-2`/`--plate-line`: dark in dark mode, the product's white in light. Used at 26px in the header and 160px (96px on phones) in the closing.
 
 **Shapes:** buttons and cards 10–14px radius; status chip a pill; chapter labels are pill bars (14px tall) like the icon's.
 
@@ -140,7 +146,16 @@ KANNA · plan · model · desk · connected · github · discord
 
 ## 5. Screenshots
 
-Real captures of Kanna 4.0.0 by `tools/capture` (a private Kanna running real Claude agents on a demo repo, `tidetable`), 2560×1600, AVIF, in `assets/`. Each comes in light (`kanna-v4-NAME.avif`) and dark (`kanna-v4-NAME-dark.avif`); which set the page uses is decided once the dark ones exist ([§8](#8-rules)). `width="2560" height="1600"` on every `<img>`; the hero's loads eagerly with `fetchpriority="high"`, the rest lazily.
+Real captures of Kanna 4.0.0 by `tools/capture` (a private Kanna running real Claude agents on a demo repo, `tidetable`), 2560×1600, AVIF, in `assets/`. Each comes in light (`kanna-v4-NAME.avif`) and dark (`kanna-v4-NAME-dark.avif`), and the page shows the one matching its appearance, with no script:
+
+```html
+<picture>
+  <source srcset="assets/kanna-v4-desk-dark.avif" media="(prefers-color-scheme: dark)">
+  <img src="assets/kanna-v4-desk.avif" width="2560" height="1600" alt="…">
+</picture>
+```
+
+With no preference the browser reports light, so the light shot loads on a light page. `width="2560" height="1600"` on every `<img>`; the hero's loads eagerly with `fetchpriority="high"`, the rest lazily.
 
 | Where | NAME | Shows | Caption | Captured |
 |---|---|---|---|---|
@@ -156,7 +171,7 @@ Alt text for each is in the mockup.
 ## 6. Behaviour
 
 - **Downloads:** the existing GitHub releases fetch, unchanged in substance: `GET https://api.github.com/repos/tampopogk/kanna/releases/latest`, the `.dmg` asset matching `arm64|apple.?silicon` for every Apple Silicon button and `x86|intel` for every Intel button, and the tag prefixed to every version line (`v4.0.0 · Requires macOS 15 or later`). On failure the page keeps working: the buttons' `href` starts as `https://github.com/tampopogk/kanna/releases/latest` rather than `#`. v4.0.0 ships `Kanna-4.0.0-arm64.dmg` and `Kanna-4.0.0-x86_64.dmg`.
-- **No other script.** The mockup's light/dark screenshot switch is for choosing, not for the page.
+- **No other script.** The mockup's page switch (system, dark, light; bottom right) is for previewing, not for the page: the page follows the system only.
 - **Motion:** button hover lifts 1px; nothing else moves.
 - **Meta:** update `<title>` and the description to the new pitch; drop the old Tauri-era description.
 
@@ -169,6 +184,6 @@ Considered and cut while writing the copy: terminals that outlive the app ("a pr
 ## 8. Rules
 
 - **Never present a hand-built or simulated UI as a screenshot.** Only real captures; a missing one keeps a labelled placeholder until it exists.
-- **Light or dark screenshots:** both sets are being captured so the user can try them on this page (the mockup's switch, bottom right); record the choice here when it's made.
+- **Light and dark:** both, following the system (decided 2026-10-16). A new screenshot needs both captures.
 - **Don't tell people what every agent does** ("reads your code"); say what Kanna does differently.
 - **Order:** don't mention mockups or prototypes before 02 introduces reference-driven development.
