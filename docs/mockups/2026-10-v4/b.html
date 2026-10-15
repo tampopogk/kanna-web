@@ -1,0 +1,366 @@
+<!doctype html>
+<!--
+  Direction B — "After hours"
+  The idea: Kanna is a terminal, so the page lives where its users do: a dark, quiet
+  near-black, monospace headlines, a faint grid, and the app icon's five coloured bars
+  used as the system. Each chapter (plan, model, desk, connected) is labelled by one of the icon's rows (hot, pink,
+  purple, indigo, blue-violet) and the green dot from the icon's top row means "running",
+  as it does on the Shelf. Split hero (words left, the Desk right), then chapters with a
+  sticky label rail on the left and bordered cards on the right. Dense and technical,
+  but calm.
+  Chosen by the user (2026-10-15). Copy: final, as in docs/specs/2026-10-15-website-v4-design.md. Dashed boxes are placeholders for
+  real v4 screenshots, never simulated UI.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kanna — B: After hours</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600&display=swap');
+
+  :root {
+    --bg: #0c0d11;
+    --bg-2: #13151b;
+    --bg-3: #1a1d25;
+    --line: #262a35;
+    --text: #e9e9ee;
+    --text-2: #a9acb8;
+    --muted: #6d7180;
+    --green: #17d34c;
+    --hot: linear-gradient(90deg, #f72b89, #ff8a12);
+    --pink: linear-gradient(90deg, #df1fb7, #ef2d9b);
+    --purple: linear-gradient(90deg, #9630dc, #9e23dd);
+    --indigo: linear-gradient(90deg, #1957c3, #6940a4);
+    --bv: linear-gradient(90deg, #1458c5, #736b91);
+    --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: var(--sans); font-size: 16px; line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  a { color: inherit; }
+  code { font-family: var(--mono); font-size: .92em; color: #ffb27a; }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 32px; }
+
+  /* ---- top ---- */
+  .top { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
+  .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font-family: var(--mono); font-weight: 700; font-size: 15px; letter-spacing: .04em; }
+  .brand svg { width: 26px; height: 26px; }
+  .top nav { display: flex; gap: 6px; }
+  .top nav a {
+    font-family: var(--mono); font-size: 12px; text-decoration: none; color: var(--text-2);
+    padding: 7px 12px; border: 1px solid var(--line); border-radius: 8px;
+  }
+  .top nav a:hover { color: var(--text); border-color: #3a3f4d; }
+
+  /* ---- hero ---- */
+  .hero { display: grid; grid-template-columns: 5fr 7fr; gap: 56px; align-items: center; padding: 80px 0 96px; }
+  .status { display: inline-flex; align-items: center; gap: 10px; font-family: var(--mono); font-size: 12px; color: var(--text-2);
+    border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px 6px 10px; background: var(--bg-2); }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 4px rgba(23,211,76,.15); }
+  h1 { font-family: var(--mono); font-weight: 500; font-size: clamp(34px, 4.4vw, 56px); line-height: 1.08; letter-spacing: -.03em; margin: 28px 0 0; }
+  h1 .soft { color: var(--text-2); }
+  .bars { display: flex; gap: 8px; margin: 28px 0; }
+  .bars i { height: 10px; border-radius: 5px; display: block; }
+  .pitch { font-size: 18px; color: var(--text-2); max-width: 30em; }
+  .downloads { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 10px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px; text-decoration: none;
+    font-family: var(--mono); font-size: 14px; font-weight: 500;
+    padding: 12px 18px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg-2);
+    transition: border-color .15s, transform .15s;
+  }
+  .btn svg { width: 16px; height: 16px; }
+  .btn.primary { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .btn:hover { transform: translateY(-1px); border-color: #4a5060; }
+  .version { margin-top: 14px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+  .ph {
+    width: 100%; aspect-ratio: 3 / 2; border-radius: 14px;
+    border: 1.5px dashed #3b4050; background: repeating-linear-gradient(135deg, transparent 0 16px, rgba(255,255,255,.02) 16px 17px), var(--bg-2);
+    display: grid; place-items: center; text-align: center; padding: 24px;
+  }
+  .ph b { display: block; font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); font-weight: 500; margin-bottom: 8px; }
+  .ph span { display: block; font-family: var(--mono); font-size: clamp(13px, 1.4vw, 15px); color: var(--text-2); max-width: 30ch; }
+  .hero .ph { box-shadow: 0 40px 120px -40px rgba(247,43,137,.35), 0 0 0 1px rgba(255,255,255,.02); }
+
+  /* ---- chapters ---- */
+  .chapter { display: grid; grid-template-columns: 280px 1fr; gap: 56px; padding: 96px 0; border-top: 1px solid var(--line); }
+  .hero > *, .chapter > * { min-width: 0; }
+  .rail { position: sticky; top: 32px; align-self: start; }
+  .rail .row { display: flex; gap: 6px; margin-bottom: 18px; }
+  .rail .row i { height: 14px; border-radius: 7px; display: block; }
+  .rail .num { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .rail .kicker { font-family: var(--mono); font-size: 13px; text-transform: lowercase; color: var(--text); margin-top: 4px; }
+  h2 { font-family: var(--mono); font-weight: 500; font-size: clamp(28px, 3.4vw, 42px); letter-spacing: -.03em; line-height: 1.1; }
+  .lead { font-size: 18px; color: var(--text-2); margin-top: 16px; max-width: 34em; }
+  .cards { margin-top: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; }
+  .card { background: var(--bg); padding: 26px 26px 28px; }
+  .card h3 { font-family: var(--mono); font-size: 15px; font-weight: 500; margin-bottom: 8px; display: flex; gap: 10px; align-items: center; }
+  .card h3 .k { font-size: 11px; color: var(--muted); font-weight: 400; }
+  .card p { color: var(--text-2); font-size: 15px; }
+  .card.wide { grid-column: 1 / -1; }
+  .shots { margin-top: 28px; display: grid; gap: 20px; }
+  .shots.two { grid-template-columns: 1fr 1fr; }
+  .shot img { display: block; width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--line); background: #fff; }
+  .hero .shot img { box-shadow: 0 40px 120px -40px rgba(247,43,137,.35); }
+  .shot.pending img { display: none; }
+  .shot:not(.pending) .ph { display: none; }
+  .mode { position: fixed; right: 16px; bottom: 16px; z-index: 10; display: flex; gap: 4px; padding: 4px; border-radius: 10px;
+    background: var(--bg-2); border: 1px solid var(--line); font-family: var(--mono); font-size: 12px; }
+  .mode span { color: var(--muted); padding: 6px 8px; }
+  .mode button { font: inherit; color: var(--text-2); background: none; border: 0; padding: 6px 10px; border-radius: 7px; cursor: pointer; }
+  .mode button[aria-pressed="true"] { background: var(--text); color: var(--bg); }
+  .cap { margin-top: 10px; font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+  pre.cli { margin-top: 28px; background: var(--bg-2); border: 1px solid var(--line); border-radius: 14px; padding: 22px 24px;
+    font-family: var(--mono); font-size: 14px; line-height: 1.9; overflow-x: auto; color: var(--text); }
+  pre.cli .p { color: var(--green); user-select: none; }
+  pre.cli .f { color: #c79bff; }
+
+  .body { font-size: 16px; color: var(--text-2); margin-top: 14px; max-width: 38em; }
+  .cards.three { grid-template-columns: repeat(3, 1fr); }
+  .closing .fine { margin-top: 18px; font-size: 13px; color: var(--muted); }
+
+  /* ---- closing ---- */
+  .closing { border-top: 1px solid var(--line); padding: 120px 0; display: grid; grid-template-columns: auto 1fr; gap: 48px; align-items: center; }
+  .closing .icon { width: 160px; height: 160px; }
+  .closing h2 { font-size: clamp(32px, 4.6vw, 56px); }
+  .closing .links { margin-top: 24px; display: flex; gap: 20px; font-family: var(--mono); font-size: 13px; color: var(--text-2); }
+
+  footer { border-top: 1px solid var(--line); padding: 24px 0 36px; }
+  footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 14px; font-family: var(--mono); font-size: 11px; letter-spacing: .12em; color: var(--muted); }
+  footer a { text-decoration: none; }
+  footer a:hover { color: var(--text); }
+  footer nav { display: flex; gap: 20px; }
+
+  @media (max-width: 960px) {
+    .hero { grid-template-columns: 1fr; gap: 48px; padding-top: 56px; }
+    .chapter { grid-template-columns: 1fr; gap: 24px; padding: 72px 0; }
+    .rail { position: static; }
+  }
+  @media (max-width: 620px) {
+    .wrap { padding: 0 18px; }
+    .top nav a.hide-s { display: none; }
+    .cards, .cards.three, .shots.two { grid-template-columns: 1fr; }
+    .card { padding: 22px 20px; }
+    .btn { flex: 1 1 140px; justify-content: center; }
+    .pitch, .lead { font-size: 16px; }
+    .ph { aspect-ratio: 4 / 3; }
+    pre.cli { font-size: 12px; padding: 16px; }
+    .closing { grid-template-columns: 1fr; padding: 80px 0; gap: 28px; }
+    .closing .icon { width: 96px; height: 96px; }
+  }
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="g-plate" x1="256" y1="47" x2="256" y2="466" gradientUnits="userSpaceOnUse"><stop offset=".62" stop-color="#1a1d25"/><stop offset="1" stop-color="#111318"/></linearGradient>
+    <linearGradient id="g-hot" x1="113" y1="0" x2="354" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#f72b89"/><stop offset="1" stop-color="#ff8a12"/></linearGradient>
+    <linearGradient id="g-pink" x1="113" y1="0" x2="293" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#df1fb7"/><stop offset="1" stop-color="#ef2d9b"/></linearGradient>
+    <linearGradient id="g-purple" x1="113" y1="0" x2="226" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#9630dc"/><stop offset="1" stop-color="#9e23dd"/></linearGradient>
+    <linearGradient id="g-indigo" x1="113" y1="0" x2="293" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#1957c3"/><stop offset="1" stop-color="#6940a4"/></linearGradient>
+    <linearGradient id="g-bv" x1="113" y1="0" x2="360" y2="0" gradientUnits="userSpaceOnUse"><stop stop-color="#1458c5"/><stop offset="1" stop-color="#736b91"/></linearGradient>
+    <symbol id="kanna-icon" viewBox="0 0 512 512">
+      <rect x="46" y="46" width="420" height="420" rx="105" fill="url(#g-plate)"/>
+      <rect x="46.5" y="46.5" width="419" height="419" rx="104.5" fill="none" stroke="rgba(255,255,255,.14)"/>
+      <rect x="113" y="82" width="45" height="34" rx="17" fill="url(#g-hot)"/>
+      <rect x="180" y="82" width="174" height="34" rx="17" fill="url(#g-hot)"/>
+      <rect x="377" y="82" width="24" height="34" rx="12" fill="#17d34c"/>
+      <rect x="113" y="161" width="45" height="34" rx="17" fill="url(#g-pink)"/>
+      <rect x="180" y="161" width="113" height="34" rx="17" fill="url(#g-pink)"/>
+      <rect x="113" y="240" width="45" height="33" rx="16.5" fill="url(#g-purple)"/>
+      <rect x="180" y="240" width="46" height="33" rx="16.5" fill="url(#g-purple)"/>
+      <rect x="113" y="318" width="45" height="33" rx="16.5" fill="url(#g-indigo)"/>
+      <rect x="180" y="318" width="47" height="33" rx="16.5" fill="url(#g-indigo)"/>
+      <rect x="245" y="318" width="48" height="33" rx="16.5" fill="url(#g-indigo)"/>
+      <rect x="113" y="397" width="45" height="33" rx="16.5" fill="url(#g-bv)"/>
+      <rect x="180" y="397" width="47" height="33" rx="16.5" fill="url(#g-bv)"/>
+      <rect x="245" y="397" width="48" height="33" rx="16.5" fill="url(#g-bv)"/>
+      <rect x="313" y="397" width="47" height="33" rx="16.5" fill="url(#g-bv)"/>
+    </symbol>
+    <symbol id="dl" viewBox="0 0 16 16"><path d="M8 2v8M5 7l3 3 3-3M3 12h10" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </defs>
+</svg>
+
+<header class="wrap top">
+  <a class="brand" href="#"><svg aria-hidden="true"><use href="#kanna-icon"/></svg>KANNA</a>
+  <nav aria-label="Site">
+    <a class="hide-s" href="#plan">plan</a>
+    <a class="hide-s" href="#model">model</a>
+    <a class="hide-s" href="#desk">desk</a>
+    <a class="hide-s" href="#connected">connected</a>
+    <a href="https://github.com/tampopogk/kanna">github</a>
+    <a href="https://discord.gg/WpT5N9kWa">discord</a>
+  </nav>
+</header>
+
+<main>
+  <section class="wrap hero">
+    <div>
+      <span class="status"><span class="dot"></span>Kanna 4 for macOS</span>
+      <h1>Build software you understand, <span class="soft">at a pace you can sustain, while having fun.</span></h1>
+      <div class="bars" aria-hidden="true">
+        <i style="width:28px;background:var(--hot)"></i><i style="width:96px;background:var(--hot)"></i><i style="width:10px;background:var(--green)"></i>
+      </div>
+      <p class="pitch">Kanna is a software development platform for working with coding agents. It keeps you connected to your code, engaged in the work, and sane.</p>
+      <div class="downloads">
+        <a href="https://github.com/tampopogk/kanna/releases/latest" class="btn primary js-arm"><svg aria-hidden="true"><use href="#dl"/></svg>Apple Silicon</a>
+        <a href="https://github.com/tampopogk/kanna/releases/latest" class="btn js-intel"><svg aria-hidden="true"><use href="#dl"/></svg>Intel</a>
+      </div>
+      <p class="version js-version">Requires macOS 15 or later</p>
+    </div>
+    <figure class="shot"><img data-name="desk" width="2560" height="1600" alt="Kanna's Desk with no task on it: the planning agent on the left summing up what's running and offering a quiz, and on the right the Shelf with three tasks and the backlog, one task blocked" fetchpriority="high" decoding="async"><figcaption class="cap">The planning agent beside the Shelf: three tasks on it, three waiting in the backlog, one of them blocked.</figcaption></figure>
+  </section>
+
+  <section class="wrap chapter" id="plan">
+    <aside class="rail">
+      <div class="row" aria-hidden="true"><i style="width:28px;background:var(--hot)"></i><i style="width:110px;background:var(--hot)"></i></div>
+      <div class="num">01</div>
+      <div class="kicker">plan</div>
+    </aside>
+    <div>
+      <h2>Better tasks, up front.</h2>
+      <p class="lead">Most tools hand you a prompt box. In Kanna, the planning agent helps you write better task prompts.</p>
+      <p class="body">Each task starts with enough detail to go from idea to production code, often in one go. You're still the bottleneck, but for design decisions, not for reviewing PRs.</p>
+      <div class="shots">
+        <figure class="shot pending" data-shot="plan"><img data-name="plan" width="2560" height="1600" alt="The planning agent helping write a task prompt, asking about the decisions it needs, beside the Shelf and backlog" loading="lazy" decoding="async"><div class="ph"><div><b>Screenshot coming · plan</b><span>The planning agent helping you write a task prompt</span></div></div><figcaption class="cap">The planning agent turns what you want into a task an agent can finish in one go.</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap chapter" id="model">
+    <aside class="rail">
+      <div class="row" aria-hidden="true"><i style="width:28px;background:var(--pink)"></i><i style="width:72px;background:var(--pink)"></i></div>
+      <div class="num">02</div>
+      <div class="kicker">model</div>
+    </aside>
+    <div>
+      <h2>See it before it's built.</h2>
+      <p class="lead">Agents are great at toy examples. Hardened code takes longer. So each task starts with a model of the feature: a mockup or a prototype, with a markdown spec beside it. We call it reference-driven development.</p>
+      <div class="cards three">
+        <div class="card"><h3><span class="k">02.1</span>Iterate on the model.</h3><p>A mockup changes in minutes, so you can try ideas fast without building them for real.</p></div>
+        <div class="card"><h3><span class="k">02.2</span>Mark it up together.</h3><p>Comment on the spec, the mockup or the prototype, and the agent refines it with you.</p></div>
+        <div class="card"><h3><span class="k">02.3</span>Approve, then build.</h3><p>Once you approve the model, the agent writes the production code to match it.</p></div>
+      </div>
+      <div class="shots">
+        <figure class="shot pending" data-shot="model"><img data-name="model" width="2560" height="1600" alt="A task presenting a mockup for approval, with comment threads on it, beside its agent" loading="lazy" decoding="async"><div class="ph"><div><b>Screenshot coming · model</b><span>A mockup with comment threads, beside the agent</span></div></div><figcaption class="cap">The model, marked up: you comment, the agent answers and refines it.</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap chapter" id="desk">
+    <aside class="rail">
+      <div class="row" aria-hidden="true"><i style="width:28px;background:var(--purple)"></i><i style="width:28px;background:var(--purple)"></i><i style="width:28px;background:var(--indigo)"></i></div>
+      <div class="num">03</div>
+      <div class="kicker">desk</div>
+    </aside>
+    <div>
+      <h2>Three tasks on your Desk. The rest in the background.</h2>
+      <p class="lead">Watching ten agents at once is like drinking ten shots of espresso. Jumping from task to task feels fast, but you're spinning your wheels. Real work takes real concentration, and getting into flow takes time. So Kanna keeps you on one task and keeps the switching to a minimum.</p>
+      <div class="cards">
+        <div class="card"><h3><span class="k">03.1</span>A Desk of three.</h3><p>The task you're on, and two more on the Shelf. That's the limit, on purpose.</p></div>
+        <div class="card"><h3><span class="k">03.2</span>The backlog works while you do.</h3><p>Agents work through your backlog in the background, and stop when they're done or need you.</p></div>
+        <div class="card wide"><h3><span class="k">03.3</span>Results, presented.</h3><p>Call a task up to your Desk and its agent has laid out what it did: the spec, the model, the diff, its notes. Agents choose which windows, tabs and docs to show you.</p></div>
+      </div>
+      <div class="shots">
+        <figure class="shot"><img data-name="presenting" width="2560" height="1600" alt="A task on the Desk, its work done: the agent's summary of the fix on the left, the diff it opened to present it on the right" loading="lazy" decoding="async"><figcaption class="cap">Called up to the Desk: the task explains its fix, with the diff open beside it.</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap chapter" id="connected">
+    <aside class="rail">
+      <div class="row" aria-hidden="true"><i style="width:28px;background:var(--bv)"></i><i style="width:28px;background:var(--bv)"></i><i style="width:28px;background:var(--bv)"></i><i style="width:28px;background:var(--bv)"></i></div>
+      <div class="num">04</div>
+      <div class="kicker">connected</div>
+    </aside>
+    <div>
+      <h2>Stay connected to your codebase.</h2>
+      <p class="lead">Even when agents write most of it, it's still your code.</p>
+      <div class="cards">
+        <div class="card"><h3><span class="k">04.1</span>Explained on the lines.</h3><p>Agents explain their changes with notes on the lines, shown in Kanna, never added to your code.</p></div>
+        <div class="card"><h3><span class="k">04.2</span>A daily quiz.</h3><p>Take a break with a daily quiz on how your codebase actually works. Your results are kept, so later quizzes focus on your weak spots.</p></div>
+      </div>
+      <div class="shots">
+        <figure class="shot"><img data-name="code" width="2560" height="1600" alt="An agent walking through code: its note above lines 35 to 44 of harmonics.ts, the rest of the file dimmed" loading="lazy" decoding="async"><figcaption class="cap">A walk through the code, one note at a time.</figcaption></figure>
+        <figure class="shot"><img data-name="quiz" width="2560" height="1600" alt="The quiz window: a spot-the-bug question in the agent's chat, and the code from a missed question open beside it with the explanation on its lines" loading="lazy" decoding="async"><figcaption class="cap">The daily quiz: miss one and the code opens at the line.</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap closing">
+    <svg class="icon" aria-hidden="true"><use href="#kanna-icon"/></svg>
+    <div>
+      <h2>Kanna: enjoy coding again.</h2>
+      <p class="lead">Download it for your Mac.</p>
+      <div class="downloads">
+        <a href="https://github.com/tampopogk/kanna/releases/latest" class="btn primary js-arm"><svg aria-hidden="true"><use href="#dl"/></svg>Apple Silicon</a>
+        <a href="https://github.com/tampopogk/kanna/releases/latest" class="btn js-intel"><svg aria-hidden="true"><use href="#dl"/></svg>Intel</a>
+      </div>
+      <p class="version js-version">Requires macOS 15 or later</p>
+      <p class="fine">Works with Claude Code, Codex and other agent CLIs. Source available under FSL-1.1-MIT: each release becomes MIT two years after it ships.</p>
+      <p class="links"><a href="https://github.com/tampopogk/kanna">Source on GitHub →</a><a href="https://discord.gg/WpT5N9kWa">Join the Discord →</a></p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>KANNA · <a href="https://github.com/tampopogk/kanna/blob/main/LICENSE">SOURCE AVAILABLE</a> · © TAMPOPO LLC</span>
+    <nav aria-label="Footer"><a href="https://discord.gg/WpT5N9kWa">DISCORD</a><a href="/support/">SUPPORT</a><a href="/privacy/">PRIVACY</a></nav>
+  </div>
+</footer>
+
+<!-- Mockup only: compare light and dark screenshots on this page. Not part of the design. -->
+<div class="mode" role="group" aria-label="Screenshots"><span>shots</span><button type="button" data-mode="dark">dark</button><button type="button" data-mode="light">light</button></div>
+<script>
+  // Shots load from assets/kanna-v4-NAME(-dark).avif. A dark shot not captured yet falls back to
+  // the light one; a shot with neither keeps its placeholder.
+  (() => {
+    const imgs = [...document.querySelectorAll('img[data-name]')];
+    const buttons = [...document.querySelectorAll('.mode button')];
+    function show(mode) {
+      buttons.forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
+      imgs.forEach(img => {
+        const fig = img.closest('.shot');
+        const base = '../../../assets/kanna-v4-' + img.dataset.name;
+        img.onload = () => fig.classList.remove('pending');
+        img.onerror = () => {
+          if (img.src.endsWith('-dark.avif')) img.src = base + '.avif';
+          else fig.classList.add('pending');
+        };
+        img.src = base + (mode === 'dark' ? '-dark' : '') + '.avif';
+      });
+    }
+    buttons.forEach(b => b.addEventListener('click', () => show(b.dataset.mode)));
+    show('dark');
+  })();
+</script>
+
+<script>
+  fetch('https://api.github.com/repos/tampopogk/kanna/releases/latest')
+    .then(r => r.json())
+    .then(release => {
+      const assets = release.assets || [];
+      const arm = assets.find(a => /arm64|apple.?silicon/i.test(a.name) && a.name.endsWith('.dmg'));
+      const intel = assets.find(a => /x86|intel/i.test(a.name) && a.name.endsWith('.dmg'));
+      if (arm) document.querySelectorAll('.js-arm').forEach(el => el.href = arm.browser_download_url);
+      if (intel) document.querySelectorAll('.js-intel').forEach(el => el.href = intel.browser_download_url);
+      if (release.tag_name) document.querySelectorAll('.js-version').forEach(el => el.textContent = `${release.tag_name} · Requires macOS 15 or later`);
+    })
+    .catch(() => {});
+</script>
+</body>
+</html>
