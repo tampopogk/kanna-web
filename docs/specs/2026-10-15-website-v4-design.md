@@ -55,8 +55,8 @@ Gradients run left to right (`90deg`). The page background has a 48px grid of 1p
 
 | Role | Face | Size |
 |---|---|---|
-| h1 | JetBrains Mono 500, `-.03em` | `clamp(34px, 4.4vw, 56px)`, line-height 1.08 |
-| h2 | JetBrains Mono 500, `-.03em` | `clamp(28px, 3.4vw, 42px)` (closing: `clamp(32px, 4.6vw, 56px)`) |
+| h1 | JetBrains Mono 500, `-.03em` | `clamp(32px, 4vw, 50px)`, line-height 1.08; breaks only between its five phrases ([§3](#3-layout)) |
+| h2 | JetBrains Mono 500, `-.03em`, `text-wrap: balance` | `clamp(28px, 3.4vw, 42px)` (closing: `clamp(32px, 4.6vw, 56px)`) |
 | card titles, buttons, nav, captions, labels | JetBrains Mono | 15 / 14 / 12 / 12px |
 | body, leads | Inter 400 | 16px body, 18px leads and pitch (16px on phones) |
 | footer | JetBrains Mono, `.12em` tracking, caps | 11px |
@@ -69,7 +69,8 @@ Gradients run left to right (`90deg`). The page background has a 48px grid of 1p
 
 - **Width:** content max 1240px, 32px side padding (18px under 620px).
 - **Header:** icon + "KANNA" left; bordered mono links right: plan, model, desk, connected (hidden under 620px), github, discord.
-- **Hero:** two columns, 5fr words / 7fr screenshot, 56px gap; one column under 960px (words first).
+- **Hero:** two columns, 11fr words / 13fr screenshot, 56px gap; one column under 960px (words first).
+- **The headline's line breaks are fixed:** it is five `white-space: nowrap` phrases ("Build software" / "you understand," / "at a pace you" / "can sustain," / "while having fun."), so it wraps only between them: five lines in the hero column and on phones, the three clauses one per line on tablets. The size and column width are set so the longest phrase (17 characters) fits at every width; a mono headline left to wrap freely strands words ("you" alone on a line).
 - **Chapters:** a 280px rail on the left (the icon-row pill bars, `01`, the label in lowercase) that sticks while the chapter scrolls; the chapter on the right: h2, lead, then cards and screenshots. Under 960px the rail sits above, not sticky. Chapters are separated by a 1px rule and 96px of padding (72px under 960px).
 - **Cards:** a bordered grid with 1px gaps in `--line` (two columns; three in 02; one under 620px). A card titled with a number (`02.1`) in `--muted`.
 - **Screenshots:** full width of the chapter column, one under another; 12px radius, 1px `--line` border, caption below in mono `--muted`.
