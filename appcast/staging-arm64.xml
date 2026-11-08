@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><!-- sparkle-sign-warning:
+IMPORTANT: This file was signed by Sparkle. Any modifications to this file requires re-signing this file with generate_appcast or sign_update! The signed signature will be embedded at the end of this file.
+--><rss xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:kanna="https://kanna.build/appcast" version="2.0">
+  <channel>
+    <title>Kanna Staging</title>
+    <item>
+      <title>Kanna Staging 4.1.2-staging.1</title>
+      <pubDate>Sun, 08 Nov 2026 23:23:21 +0000</pubDate>
+      <sparkle:version>2075</sparkle:version>
+      <sparkle:shortVersionString>4.1.2-staging.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>15.0.0</sparkle:minimumSystemVersion>
+      <kanna:protocol>4</kanna:protocol>
+      <enclosure url="https://github.com/tampopogk/kanna/releases/download/v4.1.2-staging.1/Kanna-Staging-4.1.2-staging.1-arm64.dmg" length="46122227" type="application/octet-stream" sparkle:edSignature="MVmckZueJZsulfh6IokW5EbAUuTiJ4Huijl9pBf8qkF7G+XLXO+9zmrkQatz0+h9bFmwL2NC/GzIGP/kdPd/AQ=="></enclosure>
+    </item>
+  </channel>
+</rss><!-- sparkle-signatures:
+edSignature: TNdfWFFATRTKy5lB1kiGZME9itAHJs6SiqMNSI3ikgwCK864i0LmSJ4sJPycMd0Jh8OlYgJLNjP5wd3GPdz5Bw==
+length: 1163
+-->
