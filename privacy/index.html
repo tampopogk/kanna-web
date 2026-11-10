@@ -151,8 +151,8 @@
 </header>
 <main>
 <h1>Kanna Mobile Privacy Policy</h1>
-<p>Effective date: August 9, 2026</p>
-<p>Technical implementation reviewed: August 9, 2026</p>
+<p>Effective date: September 16, 2026</p>
+<p>Technical implementation reviewed: September 16, 2026</p>
 <p>Kanna Mobile is operated by Tampopo LLC (&quot;Kanna,&quot; &quot;we,&quot; &quot;us,&quot; or &quot;our&quot;). This policy explains how Kanna Mobile handles information when you use the mobile app with the Kanna desktop app for macOS.</p>
 <h2>The most important point for developers</h2>
 <p>Kanna controls coding-agent tasks. When you use cloud access, <strong>task prompts, commands and terminal or agent output travel through Kanna's relay infrastructure between your mobile device and your Mac. This content may contain source code, file contents, diffs, credentials, secrets, personal information, or other confidential material.</strong> A task created remotely sends its full prompt through the relay. Terminal input and output and other content you choose to open remotely also pass through the relay.</p>
@@ -161,6 +161,10 @@
 <h2>Information Kanna handles</h2>
 <h3>Account and authentication information</h3>
 <p>Kanna Mobile supports email-and-password sign-in through Google Firebase Authentication. Firebase receives the email address and password used to sign in. The app receives and uses the resulting Firebase user ID, email address, optional display name, and Firebase ID tokens. It stores Firebase authentication session data in the device's AsyncStorage with keys beginning <code>firebaseAuth:</code> so that a session can persist between launches.</p>
+<h3>Subscriptions and purchase information</h3>
+<p>Kanna Cloud subscriptions can be purchased through Apple's in-app purchase system in Kanna Mobile or through Stripe Checkout opened in an external browser from Kanna's account portal. Apple and Stripe process the payment details entered into their purchase systems under their own terms. The reviewed Kanna implementation does not receive full payment-card or bank-account numbers from either purchase path.</p>
+<p>For an Apple purchase, Kanna creates an account-specific App Account Token, sends it to Apple's StoreKit purchase flow, and sends Apple's signed transaction to Kanna's backend for verification. Kanna verifies the Kanna Cloud product and stores purchase and subscription records linked to the Firebase user ID. Those records include the App Account Token, original and current transaction identifiers, purchase and signed-event dates, production or sandbox environment, subscription status, expiration and grace-period dates, renewal and cancellation state, billing-retry or payment-outstanding state, and revocation and notification information.</p>
+<p>For a Stripe purchase, Kanna sends Stripe the Firebase user ID and account email and stores or receives Stripe customer, subscription, and checkout-session identifiers; subscription and payment status; current-period and grace-period dates; cancellation state; and relevant event identifiers and timestamps. Kanna uses Apple and Stripe subscription information to verify purchases, grant and maintain Kanna Cloud access, prevent conflicting subscriptions, manage billing, and support account deletion.</p>
 <h3>Desktop, repository, and task information stored in the cloud</h3>
 <p>An authenticated Kanna desktop publishes an account-scoped index under <code>users/{uid}/desktops/{desktopDocId}/tasks</code> in Firestore. Depending on what is present in a task, this can include:</p>
 <ul>
@@ -174,8 +178,11 @@
 </ul>
 <p>The mobile app reads this index only within the signed-in user's account. Firestore client rules deny mobile clients access to another user's task index and deny client-side writes to the index; the authenticated relay service performs publication.</p>
 <h3>Content sent through cloud access</h3>
-<p>Firebase ID tokens authenticate Kanna Mobile's encrypted WebSocket connection to <code>relay.kanna.build</code>. The relay routes requests and live streams to and from the selected desktop. The routed content can include full task prompts, text sent to an agent, terminal keystrokes and output, agent events and permission decisions, task details, repository commands, task file and diff content requested in the app, and visual-companion content and interactions.</p>
+<p>Firebase ID tokens authenticate Kanna Mobile's encrypted WebSocket connection to <code>relay.kanna.build</code>. The relay routes requests and live streams to and from the selected desktop. The routed content can include full task prompts, text and a photo sent to an agent, terminal keystrokes and output, agent events and permission decisions, task details, repository commands, task file and diff content requested in the app, and visual-companion content and interactions.</p>
 <p>The relay implementation routes live connection data in memory and the source does not implement a database for storing full relay message bodies or terminal streams. This does not change the separate Firestore task-index storage described above, and operational infrastructure may generate logs as described below.</p>
+<h3>Photos attached to agent messages</h3>
+<p>You can choose one photo from your photo library or take one to attach to an agent message. The app resizes and re-encodes the photo as a JPEG on the device before sending it to the Mac that owns the task. On a direct LAN connection it stays on the local network. On a cloud connection it passes through Kanna's relay in transit; the reviewed relay source does not persist the photo.</p>
+<p>The receiving Mac writes the photo to that task's attachment folder and deletes the folder when the task is closed. The photo is not stored in Kanna's Firestore task index. Photo-library and camera access are optional, and text messages remain available without attaching a photo.</p>
 <h3>Local pairing and device information</h3>
 <p>For direct LAN use, Kanna Mobile discovers Kanna desktops on the local network and sends a one-time pairing code, a generated mobile device ID, and a device name to the selected Mac. The Mac returns a device secret. The app stores the desktop ID and name, local endpoint, last-seen time, mobile device ID, and device secret locally and presents the device ID and secret with later LAN requests. Firebase identity is not used to authenticate this direct LAN path.</p>
 <p>Direct LAN requests currently use local HTTP and WebSocket connections. They are authenticated with the paired device credentials but are not represented by the source as end-to-end encrypted application traffic. Use LAN pairing only on a network you trust.</p>
@@ -185,7 +192,7 @@
 <h3>Push notifications</h3>
 <p>If you allow notifications, the app obtains a Firebase Cloud Messaging (FCM) device token and sends it to the Kanna relay with the mobile device ID and a Firebase ID token. Kanna stores the device ID and FCM token under the signed-in user's Firestore record. A notification can include a title and body plus a desktop ID and task ID. Google Firebase Cloud Messaging and Apple's push-notification service process this information to deliver the notification.</p>
 <h3>Camera</h3>
-<p>Camera permission is optional and is used only to scan a machine-pairing QR code. The app processes the scanned QR value as a pairing payload. The source does not save or upload camera photos or video. You can enter the six-character pairing code instead of granting camera access.</p>
+<p>Camera permission is optional. Kanna uses it to scan a machine-pairing QR code and, if you choose, to take a photo to attach to an agent message. When scanning a pairing code, the app processes the scanned QR value as a pairing payload and does not save or upload the camera image or video. A photo deliberately taken as an attachment is handled as described under “Photos attached to agent messages.” You can enter the six-character pairing code instead of using the camera for pairing.</p>
 <h3>Connection and operational logs</h3>
 <p>The relay logs connection and service events. These logs can include an IP address, Firebase user ID, connection role (mobile or desktop), desktop ID, connection and close status, error messages, and push-registration device IDs. OTA update requests and other infrastructure requests can also expose an IP address and request metadata to the serving infrastructure. The OTA manifest request includes items such as the platform, runtime version, release channel, and current update ID when present.</p>
 <h2>Why Kanna handles this information</h2>
@@ -195,6 +202,7 @@
 <li>pair the mobile app with a trusted Mac;</li>
 <li>show desktops, repositories, and task status;</li>
 <li>create and control tasks and carry live terminal, agent, file, diff, and companion traffic;</li>
+<li>verify and manage subscriptions and provide Kanna Cloud access;</li>
 <li>deliver notifications you enable;</li>
 <li>protect account-scoped connections and diagnose service failures; and</li>
 <li>check for and deliver signed mobile JavaScript and asset updates from <code>https://relay.kanna.build/ota/manifest</code>.</li>
@@ -205,7 +213,9 @@
 <li><strong>Google Firebase Authentication</strong> for account sign-in and identity tokens;</li>
 <li><strong>Google Cloud Firestore</strong> for account, desktop, cloud task-index, credential, and push-registration records;</li>
 <li><strong>Google Firebase Cloud Messaging</strong> and <strong>Apple Push Notification service</strong> for optional push delivery; and</li>
-<li><strong>Google Cloud infrastructure</strong>, including a Google Cloud-hosted relay and Cloud Storage for over-the-air app updates.</li>
+<li><strong>Apple App Store and StoreKit</strong> for in-app subscription purchase, verification, renewal, restoration, and management;</li>
+<li><strong>Stripe</strong> for browser-based subscription checkout, billing, and subscription management; and</li>
+<li><strong>Google Cloud infrastructure</strong>, including Firebase Functions for account and billing operations, a Google Cloud-hosted relay, and Cloud Storage for over-the-air app updates.</li>
 </ul>
 <p>These providers process information to provide their services to Kanna. Kanna may also disclose information where required by applicable law, regulation, legal process, or an enforceable governmental request, or where we reasonably believe disclosure is necessary to investigate or prevent fraud, to enforce our terms, or to protect the rights, safety, or property of Kanna, our users, or the public. If Kanna is involved in a merger, acquisition, or sale of assets, information may transfer as part of that transaction, and we will make reasonable efforts to notify affected users.</p>
 <p>The mobile source contains no advertising SDK, imports no Firebase Analytics module, and the production Firebase configuration sets <code>IS_ANALYTICS_ENABLED</code> to false. The source contains no mechanism for cross-app advertising tracking.</p>
@@ -216,22 +226,24 @@
 <li>local crash diagnostics are capped at five records and can be cleared in the app;</li>
 <li>local session, pairing, and preference records remain on the device until replaced, removed through an available app control, or removed with the app's local data;</li>
 <li>push registration is deleted from Firestore when the app successfully unregisters the device, and invalid FCM tokens are removed after delivery failures;</li>
-<li>the desktop's Firestore task collection is reconciled to its current published open-task snapshot, and task documents absent from a later snapshot are deleted; and</li>
-<li>relay connection routing state is held in memory for active connections, while operational logs are handled separately.</li>
+<li>the desktop's Firestore task collection is reconciled to its current published open-task snapshot, and task documents absent from a later snapshot are deleted;</li>
+<li>relay connection routing state and relayed message and photo bodies are held for live routing rather than written to a relay message store, while operational logs are handled separately;</li>
+<li>a photo attachment is stored on the receiving Mac in its task's attachment folder until that task is closed; and</li>
+<li>account, task-index, push, desktop-credential, subscription, and entitlement records remain in Kanna's cloud until removed by the product behavior described here or by successful account deletion.</li>
 </ul>
-<p>Beyond that product behavior, we retain information as follows:</p>
+<p>When the in-app account-deletion workflow completes successfully, it deletes the Firebase Authentication user and the account's Kanna cloud user tree, billing indexes, Apple notification records, push registrations, and cloud desktop credentials. It cancels Kanna subscriptions billed through Stripe and expires outstanding Kanna Stripe checkout sessions. Kanna retains a deletion-fence record containing the Firebase user ID and the fact that deletion started; this prevents deleted cloud account and billing data from being recreated or rebound to a later purchase.</p>
+<p>The reviewed source does not set a fixed retention period for relay and infrastructure logs, backups, support correspondence, or records held independently by Apple, Stripe, Google, or another service provider. Those records are not all removed by the in-app deletion workflow and may remain under operational configurations, provider terms, or applicable legal obligations.</p>
+<p>In particular:</p>
 <ul>
-<li><strong>Firebase Authentication accounts and Firestore records</strong> (account documents, desktop and cloud task index, desktop credential hashes, push registrations) are kept while your account is active, and are deleted within 30 days of a verified deletion request.</li>
-<li><strong>Relay and infrastructure logs</strong>, which can include IP addresses, are kept for a short operational period for security and troubleshooting and are then discarded on the provider's normal cycle.</li>
-<li><strong>Support and deletion-request correspondence</strong> is kept only as long as needed to handle the request and to keep a record that we handled it.</li>
-<li><strong>Backups</strong> are rotated on their own schedule. Deleted records may persist in a backup until that backup ages out, after which they are not restored.</li>
+<li>deleting a Kanna account does not cancel an Apple subscription, which continues until you cancel it in Apple's subscription settings;</li>
+<li>Apple and Stripe can retain transaction, subscription, and payment records under their own terms and obligations; and</li>
+<li>support correspondence, operational logs, and backups are outside the in-app deletion callable and are not automatically deleted by it.</li>
 </ul>
 <p>Where a longer period is required to meet a legal obligation, resolve a dispute, or enforce our agreements, we retain the minimum necessary for that purpose.</p>
 <h2>Deletion requests and choices</h2>
-<p>Kanna Mobile currently provides sign-out, removal of a manual LAN pairing, and clearing of local crash diagnostics. It does not currently provide an in-app workflow that deletes the Firebase Authentication account and all associated cloud records.</p>
-<p>To request deletion of your Kanna account or Kanna-hosted data, email <strong><a href="mailto:support@tampopomyoko.com">support@tampopomyoko.com</a></strong> with the subject &quot;Delete my account&quot;. Include the email address associated with the account and identify any desktops whose data you want deleted. Do not send your password, Firebase token, pairing secret, source code, or other credentials.</p>
-<p>We verify a request by confirming it comes from the account's own email address; if it arrives from another address, we will write to the account address before acting. A verified deletion covers your Firebase Authentication account, your Firestore account document, your desktop and cloud task index, stored desktop credential hashes, and push-notification registrations. We acknowledge requests promptly, complete verified deletions within 30 days, and email you confirmation when the deletion is done. The backup and legal-retention exceptions described under Retention apply.</p>
-<p>Deleting Kanna-hosted data does not by itself delete data stored on your Mac, in local mobile AsyncStorage, in your source-control provider, or by an agent provider you use with Kanna. Remove local pairings and app data on the relevant devices, and contact those other providers as needed.</p>
+<p>Kanna Mobile provides an in-app deletion workflow for a signed-in account. In the account sheet, choose <strong>Delete account</strong>, review the warning, type <code>DELETE</code>, and confirm. When the workflow reports success, it performs the Kanna cloud and Stripe actions described under Retention, revokes Firebase refresh tokens, deletes the Firebase Authentication user, and signs the app out.</p>
+<p><strong>Deleting your Kanna account does not cancel a subscription billed by Apple.</strong> Use the app's <strong>Manage Apple subscription</strong> control or Apple's subscription settings to cancel it. Deleting the account also does not delete local Kanna data or LAN pairings on your phone or Mac, source-control or agent-provider data, or provider records and other exceptions described under Retention.</p>
+<p>If you cannot complete the in-app workflow, email <strong><a href="mailto:support@tampopomyoko.com">support@tampopomyoko.com</a></strong> with the subject &quot;Delete my account&quot; from the address associated with the account. Do not send your password, Firebase token, pairing secret, source code, or other credentials.</p>
 <h2>Security</h2>
 <p>Cloud relay and OTA endpoints use <code>wss://</code> and <code>https://</code>, and Firebase ID tokens authenticate mobile relay sessions. Desktop cloud publication uses desktop credentials. Direct LAN access uses a per-device ID and secret issued during pairing. No system can guarantee absolute security, and Kanna's direct LAN transport is not represented by the source as end-to-end encrypted; use trusted networks and protect your Kanna account, devices, repositories, and agent-provider credentials.</p>
 <h2>Children</h2>
@@ -240,7 +252,7 @@
 <p>When this policy changes, we post the updated version at <code>https://kanna.build/privacy</code> with a new effective date. For changes that materially affect how we handle your information, we will give notice before the change takes effect, through the app or to the email address associated with your account. Continuing to use Kanna Mobile after a change takes effect means the updated policy applies to you.</p>
 <h2>Governing law and privacy rights</h2>
 <p>Tampopo LLC operates Kanna from Japan, and this policy is governed by the laws of Japan.</p>
-<p>Under Japan's Act on the Protection of Personal Information (APPI), you may ask us to disclose the personal information we hold about you, to correct or add to it if it is inaccurate, or to stop using or delete it where the Act provides that right. Email <strong><a href="mailto:support@tampopomyoko.com">support@tampopomyoko.com</a></strong> to make a request. We verify requests as described under Deletion requests and choices, and we respond without undue delay. If you are not satisfied with our response, you may raise the matter with Japan's Personal Information Protection Commission.</p>
+<p>Under Japan's Act on the Protection of Personal Information (APPI), you may ask us to disclose the personal information we hold about you, to correct or add to it if it is inaccurate, or to stop using or delete it where the Act provides that right. Email <strong><a href="mailto:support@tampopomyoko.com">support@tampopomyoko.com</a></strong> to make a request. We respond without undue delay. If you are not satisfied with our response, you may raise the matter with Japan's Personal Information Protection Commission.</p>
 <p>Kanna is available to users outside Japan. If the law where you live gives you additional privacy rights, contact us and we will consider your request under that law. Information you send through Kanna is processed on Google Cloud and Firebase infrastructure, which may be located outside your country.</p>
 <h2>Contact</h2>
 <p>Privacy contact: <strong><a href="mailto:support@tampopomyoko.com">support@tampopomyoko.com</a></strong></p>
