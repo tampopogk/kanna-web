@@ -4,16 +4,16 @@ IMPORTANT: This file was signed by Sparkle. Any modifications to this file requi
   <channel>
     <title>Kanna Staging</title>
     <item>
-      <title>Kanna Staging 4.1.3-staging.1</title>
-      <pubDate>Sat, 14 Nov 2026 21:55:49 +0000</pubDate>
-      <sparkle:version>2505</sparkle:version>
-      <sparkle:shortVersionString>4.1.3-staging.1</sparkle:shortVersionString>
+      <title>Kanna Staging 4.1.4-staging.1</title>
+      <pubDate>Thu, 19 Nov 2026 14:54:45 +0000</pubDate>
+      <sparkle:version>2525</sparkle:version>
+      <sparkle:shortVersionString>4.1.4-staging.1</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>15.0.0</sparkle:minimumSystemVersion>
       <kanna:protocol>5</kanna:protocol>
-      <enclosure url="https://github.com/tampopogk/kanna/releases/download/v4.1.3-staging.1/Kanna-Staging-4.1.3-staging.1-x86_64.dmg" length="52493918" type="application/octet-stream" sparkle:edSignature="AXQGpbI5bijqIbvxA6tfxxzSMB2WU4ex7AIrA9rOcOZdK54y7mkfemQl/uKLDH8X/MJjym3Y+5gZyFseCbz+Bg=="></enclosure>
+      <enclosure url="https://github.com/tampopogk/kanna/releases/download/v4.1.4-staging.1/Kanna-Staging-4.1.4-staging.1-x86_64.dmg" length="52604044" type="application/octet-stream" sparkle:edSignature="WiFMGxcY2VymDuGFSXJEYnmcr4yAqjTYt6bAaUB6TSbXRiLyKRTbapDLDC40DeGCaU7k3HKV5zJvuh8Fa4bRDw=="></enclosure>
     </item>
   </channel>
 </rss><!-- sparkle-signatures:
-edSignature: V0LRvFf7MlvZCrSZR5qClja7zWxaYrt4JzmtzCnJRZpg/aBnrJJk/mzmU8/QEM3MR85atXok6s3zfc0OZ5/BCw==
+edSignature: hVHkoxW+1+Enfxg3/llY3/PyqRxsCVyaPJqSTuaiBvShe1qhqvoLnRrvBq4wEdpMc1szss59FrNFoiospFiyDw==
 length: 1164
 -->
