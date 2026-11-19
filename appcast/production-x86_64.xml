@@ -4,16 +4,16 @@ IMPORTANT: This file was signed by Sparkle. Any modifications to this file requi
   <channel>
     <title>Kanna</title>
     <item>
-      <title>Kanna 4.1.2</title>
-      <pubDate>Sat, 14 Nov 2026 11:37:21 +0000</pubDate>
-      <sparkle:version>2075</sparkle:version>
-      <sparkle:shortVersionString>4.1.2</sparkle:shortVersionString>
+      <title>Kanna 4.1.3</title>
+      <pubDate>Thu, 19 Nov 2026 14:31:05 +0000</pubDate>
+      <sparkle:version>2505</sparkle:version>
+      <sparkle:shortVersionString>4.1.3</sparkle:shortVersionString>
       <sparkle:minimumSystemVersion>15.0.0</sparkle:minimumSystemVersion>
-      <kanna:protocol>4</kanna:protocol>
-      <enclosure url="https://github.com/tampopogk/kanna/releases/download/v4.1.2/Kanna-4.1.2-x86_64.dmg" length="50983852" type="application/octet-stream" sparkle:edSignature="PtGLFcQVMjcROZ8Jp/E1VB/zj1Kt5TRW0yfvsQ/OcJ9lzoLwNpQAfR+a6HJ4Ior29U6yPHBAFJ3Mim44VI2vAA=="></enclosure>
+      <kanna:protocol>5</kanna:protocol>
+      <enclosure url="https://github.com/tampopogk/kanna/releases/download/v4.1.3/Kanna-4.1.3-x86_64.dmg" length="52494598" type="application/octet-stream" sparkle:edSignature="Z742FuyCqYvEjf0uL9TmXdgC/rmOMOcIofA3oNBGdTZKNss4cft8adfw8sj/7G/wC2XNVwUmxvlZxAFaxntCDg=="></enclosure>
     </item>
   </channel>
 </rss><!-- sparkle-signatures:
-edSignature: wyE5Fnh7t57elG7jmI920KTgjvjf7MsCjYf0F2csT4By9ZXBGHwCWFlSPzHe4n0+MHK2YCE/+CP4RCCpmq4aCA==
+edSignature: i1Xt7NGvgbQKJS2YXn/8QlVkk3YJJPTKeipIDKMxL74y/JeOPc+U/WacGPg96zvdPjtN1LwQAknP9dEKZPO3Cw==
 length: 1100
 -->
